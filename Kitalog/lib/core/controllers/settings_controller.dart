@@ -28,6 +28,12 @@ class SettingsController {
     state.value = next;
   }
 
+  Future<void> setReaderTextScale(double scale) async {
+    final next = state.value.copyWith(readerTextScale: scale);
+    await _repository.save(next);
+    state.value = next;
+  }
+
   void dispose() {
     state.dispose();
   }

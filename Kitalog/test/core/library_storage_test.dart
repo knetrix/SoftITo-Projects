@@ -1,5 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'dart:convert';
+
 import 'package:kitalog/core/constants/storage_keys.dart';
+import 'package:kitalog/core/data/seed_data.dart';
+import 'package:kitalog/core/models/book_model.dart';
+import 'package:kitalog/core/models/quote_model.dart';
+import 'package:kitalog/core/models/reading_goal_model.dart';
 import 'package:kitalog/core/models/loan_model.dart';
 import 'package:kitalog/core/models/reading_status.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -115,5 +121,52 @@ void main() {
     await library.setGoalTarget(DateTime.now().year, 0);
     expect(library.goalTargetFor(DateTime.now().year), 1);
     expect(library.goalTargetFor(1999), 12);
+  });
+
+  test('eski seed sürümünde yalnızca örnek kitaplar yenilenir, kullanıcı verisi korunur', () async {
+    final date = DateTime(2026, 5, 1);
+    final oldSeedBook = BookModel(id: 'seed-eski', title: 'Eski Örnek', addedAt: date);
+    final userBook = BookModel(id: 'kullanici-1', title: 'Benim Kitabım', addedAt: date);
+    final deps = await createTestDependencies({
+      StorageKeys.seeded: true,
+      StorageKeys.books: jsonEncode([oldSeedBook.toJson(), userBook.toJson()]),
+      StorageKeys.quotes: jsonEncode([
+        QuoteModel(id: 'q1', bookId: 'seed-eski', text: 'eski', createdAt: date).toJson(),
+        QuoteModel(id: 'q2', bookId: 'kullanici-1', text: 'benim', createdAt: date).toJson(),
+      ]),
+      StorageKeys.goals: jsonEncode([
+        ReadingGoalModel(year: DateTime.now().year, targetBookCount: 40).toJson(),
+      ]),
+    });
+    final library = deps.libraryController;
+    await library.load();
+
+    final ids = library.books.value.map((b) => b.id).toList();
+    expect(ids, contains('kullanici-1'));
+    expect(ids, isNot(contains('seed-eski')));
+    expect(library.books.value.where((b) => b.hasDigitalEdition).length, greaterThanOrEqualTo(30));
+    expect(library.quotes.value.map((q) => q.text), contains('benim'));
+    expect(library.quotes.value.map((q) => q.text), isNot(contains('eski')));
+    expect(library.goalTargetFor(DateTime.now().year), 40, reason: 'kullanıcının hedefi korunur');
+
+    // Sürüm yazıldığı için ikinci açılışta tekrar yenilenmez.
+    await library.deleteBook(library.books.value.firstWhere((b) => SeedData.isSeedId(b.id)).id);
+    final count = library.books.value.length;
+    await library.load();
+    expect(library.books.value.length, count);
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getInt(StorageKeys.seedVersion), SeedData.version);
+  });
+
+  test('sayfası geri alınmış biten kitap (eski sürüm) açılışta son sayfaya düzeltilir', () async {
+    final deps = await createTestDependencies();
+    final library = deps.libraryController;
+    await library.load();
+    final book = library.books.value.firstWhere((b) => b.status == ReadingStatus.finished);
+    await library.updateBook(book.copyWith(currentPage: 3));
+    await library.load();
+    expect(library.bookById(book.id)!.currentPage, book.pageCount);
+    await library.load();
+    expect(library.bookById(book.id)!.currentPage, book.pageCount);
   });
 }

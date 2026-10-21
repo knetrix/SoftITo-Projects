@@ -1,6 +1,6 @@
 # Kitalog
 
-Kitaplarını, okuma durumunu, alıntılarını, notlarını ve yıllık okuma hedefini takip ettiğin kişisel sanal kütüphane. Flutter ile yazılmıştır; tüm veriler cihazda (`shared_preferences`) JSON olarak saklanır.
+Kitaplarını, okuma durumunu, alıntılarını, notlarını ve yıllık okuma hedefini takip ettiğin; telifi bitmiş kitapları uygulama içinde **çevrimdışı okuyabildiğin** kişisel sanal kütüphane. Flutter ile yazılmıştır; veriler cihazda (`shared_preferences`), indirilen kitap metinleri uygulama klasöründe dosya olarak saklanır.
 
 | Kitaplığım | Okuma Durumu | Yıllık Hedef |
 | --- | --- | --- |
@@ -10,7 +10,15 @@ Kitaplarını, okuma durumunu, alıntılarını, notlarını ve yıllık okuma h
 | --- | --- | --- |
 | ![Kitap Detay](docs/screenshots/06-detail.png) | ![Yeni Kitap Ekle](docs/screenshots/07-add.png) | ![Ayarlar](docs/screenshots/08-settings.png) |
 
-Ek görüntüler: [Kayıt](docs/screenshots/01-register.png) · [Aydınlık tema](docs/screenshots/03-library-light.png) · [İngilizce](docs/screenshots/09-goal-en.png)
+| Dijital Okuyucu | Çevrimdışı Okuma | Dijital Sürüm |
+| --- | --- | --- |
+| ![Dijital Okuyucu](docs/screenshots/10-reader.png) | ![Çevrimdışı Okuma](docs/screenshots/11-reader-offline.png) | ![Dijital Sürüm](docs/screenshots/12-detail-digital.png) |
+
+| Kendi PDF'in | Kendi EPUB'ın | Dosya Yükleme |
+| --- | --- | --- |
+| ![PDF](docs/screenshots/13-reader-pdf.png) | ![EPUB](docs/screenshots/14-reader-epub.png) | ![Kendi Dosyan](docs/screenshots/15-detail-own-file.png) |
+
+Ek görüntüler: [Giriş / Kayıt](docs/screenshots/01-register.png) · [Aydınlık tema](docs/screenshots/03-library-light.png) · [İngilizce](docs/screenshots/09-goal-en.png)
 
 ## Özellikler
 
@@ -20,8 +28,10 @@ Ek görüntüler: [Kayıt](docs/screenshots/01-register.png) · [Aydınlık tema
 - Okunuyor / Okunacak / Bitti sekmeleri ve hızlı sayfa sayacı
 - Open Library ile ISBN / başlık araması veya manuel ekleme
 - Yıllık okuma hedefi, aylık ve türe göre dağılım
+- **Dijital okuma:** telifi bitmiş kitaplar Project Gutenberg (dünya klasikleri) ve Vikikaynak'tan (Türkçe eserler) indirilip internetsiz okunur; sayfalı okuyucu, yazı boyutu, kalınan yerden devam, ilerlemenin sayfa sayacına ve yıllık hedefe otomatik yansıması
+- **Kendi PDF / EPUB dosyan:** kendi eklediğin kitaplara cihazından PDF veya EPUB yükleyip okuyabilirsin; EPUB okuyucuda metin olarak (yazı boyutu, kalınan yer), PDF orijinal sayfalarıyla açılır. Dosya yalnızca cihazında saklanır; kopya korumalı (DRM) dosyalar desteklenmez
 - Koyu ("Gece Kütüphanesi") ve aydınlık ("Kağıt") tema, Türkçe / İngilizce
-- İlk açılışta 36 gerçek kitaplık (doğrulanmış ISBN ve kapak) örnek veri
+- İlk açılışta 31 telifi bitmiş, dijital okunabilir kitaplık örnek veri (doğrulanmış ISBN, kapak, Gutenberg/Vikikaynak kaynağı ve metinde doğrulanmış alıntılar)
 
 ## Kurulum ve çalıştırma
 
@@ -47,4 +57,5 @@ Feature bazlı klasörler (`controllers/`, `models/`, `views/`, `widgets/`); sta
 ## Notlar
 
 - Kapak ve arama verisi [Open Library](https://openlibrary.org) API'sinden gelir; internet yoksa kapaklar tür renginde başlıklı yer tutucuya düşer.
+- Kitap metinleri [Project Gutenberg](https://www.gutenberg.org) ve [Vikikaynak](https://tr.wikisource.org) kaynaklıdır (telifi bitmiş eserler; uygulama kaynak atfını gösterir). Vikikaynak isteklerinde Wikimedia'nın istek sınırlarına uyulur. Kaynağından indirilmesi çok uzun süren Nutuk (~109 istek) uygulamayla birlikte paketlenir (`assets/books/`); internetsiz de anında açılır. Web sürümünde metinler yalnızca oturum boyunca saklanır.
 - iOS'ta galeri/kamera izin metinleri `ios/Runner/Info.plist` içindedir.

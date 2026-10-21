@@ -7,10 +7,12 @@ import 'package:kitalog/features/auth/views/register_view.dart';
 import 'package:kitalog/features/book_detail/views/book_detail_view.dart';
 import 'package:kitalog/features/home_shell/views/home_shell_view.dart';
 import 'package:kitalog/features/library/views/library_view.dart';
+import 'package:kitalog/features/reader/views/reader_view.dart';
 import 'package:kitalog/features/reading_goal/views/reading_goal_view.dart';
 import 'package:kitalog/features/reading_status/views/reading_status_view.dart';
 import 'package:kitalog/features/settings/views/settings_view.dart';
 
+import '../helpers/fake_digital_sources.dart';
 import '../helpers/pump_app.dart';
 import '../helpers/test_dependencies.dart';
 
@@ -33,9 +35,10 @@ final _screens = <String, _ScreenBuilder>{
   ),
   'Okuma durumu': () => const Scaffold(body: ReadingStatusView()),
   'Hedef paneli': () => const Scaffold(body: ReadingGoalView()),
-  'Kitap detayı': () => const BookDetailView(bookId: 'seed-9780340839935'),
+  'Kitap detayı': () => const BookDetailView(bookId: 'seed-9781435131828'),
   'Kitap ekle': () => const AddBookView(),
   'Ayarlar': () => const SettingsView(),
+  'Okuyucu (indirilmemiş)': () => const ReaderView(bookId: 'seed-9781435131828'),
 };
 
 Future<AppDependencies> _deps() async {
@@ -79,4 +82,25 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('My Library'), findsWidgets);
   });
+
+  for (final size in _sizes.entries) {
+    for (final scale in _textScales) {
+      testWidgets('Okuyucu (metin açık) – ${size.key}, yazı ölçeği $scale taşma üretmez', (tester) async {
+        final text = List.generate(20, (i) => 'Paragraf $i ${'uzunca kelime ' * 50}').join('\n\n');
+        final deps = await createTestDependencies(
+          const {},
+          FakeDigitalSources(gutenbergTexts: {'2554': text}).client,
+        );
+        await deps.libraryController.load();
+        await deps.settingsController.setReaderTextScale(1.8);
+        final book = deps.libraryController.bookById('seed-9781435131828')!;
+        await deps.digitalBookRepository.download(book);
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await pumpScreen(tester, deps, const ReaderView(bookId: 'seed-9781435131828'), size: size.value);
+        expect(find.byType(PageView), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+  }
 }

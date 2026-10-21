@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kitalog/core/data/seed_data.dart';
 import 'package:kitalog/core/models/book_genre.dart';
+import 'package:kitalog/core/models/digital_source.dart';
 import 'package:kitalog/core/models/reading_status.dart';
 
 bool _validIsbn13(String isbn) {
@@ -68,5 +69,33 @@ void main() {
     for (final b in january.books.where((b) => b.finishedAt != null)) {
       expect(b.finishedAt!.isAfter(DateTime(2026, 1, 15)), isFalse);
     }
+  });
+
+  test('her örnek kitap telifi bitmiş bir dijital sürüme sahiptir', () {
+    for (final book in seed.books) {
+      final edition = book.digitalEdition;
+      expect(edition, isNotNull, reason: book.title);
+      expect(edition!.sourceId, isNotEmpty);
+      if (edition.source == DigitalSource.gutenberg) {
+        expect(int.tryParse(edition.sourceId), isNotNull, reason: book.title);
+        expect(edition.languageCode, 'en');
+      } else {
+        expect(edition.languageCode, 'tr');
+      }
+    }
+    final ids = seed.books.map((b) => b.digitalEdition!.sourceId).toList();
+    expect(ids.toSet().length, ids.length, reason: 'aynı metin iki kez kullanılmamalı');
+  });
+
+  test('Türk ve dünya edebiyatından karışık: Vikikaynak ve Gutenberg', () {
+    final sources = seed.books.map((b) => b.digitalEdition!.source).toSet();
+    expect(sources, {DigitalSource.gutenberg, DigitalSource.wikisource});
+    final turkish = seed.books.where((b) => b.digitalEdition!.source == DigitalSource.wikisource);
+    expect(turkish.map((b) => b.title), containsAll(['Kürk Mantolu Madonna', 'Nutuk']));
+  });
+
+  test('örnek kitap kimlikleri seed önekini taşır', () {
+    expect(seed.books.every((b) => SeedData.isSeedId(b.id)), isTrue);
+    expect(SeedData.version, greaterThanOrEqualTo(2));
   });
 }

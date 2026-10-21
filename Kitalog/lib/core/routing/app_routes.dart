@@ -6,6 +6,7 @@ import '../../features/book_detail/views/book_detail_view.dart';
 import '../../features/auth/views/register_view.dart';
 import '../../features/home_shell/views/home_shell_view.dart';
 import '../../features/library/views/library_view.dart';
+import '../../features/reader/views/reader_view.dart';
 import '../../features/reading_goal/views/reading_goal_view.dart';
 import '../../features/reading_status/views/reading_status_view.dart';
 import '../../features/settings/views/settings_view.dart';
@@ -21,6 +22,7 @@ abstract final class AppRoutes {
   static const String settings = '/settings';
   static const String bookDetail = '/book';
   static const String addBook = '/add-book';
+  static const String reader = '/reader';
 
   static Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     final Widget page = switch (routeSettings.name) {
@@ -31,6 +33,7 @@ abstract final class AppRoutes {
       ),
       bookDetail => BookDetailView(bookId: routeSettings.arguments as String),
       addBook => const AddBookView(),
+      reader => ReaderView(bookId: routeSettings.arguments as String),
       settings => const SettingsView(),
       _ => const SplashView(),
     };

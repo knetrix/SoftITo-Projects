@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('tr'),
   ];
 
+  /// No description provided for @readerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okuyucu'**
+  String get readerTitle;
+
   /// No description provided for @appName.
   ///
   /// In tr, this message translates to:
@@ -1261,6 +1267,210 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Verilerin silinmez; tekrar giriş yapabilirsin.'**
   String get settingsLogoutMessage;
+
+  /// No description provided for @readerDownloadTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kitap henüz cihazında değil'**
+  String get readerDownloadTitle;
+
+  /// No description provided for @readerDownloadMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir kez indir; sonra internet olmadan da okuyabilirsin.'**
+  String get readerDownloadMessage;
+
+  /// No description provided for @readerDownloadWebNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Web sürümünde metin yalnızca bu oturum boyunca saklanır; çevrimdışı okuma için mobil uygulamayı kullan.'**
+  String get readerDownloadWebNote;
+
+  /// No description provided for @readerDownloadButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'İndir ve Oku'**
+  String get readerDownloadButton;
+
+  /// No description provided for @readerDownloading.
+  ///
+  /// In tr, this message translates to:
+  /// **'İndiriliyor… %{percent}'**
+  String readerDownloading(int percent);
+
+  /// No description provided for @readerErrorNetwork.
+  ///
+  /// In tr, this message translates to:
+  /// **'İnternet bağlantısı kurulamadı. İndirmek için bağlantı gerekiyor.'**
+  String get readerErrorNetwork;
+
+  /// No description provided for @readerErrorServer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaynak şu an yanıt vermiyor. Biraz sonra tekrar dene.'**
+  String get readerErrorServer;
+
+  /// No description provided for @readerErrorNotFound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kitabın metni kaynağında bulunamadı.'**
+  String get readerErrorNotFound;
+
+  /// No description provided for @readerErrorStorage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metin cihaza kaydedilemedi. Depolama alanını kontrol et.'**
+  String get readerErrorStorage;
+
+  /// No description provided for @readerErrorUnavailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kitabın ücretsiz dijital sürümü yok.'**
+  String get readerErrorUnavailable;
+
+  /// No description provided for @readerPageIndicator.
+  ///
+  /// In tr, this message translates to:
+  /// **'{current} / {total}'**
+  String readerPageIndicator(int current, int total);
+
+  /// No description provided for @readerPrevious.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki sayfa'**
+  String get readerPrevious;
+
+  /// No description provided for @readerNext.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki sayfa'**
+  String get readerNext;
+
+  /// No description provided for @readerTextSize.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazı boyutu'**
+  String get readerTextSize;
+
+  /// No description provided for @readerTextScaleValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'%{percent}'**
+  String readerTextScaleValue(int percent);
+
+  /// No description provided for @digitalSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dijital Sürüm'**
+  String get digitalSectionTitle;
+
+  /// No description provided for @digitalDownload.
+  ///
+  /// In tr, this message translates to:
+  /// **'İndir (çevrimdışı okuma)'**
+  String get digitalDownload;
+
+  /// No description provided for @digitalRead.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oku'**
+  String get digitalRead;
+
+  /// No description provided for @digitalDelete.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cihazdan sil'**
+  String get digitalDelete;
+
+  /// No description provided for @fileErrorUnsupported.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yalnızca PDF ve EPUB dosyaları desteklenir.'**
+  String get fileErrorUnsupported;
+
+  /// No description provided for @fileErrorInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dosya açılamadı; bozuk ya da geçersiz bir PDF/EPUB olabilir.'**
+  String get fileErrorInvalid;
+
+  /// No description provided for @fileErrorProtected.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu dosya kopya korumalı (DRM); korumalı kitaplar açılamaz.'**
+  String get fileErrorProtected;
+
+  /// No description provided for @fileErrorTooLarge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dosya çok büyük (en fazla 150 MB).'**
+  String get fileErrorTooLarge;
+
+  /// No description provided for @fileErrorMissing.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dosya bu cihazda bulunamadı. Kitap detayından yeniden yükleyebilirsin.'**
+  String get fileErrorMissing;
+
+  /// No description provided for @digitalImportHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kendi PDF veya EPUB dosyanı yükleyip uygulamada okuyabilirsin. Dosya yalnızca bu cihazda saklanır.'**
+  String get digitalImportHint;
+
+  /// No description provided for @digitalImportButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dosya yükle (PDF / EPUB)'**
+  String get digitalImportButton;
+
+  /// No description provided for @digitalImporting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dosya hazırlanıyor…'**
+  String get digitalImporting;
+
+  /// No description provided for @digitalReplaceFile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başka dosya yükle'**
+  String get digitalReplaceFile;
+
+  /// No description provided for @statusCurrentLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durum: {status}'**
+  String statusCurrentLabel(String status);
+
+  /// No description provided for @readAgain.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar Oku'**
+  String get readAgain;
+
+  /// No description provided for @finishConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kitabı bitirdin mi?'**
+  String get finishConfirmTitle;
+
+  /// No description provided for @finishConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kitap \"Bitti\" olarak işaretlenecek ve okuma ilerlemesi son sayfaya getirilecek.'**
+  String get finishConfirmMessage;
+
+  /// No description provided for @readAgainConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kitabı tekrar oku?'**
+  String get readAgainConfirmTitle;
+
+  /// No description provided for @readAgainConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okuma ilerlemesi sıfırlanacak ve kitap \"Okunuyor\" durumuna geçecek. Yeniden bitirene kadar yıllık hedefte sayılmaz.'**
+  String get readAgainConfirmMessage;
 }
 
 class _AppLocalizationsDelegate

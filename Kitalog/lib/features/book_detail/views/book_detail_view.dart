@@ -4,14 +4,21 @@ import '../../../core/di/app_scope.dart';
 import '../../../core/extensions/context_extensions.dart';
 import '../../../core/models/reading_status.dart';
 import '../../../core/widgets/empty_state_view.dart';
+import '../../../core/routing/app_routes.dart';
 import '../controllers/book_detail_controller.dart';
+import '../controllers/book_file_picker.dart';
+import '../controllers/digital_edition_controller.dart';
 import '../models/book_detail_model.dart';
 import '../widgets/book_detail_content_widget.dart';
+import '../widgets/digital_edition_section_widget.dart';
 
 class BookDetailView extends StatefulWidget {
-  const BookDetailView({super.key, required this.bookId});
+  const BookDetailView({super.key, required this.bookId, this.filePicker});
 
   final String bookId;
+
+  /// Testlerde sahte dosya seçici vermek için.
+  final BookFilePicker? filePicker;
 
   @override
   State<BookDetailView> createState() => _BookDetailViewState();
@@ -19,15 +26,25 @@ class BookDetailView extends StatefulWidget {
 
 class _BookDetailViewState extends State<BookDetailView> {
   BookDetailController? _controller;
+  DigitalEditionController? _digital;
   bool _closing = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _controller ??= BookDetailController(
-      library: AppScope.of(context).libraryController,
+    if (_controller != null) return;
+    final scope = AppScope.of(context);
+    _controller = BookDetailController(
+      library: scope.libraryController,
       bookId: widget.bookId,
+      digital: scope.digitalBookRepository,
     )..state.addListener(_onStateChanged);
+    _digital = DigitalEditionController(
+      library: scope.libraryController,
+      digital: scope.digitalBookRepository,
+      picker: widget.filePicker ?? const PlatformBookFilePicker(),
+      bookId: widget.bookId,
+    )..load();
   }
 
   void _onStateChanged() {
@@ -75,13 +92,24 @@ class _BookDetailViewState extends State<BookDetailView> {
         ],
       ),
     );
-    if (confirmed ?? false) await _controller!.deleteBook();
+    if (confirmed ?? false) {
+      // Cihazdaki dijital kopya da silinir; aksi halde dosya sahipsiz kalır.
+      await _digital!.deleteCopy();
+      await _controller!.deleteBook();
+    }
+  }
+
+  /// Okuyucudan dönünce kalınan yer ve indirme durumu yenilenir.
+  Future<void> _openReader() async {
+    await Navigator.of(context).pushNamed(AppRoutes.reader, arguments: widget.bookId);
+    await _digital?.load();
   }
 
   @override
   void dispose() {
     _controller?.state.removeListener(_onStateChanged);
     _controller?.dispose();
+    _digital?.dispose();
     super.dispose();
   }
 
@@ -113,6 +141,12 @@ class _BookDetailViewState extends State<BookDetailView> {
                 : BookDetailContentWidget(
                     state: state,
                     actions: controller.actions,
+                    digitalSection: DigitalEditionSectionWidget(
+                      book: book,
+                      state: _digital!.state,
+                      actions: _digital!.actions,
+                      onRead: _openReader,
+                    ),
                   ),
           ),
         );

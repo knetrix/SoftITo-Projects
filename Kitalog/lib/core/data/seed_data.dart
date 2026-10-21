@@ -1,5 +1,7 @@
 import '../models/book_genre.dart';
 import '../models/book_model.dart';
+import '../models/digital_edition_model.dart';
+import '../models/digital_source.dart';
 import '../models/loan_model.dart';
 import '../models/note_model.dart';
 import '../models/quote_model.dart';
@@ -20,14 +22,26 @@ class SeedBundle {
   final ReadingGoalModel goal;
 }
 
-/// İlk açılışta (`kitalog.seeded` false iken) bir kez yüklenen örnek veriler.
+/// İlk açılışta (veya seed sürümü değiştiğinde) yüklenen örnek veriler.
 ///
-/// Tüm ISBN'ler, baskı başlıkları, sayfa sayıları ve kapak adresleri Open Library
-/// API'si üzerinden doğrulanmıştır (`/isbn/<ISBN>.json` ve `covers.../isbn/<ISBN>-L.jpg`).
+/// Tüm kitaplar telifi bitmiş eserlerdir ve dijital olarak okunabilir:
+/// Türkçe eserler Vikikaynak'tan, dünya klasikleri Project Gutenberg'den gelir.
+/// ISBN'ler, baskı başlıkları, sayfa sayıları ve kapaklar Open Library'de;
+/// Gutenberg numaraları ve Vikikaynak sayfaları kaynaklarında doğrulanmıştır.
+/// Alıntılar dijital metinde birebir aranarak doğrulanmıştır; sayfa numarası,
+/// alıntının metindeki konumunun basılı sayfa sayısına oranlanmasıyla bulunmuştur.
 abstract final class SeedData {
+  /// Seed değiştiğinde artırılır; eski örnek kitaplar yenileriyle değiştirilir.
+  static const int version = 2;
+
+  /// Örnek kitapların kimlik öneki; kullanıcının eklediği kitaplardan ayırır.
+  static const String idPrefix = 'seed-';
+
   static const String _coverBase = 'https://covers.openlibrary.org/b/isbn';
 
   static String coverUrl(String isbn) => '$_coverBase/$isbn-L.jpg';
+
+  static bool isSeedId(String id) => id.startsWith(idPrefix);
 
   static SeedBundle build(DateTime now) {
     final year = now.year;
@@ -46,8 +60,8 @@ abstract final class SeedData {
     final quotes = <QuoteModel>[
       for (var i = 0; i < _quotes.length; i++)
         QuoteModel(
-          id: 'seed-quote-$i',
-          bookId: 'seed-${_quotes[i].isbn}',
+          id: '${idPrefix}quote-$i',
+          bookId: '$idPrefix${_quotes[i].isbn}',
           text: _quotes[i].text,
           page: _quotes[i].page,
           isFavorite: _quotes[i].favorite,
@@ -58,8 +72,8 @@ abstract final class SeedData {
     final notes = <NoteModel>[
       for (var i = 0; i < _notes.length; i++)
         NoteModel(
-          id: 'seed-note-$i',
-          bookId: 'seed-${_notes[i].isbn}',
+          id: '${idPrefix}note-$i',
+          bookId: '$idPrefix${_notes[i].isbn}',
           content: _notes[i].text,
           createdAt: now.subtract(Duration(days: 5 + i * 9)),
           updatedAt: now.subtract(Duration(days: 5 + i * 9)),
@@ -82,7 +96,7 @@ abstract final class SeedData {
     final isFinished = s.status == ReadingStatus.finished;
     final isReading = s.status == ReadingStatus.reading;
     return BookModel(
-      id: 'seed-${s.isbn}',
+      id: '$idPrefix${s.isbn}',
       isbn: s.isbn,
       title: s.title,
       authors: [s.author],
@@ -112,84 +126,72 @@ abstract final class SeedData {
           : null,
       finishedAt: isFinished ? finishedAt : null,
       addedAt: now.subtract(Duration(days: 60 + s.pages % 90)),
+      digitalEdition: s.edition,
     );
   }
 
   static const List<_BookSpec> _specs = [
-    // ---- Okundu ----
-    _BookSpec('9786058105973', 'Kürk Mantolu Madonna', 'Sabahattin Ali', 176, BookGenre.novel, ReadingStatus.finished, month: 1, day: 12, rating: 5, review: 'Sade anlatımıyla insanı derinden etkileyen, bir oturuşta bitirdiğim bir aşk hikâyesi.'),
-    _BookSpec('9786058105959', 'İçimizdeki Şeytan', 'Sabahattin Ali', 288, BookGenre.novel, ReadingStatus.finished, month: 2, day: 20, rating: 4, review: 'Ömer\'in iç hesaplaşması bugün bile çok yerinde.'),
-    _BookSpec('9780452284241', 'Animal Farm', 'George Orwell', 128, BookGenre.novel, ReadingStatus.finished, month: 3, day: 8, rating: 4, review: 'Kısa ama çok keskin bir alegori. Sonu insanı düşündürüyor.'),
-    _BookSpec('9780048231260', 'The Hobbit', 'J.R.R. Tolkien', 255, BookGenre.sciFiFantasy, ReadingStatus.finished, month: 4, day: 3, rating: 5, review: 'Bilbo\'nun yolculuğu tam bir macera klasiği.', lendTo: 'Murat', lentDaysAgo: 45, dueInDays: -15),
-    _BookSpec('9788496822962', 'Fahrenheit 451', 'Ray Bradbury', 150, BookGenre.sciFiFantasy, ReadingStatus.finished, month: 4, day: 22, rating: 4, review: 'Kitapların yasaklandığı bir dünya; bugünün ekran bağımlılığıyla şaşırtıcı bir benzerlik taşıyor.'),
-    _BookSpec('9780575074842', 'The Hitchhiker\'s Guide to the Galaxy', 'Douglas Adams', 178, BookGenre.sciFiFantasy, ReadingStatus.finished, month: 5, day: 14, rating: 4, review: 'Absürt mizahı çok eğlenceliydi.', lendTo: 'Elif', lentDaysAgo: 12, dueInDays: 18),
-    _BookSpec('9780375508325', 'Cosmos', 'Carl Sagan', 365, BookGenre.science, ReadingStatus.finished, month: 6, day: 2, rating: 5, review: 'Evrene bakışımı değiştiren kitap. Sagan\'ın dili bilimi şiire dönüştürüyor.'),
-    _BookSpec('9780593189641', 'Atomic Habits', 'James Clear', 320, BookGenre.personalDevelopment, ReadingStatus.finished, month: 6, day: 25, rating: 4, review: 'Küçük alışkanlıklar üzerine pratik ve uygulanabilir bir rehber.', lendTo: 'Zeynep', lentDaysAgo: 20, dueInDays: 10),
-    _BookSpec('9789352782772', 'The Diary of a Young Girl', 'Anne Frank', 242, BookGenre.biography, ReadingStatus.finished, month: 7, day: 17, rating: 5, review: 'Savaşın gölgesinde bir gencin umudu. Çok etkileyici.'),
-    _BookSpec('9786254050657', 'Küçük Prens', 'Antoine de Saint-Exupéry', 96, BookGenre.children, ReadingStatus.finished, month: 8, day: 9, rating: 5, review: 'Her yaşta başka bir şey söyleyen bir kitap.'),
-    _BookSpec('9780425287675', 'Matilda', 'Roald Dahl', 256, BookGenre.children, ReadingStatus.finished, month: 9, day: 5, rating: 4, review: 'Kitap sevgisini anlatan neşeli bir hikâye.'),
-    _BookSpec('9786257077798', 'Orhan Veli Bütün Şiirleri', 'Orhan Veli Kanık', 264, BookGenre.poetry, ReadingStatus.finished, month: 9, day: 21, rating: 5, review: 'Garip akımının sadeliği hâlâ taze.', lendTo: 'Can', lentDaysAgo: 8, dueInDays: 22),
-    _BookSpec('9786051211879', 'Nutuk', 'Mustafa Kemal Atatürk', 589, BookGenre.history, ReadingStatus.finished, month: 10, day: 10, rating: 5, review: 'Kurtuluş Savaşı\'nı birinci ağızdan okumak değerliydi.'),
-    // ---- Okunuyor ----
-    _BookSpec('9780340839935', 'Dune', 'Frank Herbert', 608, BookGenre.sciFiFantasy, ReadingStatus.reading, percent: 52),
-    _BookSpec('9789754589023', 'Suç ve Ceza', 'Fyodor Dostoyevski', 704, BookGenre.novel, ReadingStatus.reading, percent: 30),
-    _BookSpec('9780679764861', 'Pale Blue Dot', 'Carl Sagan', 427, BookGenre.science, ReadingStatus.reading, percent: 21),
-    _BookSpec('9780224038096', 'Guns, Germs and Steel', 'Jared Diamond', 480, BookGenre.history, ReadingStatus.reading, percent: 31),
-    _BookSpec('9780368886317', 'Thus Spoke Zarathustra', 'Friedrich Nietzsche', 252, BookGenre.philosophy, ReadingStatus.reading, percent: 16),
-    _BookSpec('9780316323543', 'Long Walk to Freedom', 'Nelson Mandela', 656, BookGenre.biography, ReadingStatus.reading, percent: 46),
-    _BookSpec('9789754700114', 'Tutunamayanlar', 'Oğuz Atay', 736, BookGenre.novel, ReadingStatus.reading, percent: 68),
-    _BookSpec('9786054054206', 'İnsanın Anlam Arayışı', 'Viktor E. Frankl', 166, BookGenre.personalDevelopment, ReadingStatus.reading, percent: 60),
-    // ---- Okunacak ----
-    _BookSpec('9789759955748', 'Huzur', 'Ahmet Hamdi Tanpınar', 391, BookGenre.novel, ReadingStatus.toRead),
-    _BookSpec('9789750506093', 'Masumiyet Müzesi', 'Orhan Pamuk', 592, BookGenre.novel, ReadingStatus.toRead),
-    _BookSpec('9780571218318', 'Snow', 'Orhan Pamuk', 440, BookGenre.novel, ReadingStatus.toRead, owned: false),
-    _BookSpec('9781590171394', 'Memed, My Hawk', 'Yaşar Kemal', 392, BookGenre.novel, ReadingStatus.toRead, owned: false),
-    _BookSpec('9780857501004', 'A Brief History of Time', 'Stephen Hawking', 256, BookGenre.science, ReadingStatus.toRead),
-    _BookSpec('9781784703936', 'Homo Deus', 'Yuval Noah Harari', 513, BookGenre.history, ReadingStatus.toRead),
-    _BookSpec('9780525512172', '21 Lessons for the 21st Century', 'Yuval Noah Harari', 372, BookGenre.philosophy, ReadingStatus.toRead),
-    _BookSpec('9780857088468', 'Meditations', 'Marcus Aurelius', 192, BookGenre.philosophy, ReadingStatus.toRead),
-    _BookSpec('9780743269513', 'The 7 Habits of Highly Effective People', 'Stephen R. Covey', 384, BookGenre.personalDevelopment, ReadingStatus.toRead),
-    _BookSpec('9780349139593', 'Steve Jobs', 'Walter Isaacson', 568, BookGenre.biography, ReadingStatus.toRead, owned: false),
-    _BookSpec('9789750803772', 'Memleketimden İnsan Manzaraları', 'Nâzım Hikmet', 544, BookGenre.poetry, ReadingStatus.toRead),
-    _BookSpec('9780808509677', 'Leaves of Grass', 'Walt Whitman', 490, BookGenre.poetry, ReadingStatus.toRead),
-    _BookSpec('9781979064927', 'Alice\'s Adventures in Wonderland', 'Lewis Carroll', 190, BookGenre.children, ReadingStatus.toRead),
-    _BookSpec('9780688002305', 'Zen and the Art of Motorcycle Maintenance', 'Robert M. Pirsig', 418, BookGenre.other, ReadingStatus.toRead),
-    _BookSpec('9781604597820', 'The Elements of Style', 'William Strunk Jr.', 69, BookGenre.other, ReadingStatus.toRead),
+    _BookSpec('9780140817591', 'Pride and Prejudice', 'Jane Austen', 352, BookGenre.novel, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '1342', languageCode: 'en'), month: 1, day: 14, rating: 5, review: 'Elizabeth ile Darcy arasındaki önyargıların çözülüşü hâlâ çok keyifli; ironik dili harika.', lendTo: 'Elif', lentDaysAgo: 12, dueInDays: 18),
+    _BookSpec('9781435136168', 'Frankenstein', 'Mary Shelley', 207, BookGenre.sciFiFantasy, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '84', languageCode: 'en'), month: 2, day: 9, rating: 4, review: 'Yaratığın yalnızlığı beklediğimden çok daha dokunaklıydı.'),
+    _BookSpec('9780253204271', 'The Time Machine', 'H. G. Wells', 218, BookGenre.sciFiFantasy, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '35', languageCode: 'en'), month: 3, day: 3, rating: 4, review: 'Kısa ama fikir yüklü; Eloi ve Morlock ayrımı hâlâ güncel.'),
+    _BookSpec('9781979064927', 'Alice\'s Adventures in Wonderland', 'Lewis Carroll', 190, BookGenre.children, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '11', languageCode: 'en'), month: 3, day: 27, rating: 5, review: 'Kelime oyunları ve absürt mantığıyla her yaşta keyif veriyor.', lendTo: 'Murat', lentDaysAgo: 45, dueInDays: -15),
+    _BookSpec('9781631060663', 'Peter Pan', 'J. M. Barrie', 160, BookGenre.children, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '16', languageCode: 'en'), month: 4, day: 19, rating: 4, review: 'Büyümek üzerine sandığımdan çok daha hüzünlü bir kitap.'),
+    _BookSpec('9781770832381', 'The Wonderful Wizard of Oz', 'L. Frank Baum', 164, BookGenre.children, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '55', languageCode: 'en'), month: 5, day: 8, rating: 4, review: 'Sarı tuğlalı yol macerası sade ve sıcak bir dille anlatılmış.'),
+    _BookSpec('9781495491184', 'The Art of War', 'Sun Tzu', 66, BookGenre.other, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '132', languageCode: 'en'), month: 5, day: 30, rating: 4, review: 'Strateji üzerine kısa ve yoğun notlar; iş hayatına da uyarlanabiliyor.', lendTo: 'Zeynep', lentDaysAgo: 20, dueInDays: 10),
+    _BookSpec('9781557423603', 'As a Man Thinketh', 'James Allen', 52, BookGenre.personalDevelopment, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '4507', languageCode: 'en'), month: 6, day: 21, rating: 5, review: 'Bir oturuşta biten, düşüncenin gücü üzerine sade bir kitap.'),
+    _BookSpec('9780312257378', 'Narrative of the Life of Frederick Douglass', 'Frederick Douglass', 188, BookGenre.biography, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '23', languageCode: 'en'), month: 7, day: 12, rating: 5, review: 'Okuma yazmanın özgürlükle bağını bu kadar güçlü anlatan az kitap var.'),
+    _BookSpec('9786058105973', 'Kürk Mantolu Madonna', 'Sabahattin Ali', 176, BookGenre.novel, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.wikisource, sourceId: 'Kürk Mantolu Madonna', languageCode: 'tr'), month: 8, day: 4, rating: 5, review: 'Raif Efendi\'nin defteri insanı derinden sarsıyor; 1943 baskısının dili de ayrı bir tat veriyor.', lendTo: 'Can', lentDaysAgo: 8, dueInDays: 22),
+    _BookSpec('9780857088468', 'Meditations', 'Marcus Aurelius', 192, BookGenre.philosophy, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '2680', languageCode: 'en'), month: 9, day: 1, rating: 4, review: 'Her gün birkaç sayfa okunacak türden; sakinleştirici bir rehber.'),
+    _BookSpec('9780451528254', 'The Story of My Life', 'Helen Keller', 240, BookGenre.biography, ReadingStatus.finished, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '2397', languageCode: 'en'), month: 10, day: 6, rating: 5, review: '"Su" kelimesini öğrendiği sahne unutulmaz.'),
+    _BookSpec('9781435131828', 'Crime and Punishment', 'Fyodor Dostoyevsky', 551, BookGenre.novel, ReadingStatus.reading, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '2554', languageCode: 'en'), percent: 52),
+    _BookSpec('9786051211879', 'Nutuk', 'Mustafa Kemal Atatürk', 589, BookGenre.history, ReadingStatus.reading, DigitalEditionModel(source: DigitalSource.wikisource, sourceId: 'Nutuk', languageCode: 'tr'), percent: 30),
+    _BookSpec('9781515338413', 'Moby Dick', 'Herman Melville', 664, BookGenre.novel, ReadingStatus.reading, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '2701', languageCode: 'en'), percent: 18),
+    _BookSpec('9780674637528', 'On the Origin of Species', 'Charles Darwin', 540, BookGenre.science, ReadingStatus.reading, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '1228', languageCode: 'en'), percent: 41),
+    _BookSpec('9780808509677', 'Leaves of Grass', 'Walt Whitman', 490, BookGenre.poetry, ReadingStatus.reading, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '1322', languageCode: 'en'), percent: 65),
+    _BookSpec('9780199537099', 'Thus Spoke Zarathustra', 'Friedrich Nietzsche', 384, BookGenre.philosophy, ReadingStatus.reading, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '1998', languageCode: 'en'), percent: 23),
+    _BookSpec('9780192801760', 'Self-Help', 'Samuel Smiles', 432, BookGenre.personalDevelopment, ReadingStatus.reading, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '935', languageCode: 'en'), percent: 70),
+    _BookSpec('9781561385157', 'Dracula', 'Bram Stoker', 528, BookGenre.novel, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '345', languageCode: 'en')),
+    _BookSpec('9780870216787', 'Twenty Thousand Leagues Under the Sea', 'Jules Verne', 416, BookGenre.sciFiFantasy, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '164', languageCode: 'en')),
+    _BookSpec('9781774264614', 'The War of the Worlds', 'H. G. Wells', 185, BookGenre.sciFiFantasy, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '36', languageCode: 'en')),
+    _BookSpec('9780452287846', 'Relativity: The Special and General Theory', 'Albert Einstein', 288, BookGenre.science, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '30155', languageCode: 'en'), owned: false),
+    _BookSpec('9781453730416', 'The Voyage of the Beagle', 'Charles Darwin', 208, BookGenre.science, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '944', languageCode: 'en')),
+    _BookSpec('9781545524138', 'The History of the Peloponnesian War', 'Thucydides', 308, BookGenre.history, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '7142', languageCode: 'en'), owned: false),
+    _BookSpec('9781602069312', 'A Short History of the World', 'H. G. Wells', 476, BookGenre.history, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '35461', languageCode: 'en')),
+    _BookSpec('9780521118767', 'The Republic', 'Plato', 364, BookGenre.philosophy, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '1497', languageCode: 'en'), owned: false),
+    _BookSpec('9780497010195', 'The Autobiography of Benjamin Franklin', 'Benjamin Franklin', 276, BookGenre.biography, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '20203', languageCode: 'en')),
+    _BookSpec('9781595400161', 'Poems by Emily Dickinson', 'Emily Dickinson', 120, BookGenre.poetry, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '12242', languageCode: 'en')),
+    _BookSpec('9781480270251', 'Grimm\'s Fairy Tales', 'Jacob and Wilhelm Grimm', 283, BookGenre.children, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '2591', languageCode: 'en')),
+    _BookSpec('9781604597820', 'The Elements of Style', 'William Strunk Jr.', 69, BookGenre.other, ReadingStatus.toRead, DigitalEditionModel(source: DigitalSource.gutenberg, sourceId: '37134', languageCode: 'en')),
   ];
 
-  // Metinler yayımlanmış eserlerden birebir alınmıştır. Sayfa numaraları yaygın
-  // baskılara göre verilmiştir ve baskıya göre değişebilir.
   static const List<_QuoteSpec> _quotes = [
-    _QuoteSpec('9780340839935', 'I must not fear. Fear is the mind-killer.', 8, favorite: true),
-    _QuoteSpec('9780340839935', 'A beginning is the time for taking the most delicate care that the balances are correct.', 3),
-    _QuoteSpec('9788496822962', 'It was a pleasure to burn.', 3),
-    _QuoteSpec('9788496822962', 'There must be something in books, things we can\'t imagine, to make a woman stay in a burning house; there must be something there.', 48),
-    _QuoteSpec('9780575074842', 'Space is big. You just won\'t believe how vastly, hugely, mind-bogglingly big it is.', 57, favorite: true),
-    _QuoteSpec('9780048231260', 'In a hole in the ground there lived a hobbit.', 1),
-    _QuoteSpec('9780375508325', 'The Cosmos is all that is or ever was or ever will be.', 1, favorite: true),
-    _QuoteSpec('9780375508325', 'We are a way for the cosmos to know itself.', 345),
-    _QuoteSpec('9780679764861', 'Look again at that dot. That\'s here. That\'s home. That\'s us.', 6, favorite: true),
-    _QuoteSpec('9780452284241', 'All animals are equal, but some animals are more equal than others.', 112),
-    _QuoteSpec('9780593189641', 'You do not rise to the level of your goals. You fall to the level of your systems.', 27, favorite: true),
-    _QuoteSpec('9780593189641', 'Every action you take is a vote for the type of person you wish to become.', 38),
-    _QuoteSpec('9780316323543', 'I learned that courage was not the absence of fear, but the triumph over it.', 622),
-    _QuoteSpec('9789352782772', 'In spite of everything I still believe that people are really good at heart.', 237, favorite: true),
-    _QuoteSpec('9780368886317', 'One must still have chaos in oneself to be able to give birth to a dancing star.', 17),
-    _QuoteSpec('9781979064927', 'Curiouser and curiouser!', 14),
-    _QuoteSpec('9780425287675', 'So Matilda\'s strong young mind continued to grow, nurtured by the voices of all those authors who had sent their books out into the world like bottles on the sea.', 20),
-    _QuoteSpec('9780808509677', 'Do I contradict myself? Very well then I contradict myself, (I am large, I contain multitudes.)', 88),
-    _QuoteSpec('9780743269513', 'Begin with the end in mind.', 95),
-    _QuoteSpec('9780688002305', 'The only Zen you find on the tops of mountains is the Zen you bring up there.', 19),
-    _QuoteSpec('9780224038096', 'History followed different courses for different peoples because of differences among peoples\' environments, not because of biological differences among peoples themselves.', 25),
-    _QuoteSpec('9786051211879', '1919 yılı Mayıs\'ının 19\'uncu günü Samsun\'a çıktım.', 1),
-    _QuoteSpec('9786257077798', 'İstanbul\'u dinliyorum, gözlerim kapalı', 20),
+    _QuoteSpec('9780140817591', 'It is a truth universally acknowledged, that a single man in possession of a good fortune must be in want of a wife.', 14, favorite: true),
+    _QuoteSpec('9781515338413', 'Call me Ishmael.', 14),
+    _QuoteSpec('9781435136168', 'Beware, for I am fearless and therefore powerful.', 152),
+    _QuoteSpec('9781435131828', 'Pain and suffering are always inevitable for a large intelligence and a deep heart.', 269),
+    _QuoteSpec('9781979064927', '“Curiouser and curiouser!” cried Alice', 16),
+    _QuoteSpec('9781631060663', 'All children, except one, grow up.', 1),
+    _QuoteSpec('9781770832381', 'There is no place like home.', 25),
+    _QuoteSpec('9780808509677', 'I celebrate myself, and sing myself,', 23),
+    _QuoteSpec('9781595400161', 'Hope is the thing with feathers', 39),
+    _QuoteSpec('9781495491184', 'All warfare is based on deception.', 19, favorite: true),
+    _QuoteSpec('9780674637528', 'There is grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one;', 523),
+    _QuoteSpec('9780312257378', 'You have seen how a man was made a slave; you shall see how a slave was made a man.', 108, favorite: true),
+    _QuoteSpec('9780199537099', 'I tell you: one must still have chaos in one, to give birth to a dancing star.', 26, favorite: true),
+    _QuoteSpec('9781557423603', '"As a man thinketh in his heart so is he,"', 2),
+    _QuoteSpec('9780192801760', '“HEAVEN helps those who help themselves” is a well-tried maxim, embodying in a small compass the results of vast human experience.', 14),
+    _QuoteSpec('9781561385157', '“Listen to them--the children of the night. What music they make!”', 26),
+    _QuoteSpec('9780857088468', 'The best kind of revenge is, not to become like unto them.', 11),
+    _QuoteSpec('9786051211879', '1335 senesi Mayıs’ının on dokuzuncu günü Samsun’a çıktım.', 1, favorite: true),
+    _QuoteSpec('9786051211879', 'Ey Türk gençliği! Birinci vazifen, Türk istiklâlini, Türk cumhuriyetini, ilelebet muhafaza ve müdafaa etmektir.', 501),
+    _QuoteSpec('9786058105973', 'Simdiye kadar tesadüf ettiğim insanlardan bir tanesi benim üzerimde belki en büyük tesiri yapmıştır.', 1, favorite: true),
   ];
 
   static const List<_NoteSpec> _notes = [
-    _NoteSpec('9780340839935', 'Paul\'un kaderi ile Arrakis\'in ekolojisi birbirine çok iyi bağlanmış. İkinci bölümü bitirince Fremen kültürünü tekrar okumak istiyorum.'),
-    _NoteSpec('9789754589023', 'Raskolnikov\'un monoloğu çok yoğun; bölümleri kısa aralıklarla okumak daha iyi gidiyor.'),
-    _NoteSpec('9780375508325', 'Sagan\'ın "kozmik takvim" benzetmesini arkadaşlarla paylaşmak için sakla.'),
-    _NoteSpec('9780593189641', 'Alışkanlık yığma yöntemini sabah rutinime ekledim: kahve sonrası 10 sayfa okuma.'),
+    _NoteSpec('9781435131828', 'Raskolnikov\'un "olağanüstü insan" teorisi ile vicdanı arasındaki çatışma çok iyi işlenmiş. Porfiri ile konuşmaları ikinci kez okumak istiyorum.'),
+    _NoteSpec('9786051211879', 'Vesikalar bölümü uzun; önce ana metni bitirip vesikalara sonra dönmeyi düşünüyorum.'),
+    _NoteSpec('9780674637528', 'Son bölümdeki "endless forms most beautiful" cümlesini sınıfta paylaşmak için not aldım.'),
+    _NoteSpec('9780192801760', 'Her bölümün sonundaki biyografi örneklerini kısa bir listeye çıkarıyorum.'),
   ];
 }
 
@@ -200,7 +202,8 @@ class _BookSpec {
     this.author,
     this.pages,
     this.genre,
-    this.status, {
+    this.status,
+    this.edition, {
     this.month = 1,
     this.day = 1,
     this.rating = 4,
@@ -218,6 +221,7 @@ class _BookSpec {
   final int pages;
   final BookGenre genre;
   final ReadingStatus status;
+  final DigitalEditionModel edition;
   final int month;
   final int day;
   final int rating;

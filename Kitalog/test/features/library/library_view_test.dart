@@ -20,7 +20,7 @@ void main() {
   testWidgets('raf görünümü kitapları, filtre çiplerini ve FAB\'ı gösterir', (tester) async {
     await _openLibrary(tester);
     expect(find.text('Kitaplığım'), findsWidgets);
-    expect(find.text('Kürk Mantolu Madonna'), findsWidgets);
+    expect(find.text('Pride and Prejudice'), findsWidgets);
     expect(find.byType(FloatingActionButton), findsOneWidget);
     expect(find.widgetWithText(ChoiceChip, 'Roman'), findsOneWidget);
     expect(find.byType(LoanBadgeWidget), findsWidgets);

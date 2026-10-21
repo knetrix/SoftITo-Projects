@@ -17,10 +17,14 @@ class BookDetailContentWidget extends StatelessWidget {
     super.key,
     required this.state,
     required this.actions,
+    required this.digitalSection,
   });
 
   final BookDetailModel state;
   final BookDetailActions actions;
+
+  /// Dijital sürüm bölümü kendi durumunu dinlediği için hazır widget olarak verilir.
+  final Widget digitalSection;
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +36,9 @@ class BookDetailContentWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
         BookHeaderWidget(book: book),
+        digitalSection,
         PageCounterWidget(book: book, onChangePage: actions.changePage, onSetPage: actions.setPage),
-        StatusSelectorWidget(book: book, onChanged: actions.setStatus),
+        StatusSelectorWidget(book: book, onChanged: actions.setStatus, onReadAgain: actions.readAgain),
         RatingReviewWidget(
           book: book,
           onRatingChanged: actions.setRating,

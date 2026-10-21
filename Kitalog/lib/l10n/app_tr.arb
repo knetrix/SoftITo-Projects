@@ -1,4 +1,5 @@
 {
+  "readerTitle": "Okuyucu",
   "@@locale": "tr",
   "appName": "Kitalog",
   "commonSave": "Kaydet",
@@ -366,5 +367,70 @@
   "settingsAvatarFailed": "Resim seçilemedi. Lütfen tekrar dene.",
   "settingsLogout": "Çıkış Yap",
   "settingsLogoutTitle": "Çıkış yapılsın mı?",
-  "settingsLogoutMessage": "Verilerin silinmez; tekrar giriş yapabilirsin."
+  "settingsLogoutMessage": "Verilerin silinmez; tekrar giriş yapabilirsin.",
+  "readerDownloadTitle": "Bu kitap henüz cihazında değil",
+  "readerDownloadMessage": "Bir kez indir; sonra internet olmadan da okuyabilirsin.",
+  "readerDownloadWebNote": "Web sürümünde metin yalnızca bu oturum boyunca saklanır; çevrimdışı okuma için mobil uygulamayı kullan.",
+  "readerDownloadButton": "İndir ve Oku",
+  "readerDownloading": "İndiriliyor… %{percent}",
+  "@readerDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "readerErrorNetwork": "İnternet bağlantısı kurulamadı. İndirmek için bağlantı gerekiyor.",
+  "readerErrorServer": "Kaynak şu an yanıt vermiyor. Biraz sonra tekrar dene.",
+  "readerErrorNotFound": "Bu kitabın metni kaynağında bulunamadı.",
+  "readerErrorStorage": "Metin cihaza kaydedilemedi. Depolama alanını kontrol et.",
+  "readerErrorUnavailable": "Bu kitabın ücretsiz dijital sürümü yok.",
+  "readerPageIndicator": "{current} / {total}",
+  "@readerPageIndicator": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "readerPrevious": "Önceki sayfa",
+  "readerNext": "Sonraki sayfa",
+  "readerTextSize": "Yazı boyutu",
+  "readerTextScaleValue": "%{percent}",
+  "@readerTextScaleValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalSectionTitle": "Dijital Sürüm",
+  "digitalDownload": "İndir (çevrimdışı okuma)",
+  "digitalRead": "Oku",
+  "digitalDelete": "Cihazdan sil",
+  "fileErrorUnsupported": "Yalnızca PDF ve EPUB dosyaları desteklenir.",
+  "fileErrorInvalid": "Dosya açılamadı; bozuk ya da geçersiz bir PDF/EPUB olabilir.",
+  "fileErrorProtected": "Bu dosya kopya korumalı (DRM); korumalı kitaplar açılamaz.",
+  "fileErrorTooLarge": "Dosya çok büyük (en fazla 150 MB).",
+  "fileErrorMissing": "Dosya bu cihazda bulunamadı. Kitap detayından yeniden yükleyebilirsin.",
+  "digitalImportHint": "Kendi PDF veya EPUB dosyanı yükleyip uygulamada okuyabilirsin. Dosya yalnızca bu cihazda saklanır.",
+  "digitalImportButton": "Dosya yükle (PDF / EPUB)",
+  "digitalImporting": "Dosya hazırlanıyor…",
+  "digitalReplaceFile": "Başka dosya yükle",
+  "statusCurrentLabel": "Durum: {status}",
+  "@statusCurrentLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "readAgain": "Tekrar Oku",
+  "finishConfirmTitle": "Kitabı bitirdin mi?",
+  "finishConfirmMessage": "Kitap \"Bitti\" olarak işaretlenecek ve okuma ilerlemesi son sayfaya getirilecek.",
+  "readAgainConfirmTitle": "Kitabı tekrar oku?",
+  "readAgainConfirmMessage": "Okuma ilerlemesi sıfırlanacak ve kitap \"Okunuyor\" durumuna geçecek. Yeniden bitirene kadar yıllık hedefte sayılmaz."
 }

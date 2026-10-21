@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/app_assets.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
 
@@ -150,4 +151,15 @@ abstract final class AppTheme {
         )
         .apply(bodyColor: scheme.onSurface, displayColor: scheme.onSurface);
   }
+}
+
+/// Marka yazı tipiyle (DM Serif Display) türetilen metin stilleri.
+extension BrandTextTheme on TextTheme {
+  /// "Kitalog" yazısı.
+  TextStyle? get brandWordmark =>
+      displaySmall?.copyWith(fontFamily: AppAssets.brandFont, letterSpacing: 1);
+
+  /// Giriş / Kayıt sayfa başlığı.
+  TextStyle? get brandTitle =>
+      headlineSmall?.copyWith(fontFamily: AppAssets.brandFont);
 }

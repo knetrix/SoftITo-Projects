@@ -14,6 +14,24 @@
 | Aşama 2.7 – Ayarlar | Tamamlandı |
 | Aşama 3 – Test & İyileştirme | Tamamlandı |
 | Aşama 4 – Final Teslim | Tamamlandı |
+| Aşama 5.1 – Dijital Okuma: Veri Katmanı | Tamamlandı |
+| Aşama 5.2 – Dijital Okuma: Metin Kaynakları | Tamamlandı |
+| Aşama 5.3 – Dijital Okuma: Seed Yeniden Kurulumu | Tamamlandı |
+| Aşama 5.4 – Dijital Okuma: Okuyucu Ekranı | Tamamlandı |
+| Aşama 5.5 – Dijital Okuma: Detay Entegrasyonu | Tamamlandı |
+| Ek Geliştirme – Nutuk'un Uygulamayla Paketlenmesi | Tamamlandı |
+| Ek Düzeltme – Kaynak Atfı Satırının Kaldırılması | Tamamlandı |
+| Ek Geliştirme – Kendi PDF / EPUB Dosyanı Yükleyip Okuma | Tamamlandı |
+| Ek Düzeltme – Kitap Metinlerinin Başındaki ve İçindeki Gereksiz İşaretlerin Temizlenmesi | Tamamlandı |
+| Ek Düzeltme – Dijital Sürüm Bilgi Satırlarının Kaldırılması ve Bölüm Başlıklarının Ortalanması | Tamamlandı |
+| Ek Düzeltme – Okuma Durumu Mantığının Yenilenmesi (Onaylı Bitirme, Tekrar Oku) | Tamamlandı |
+| Ek Geliştirme – Giriş / Kayıt Ekranlarına Animasyonlu Arka Plan | Tamamlandı |
+| Ek Düzeltme – Giriş / Kayıt Arka Planının Yeniden Tasarlanması (Uçan Harfler) | Tamamlandı |
+| Ek Düzeltme – Kayıt Ekranında Formun Kitabın Üstüne Taşması | Tamamlandı |
+| Ek Geliştirme – Giriş / Kayıt Başlığında "Kitalog" Yazısı ve Ortalanmış Tasarım | Tamamlandı |
+| Ek Düzeltme – Giriş / Kayıt Ekranında Klavye Açılınca Oluşan Taşma | Tamamlandı |
+| Ek Düzeltme – Kayıt Ekranında Doğrulama Hatalarıyla "Giriş yap" Bağlantısının Görünmemesi | Tamamlandı |
+| Ek Düzeltme – Giriş / Kayıt Ekranında Kitabın Yarım Görünmesi ve Genel Taşma Kontrolü | Tamamlandı |
 
 ---
 
@@ -31,14 +49,73 @@
   - Ortak widget'lar: `BookCoverImage`, `GenreChip`, `ReadingProgressBar`, `RatingStars`, `EmptyStateView`.
   - Seed verisi (`seed_data.dart`): 36 kitap, 23 alıntı, 4 not, 4 ödünç, 24 kitaplık hedef. Tüm ISBN'ler Open Library API'sinden (`/isbn/<ISBN>.json` + kapak 200 yanıtı) ve ISBN-13 sağlama toplamıyla doğrulandı.
   - Uygulama ikonu SVG olarak tasarlandı, `rsvg-convert` ile PNG'lere dönüştürüldü; 6 hazır avatar üretildi. `pubspec.yaml` içine `flutter_launcher_icons:` ve `flutter_native_splash:` blokları yazıldı (üretim Aşama 4'te çalıştırılacak).
-- Oluşturulan / değişen dosyalar:
-  - [pubspec.yaml](pubspec.yaml), [l10n.yaml](l10n.yaml), [lib/main.dart](lib/main.dart), [lib/app.dart](lib/app.dart)
-  - [app_colors.dart](lib/core/constants/app_colors.dart), [app_theme.dart](lib/core/theme/app_theme.dart), [local_storage_service.dart](lib/core/storage/local_storage_service.dart), [app_scope.dart](lib/core/di/app_scope.dart), [app_dependencies.dart](lib/core/di/app_dependencies.dart)
-  - [seed_data.dart](lib/core/data/seed_data.dart), [validators.dart](lib/core/utils/validators.dart), [phone_input_formatter.dart](lib/core/utils/phone_input_formatter.dart)
-  - [library_controller.dart](lib/core/controllers/library_controller.dart), [auth_controller.dart](lib/core/controllers/auth_controller.dart), [settings_controller.dart](lib/core/controllers/settings_controller.dart)
-  - [app_icon.svg](assets/icon/app_icon.svg), [app_icon.png](assets/icon/app_icon.png), [app_icon_foreground.png](assets/icon/app_icon_foreground.png), [app_icon_monochrome.png](assets/icon/app_icon_monochrome.png), [splash_logo.png](assets/icon/splash_logo.png), [assets/avatars/](assets/avatars/)
-  - [app_tr.arb](lib/l10n/app_tr.arb), [app_en.arb](lib/l10n/app_en.arb)
-  - Testler: [validators_test.dart](test/core/validators_test.dart), [phone_input_formatter_test.dart](test/core/phone_input_formatter_test.dart), [models_test.dart](test/core/models_test.dart), [seed_data_test.dart](test/core/seed_data_test.dart), [library_storage_test.dart](test/core/library_storage_test.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [android/](android/) – `flutter create` ile üretilen Android, iOS, web ve masaüstü platform klasörlerinden biridir (ios/, web/, macos/, windows/, linux/ da aynı komutla oluştu).
+    - [l10n.yaml](l10n.yaml) – `flutter gen-l10n`'e ARB klasörünü, şablon dili (Türkçe) ve üretilen dosyaların yerini söyler.
+    - [app.dart](lib/app.dart) – MaterialApp'i kurar; tema ve dili `SettingsController`'ı dinleyerek anında değiştirir.
+    - [app_colors.dart](lib/core/constants/app_colors.dart) – Koyu "Gece Kütüphanesi", aydınlık "Kağıt" paletleri ve 10 tür renginin tek tanım yeridir.
+    - [app_sizes.dart](lib/core/constants/app_sizes.dart) – Boşluk, köşe yarıçapı, ikon ve kapak ölçüleri gibi tüm sabit boyutları tutar.
+    - [storage_keys.dart](lib/core/constants/storage_keys.dart) – `kitalog.user`, `kitalog.books` gibi SharedPreferences anahtarlarını tek yerde toplar.
+    - [app_theme.dart](lib/core/theme/app_theme.dart) – Material 3 koyu ve aydınlık `ThemeData`'yı, metin stillerini ve bileşen temalarını üretir.
+    - [context_extensions.dart](lib/core/extensions/context_extensions.dart) – `context.l10n`, `context.colors`, `context.textTheme` kısayollarını sağlar.
+    - [genre_extensions.dart](lib/core/extensions/genre_extensions.dart) – Tür ve okuma durumu enum'larını renk, simge ve çevrilmiş etikete dönüştürür.
+    - [validation_extensions.dart](lib/core/extensions/validation_extensions.dart) – Validator'ların döndürdüğü hata anahtarını ARB'deki hata metnine çevirir.
+    - [reading_status.dart](lib/core/models/reading_status.dart) – Okunacak / Okunuyor / Bitti durum enum'udur.
+    - [book_genre.dart](lib/core/models/book_genre.dart) – Roman, Bilim, Tarih gibi 10 kitap türü enum'udur.
+    - [avatar_type.dart](lib/core/models/avatar_type.dart) – Profil resminin yok / hazır avatar / yüklenen resim olduğunu belirten enum'dur.
+    - [view_status.dart](lib/core/models/view_status.dart) – Asenkron ekranlar için initial / loading / success / failure durum enum'udur.
+    - [user_model.dart](lib/core/models/user_model.dart) – Kullanıcının e-posta, telefon, şifre özeti ve avatar bilgisini tutan değişmez modeldir.
+    - [book_model.dart](lib/core/models/book_model.dart) – Kitabın tüm bilgisini tutar; ilerleme yüzdesini saklamadan hesaplar ve sayfayı 0-sayfa sayısı arasında sınırlar.
+    - [loan_model.dart](lib/core/models/loan_model.dart) – Ödünç verilen kişinin adını, veriliş ve iade tarihini tutar; gecikmeyi hesaplar.
+    - [quote_model.dart](lib/core/models/quote_model.dart) – Bir kitaba ait alıntının metnini, sayfa numarasını ve favori bilgisini tutar.
+    - [note_model.dart](lib/core/models/note_model.dart) – Bir kitaba ait notun içeriğini ve tarihlerini tutar.
+    - [reading_goal_model.dart](lib/core/models/reading_goal_model.dart) – Bir yılın hedef kitap sayısını tutar.
+    - [app_settings_model.dart](lib/core/models/app_settings_model.dart) – Tema (varsayılan koyu) ve dil (varsayılan Türkçe) ayarını tutar.
+    - [local_storage_service.dart](lib/core/storage/local_storage_service.dart) – SharedPreferences'a JSON okuyup yazan tek sınıftır; bozuk veride çökmeden varsayılan döner.
+    - [book_repository.dart](lib/core/repositories/book_repository.dart) – Kitap listesini ve örnek verinin yüklenip yüklenmediğini saklar.
+    - [quote_repository.dart](lib/core/repositories/quote_repository.dart) – Alıntı listesini saklar ve okur.
+    - [note_repository.dart](lib/core/repositories/note_repository.dart) – Not listesini saklar ve okur.
+    - [goal_repository.dart](lib/core/repositories/goal_repository.dart) – Yıllık hedef listesini saklar ve okur.
+    - [settings_repository.dart](lib/core/repositories/settings_repository.dart) – Tema ve dil ayarını saklar ve okur.
+    - [auth_repository.dart](lib/core/repositories/auth_repository.dart) – Kullanıcıyı ve oturum durumunu saklar, şifreyi SHA-256 ile özetler.
+    - [auth_controller.dart](lib/core/controllers/auth_controller.dart) – Kayıt, giriş, çıkış ve hesap güncelleme işlemlerini yöneten, uygulama genelinde paylaşılan controller'dır.
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – Kitap, alıntı, not ve hedef verisinin tek doğruluk kaynağıdır; tüm ekranlar buradan okur ve buraya yazar.
+    - [settings_controller.dart](lib/core/controllers/settings_controller.dart) – Tema ve dil değişikliğini kaydedip uygulamaya anında yayan paylaşılan controller'dır.
+    - [seed_data.dart](lib/core/data/seed_data.dart) – İlk açılışta bir kez yüklenen 36 gerçek kitabı, alıntıları, notları ve 24 kitaplık hedefi üretir.
+    - [app_scope.dart](lib/core/di/app_scope.dart) – Paylaşılan controller ve repository'leri widget ağacına veren InheritedWidget'tır.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) – Tüm repository ve paylaşılan controller'ları tek yerde oluşturup `AppScope`'a bağlar.
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Rota isimlerini ve hangi rotanın hangi ekranı açacağını tanımlar (bu aşamada boş iskelet).
+    - [validators.dart](lib/core/utils/validators.dart) – E-posta, telefon, şifre ve şifre tekrarı için Kayıt ve Ayarlar'ın ortak kullandığı saf doğrulama fonksiyonlarıdır.
+    - [phone_input_formatter.dart](lib/core/utils/phone_input_formatter.dart) – Telefon girişini yazarken `0 (5XX) XXX XX XX` biçimine sokan formatter'dır.
+    - [book_cover_image.dart](lib/core/widgets/book_cover_image.dart) – Kapağı internetten yükler; yüklenemezse tür renginde başlık yazılı yer tutucu gösterir.
+    - [genre_chip.dart](lib/core/widgets/genre_chip.dart) – Türü kendi renginde küçük bir etiket olarak gösterir.
+    - [reading_progress_bar.dart](lib/core/widgets/reading_progress_bar.dart) – İlerleme çubuğunu sayfa bilgisi ve yüzdeyle birlikte gösterir.
+    - [rating_stars.dart](lib/core/widgets/rating_stars.dart) – 1-5 yıldız puanı gösterir; istenirse dokunarak puan seçtirir.
+    - [empty_state_view.dart](lib/core/widgets/empty_state_view.dart) – Boş liste veya hata durumunda simge, başlık, açıklama ve isteğe bağlı buton gösterir.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Kullanıcıya görünen tüm Türkçe metinleri tutan şablon dil dosyasıdır.
+    - [app_en.arb](lib/l10n/app_en.arb) – Aynı metinlerin İngilizce karşılıklarını tutar.
+    - [generated/](lib/l10n/generated/) – `flutter gen-l10n`'in ARB dosyalarından ürettiği `AppLocalizations` sınıflarıdır (elle düzenlenmez).
+    - [app_icon.svg](assets/icon/app_icon.svg) – Mürekkep zemin üzerinde kehribar açık kitap ve ayraçtan oluşan ikonun kaynak tasarımıdır.
+    - [app_icon.png](assets/icon/app_icon.png) – Ana ikonun 1024 px, zemini dolu PNG çıktısıdır (iOS ve genel kullanım).
+    - [app_icon_foreground.png](assets/icon/app_icon_foreground.png) – Android adaptive ikonun şeffaf zeminli, güvenli alana küçültülmüş ön katmanıdır.
+    - [app_icon_monochrome.png](assets/icon/app_icon_monochrome.png) – Android 13+ temalı (tek renk) ikon için siyah silüettir.
+    - [splash_logo.png](assets/icon/splash_logo.png) – Açılış ekranında ortada görünen şeffaf zeminli logodur.
+    - [app_icon_foreground.svg](assets/icon/app_icon_foreground.svg) – Ön katman, tek renkli ikon ve açılış logosu PNG'lerinin SVG kaynaklarından biridir (`app_icon_monochrome.svg` ve `splash_logo.svg` ile birlikte).
+    - [avatars/](assets/avatars/) – Ayarlar'da seçilebilen 6 hazır profil avatarının PNG'lerini içerir.
+    - [test_dependencies.dart](test/helpers/test_dependencies.dart) – Testlerde sahte SharedPreferences ile gerçek repository'leri kuran yardımcıdır.
+    - [validators_test.dart](test/core/validators_test.dart) – Doğrulama fonksiyonlarını tablo halinde geçerli/geçersiz örneklerle test eder.
+    - [phone_input_formatter_test.dart](test/core/phone_input_formatter_test.dart) – Telefon maskesinin biçimlemesini, başa 0 eklemesini ve silme davranışını test eder.
+    - [models_test.dart](test/core/models_test.dart) – Tüm modellerin JSON'a çevrilip geri okunduğunda aynı kaldığını ve `copyWith` sınırlarını test eder.
+    - [seed_data_test.dart](test/core/seed_data_test.dart) – Örnek verinin ISBN sağlama toplamını, tür/durum dağılımını ve tarih mantığını test eder.
+    - [library_storage_test.dart](test/core/library_storage_test.dart) – `LibraryController`'ın kalıcı kayıt, sayfa sınırlama, durum, ödünç, alıntı ve hedef işlemlerini test eder.
+    - [DONE.md](DONE.md) – Her aşamada yapılanları, dosyaları, doğrulama sonuçlarını ve kararları tutan bu günlüktür.
+  - **Güncellenen:**
+    - [pubspec.yaml](pubspec.yaml) – Onaylı paketler, asset klasörleri, `generate: true` ve ikon/açılış ekranı yapılandırma blokları eklendi; `cupertino_icons` çıkarıldı.
+    - [main.dart](lib/main.dart) – Örnek sayaç uygulaması silinip yalnızca depolamayı başlatan ve `AppScope` ile `KitalogApp`'i çalıştıran koda indirildi.
+    - [PROJECT.md](PROJECT.md) – 6.2'deki sayfa kutuları gerçek durumu yansıtsın diye `[ ]` yapıldı (başka bölüme dokunulmadı).
+  - **Silinen:**
+    - `test/widget_test.dart` (silindi) – `flutter create`'in ürettiği, artık var olmayan sayaç uygulamasını test eden örnek dosyaydı.
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 52 test geçti.
 - Alınan kararlar ve nedenleri:
   - **Paylaşılan controller'lar `lib/core/controllers/` altında.** PROJECT.md 7'deki ağaçta bu klasör yok; ancak `AppScope` `core/di/` içinde olduğundan ve feature'lar birbirini import edemediğinden paylaşılan controller'ların `core/` altında olması gerekiyordu.
@@ -62,12 +139,38 @@
   - Ortak form alanları `core/widgets/` altında (`EmailFormField`, `PhoneFormField`, `PasswordFormField`) – Ayarlar ekranı da aynı alanları ve aynı `Validators`'ı kullanacak.
   - Ana kabuk: `NavigationBar` (3 sekme) + sağ üstte Ayarlar butonu; sekme sayfaları `AppRoutes` üzerinden verilir (şimdilik boş, sonraki adımlarda doldurulacak).
   - `AppRoutes.onGenerateRoute` bağlandı.
-- Oluşturulan / değişen dosyalar:
-  - [splash_view.dart](lib/features/splash/views/splash_view.dart), [splash_controller.dart](lib/features/splash/controllers/splash_controller.dart)
-  - [register_view.dart](lib/features/auth/views/register_view.dart), [login_view.dart](lib/features/auth/views/login_view.dart), [register_controller.dart](lib/features/auth/controllers/register_controller.dart), [login_controller.dart](lib/features/auth/controllers/login_controller.dart), [register_form_widget.dart](lib/features/auth/widgets/register_form_widget.dart), [login_form_widget.dart](lib/features/auth/widgets/login_form_widget.dart)
-  - [home_shell_view.dart](lib/features/home_shell/views/home_shell_view.dart), [home_shell_controller.dart](lib/features/home_shell/controllers/home_shell_controller.dart)
-  - [email_form_field.dart](lib/core/widgets/email_form_field.dart), [phone_form_field.dart](lib/core/widgets/phone_form_field.dart), [password_form_field.dart](lib/core/widgets/password_form_field.dart), [app_routes.dart](lib/core/routing/app_routes.dart)
-  - Testler: [auth_controller_test.dart](test/features/auth/auth_controller_test.dart), [register_form_test.dart](test/features/auth/register_form_test.dart), [splash_controller_test.dart](test/features/splash/splash_controller_test.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [email_form_field.dart](lib/core/widgets/email_form_field.dart) – Kayıt, Giriş ve Ayarlar'ın ortak kullandığı, e-posta klavyesi ve doğrulaması olan alandır.
+    - [phone_form_field.dart](lib/core/widgets/phone_form_field.dart) – Kayıt ve Ayarlar'ın ortak kullandığı, telefon klavyesi ve maskesi olan alandır.
+    - [password_form_field.dart](lib/core/widgets/password_form_field.dart) – Göster/gizle butonlu, doğrulaması dışarıdan verilen ortak şifre alanıdır.
+    - [splash_model.dart](lib/features/splash/models/splash_model.dart) – Açılışın yüklenme durumunu ve gidilecek rotayı tutar.
+    - [splash_controller.dart](lib/features/splash/controllers/splash_controller.dart) – Örnek veriyi ve oturumu yükleyip kullanıcıyı ana sayfaya veya kayıt ekranına yönlendirmeye karar verir.
+    - [splash_logo_widget.dart](lib/features/splash/widgets/splash_logo_widget.dart) – Yerel açılış ekranındakiyle aynı logoyu gösterir.
+    - [splash_view.dart](lib/features/splash/views/splash_view.dart) – Mürekkep zeminde logoyu gösterir, yükleme bitince yönlendirir, hata olursa "Tekrar dene" sunar.
+    - [auth_form_model.dart](lib/features/auth/models/auth_form_model.dart) – Kayıt/giriş formunun yükleniyor, başarılı ve hata durumunu tutar.
+    - [register_controller.dart](lib/features/auth/controllers/register_controller.dart) – Kayıt formunu gönderip kullanıcıyı oluşturur.
+    - [login_controller.dart](lib/features/auth/controllers/login_controller.dart) – Giriş bilgilerini doğrular, hatalıysa hata anahtarını state'e yazar.
+    - [auth_header_widget.dart](lib/features/auth/widgets/auth_header_widget.dart) – Kayıt ve Giriş ekranlarının üstündeki simge, başlık ve kısa açıklamadır.
+    - [auth_error_banner_widget.dart](lib/features/auth/widgets/auth_error_banner_widget.dart) – Hatalı giriş gibi durumlarda kırmızı uyarı bandı gösterir.
+    - [auth_page_layout_widget.dart](lib/features/auth/widgets/auth_page_layout_widget.dart) – Kayıt ve Giriş'in ortak sayfa iskeletidir (başlık + ortalanmış, kaydırılabilir form).
+    - [register_form_widget.dart](lib/features/auth/widgets/register_form_widget.dart) – E-posta, telefon, şifre ve şifre tekrar alanlarından oluşan kayıt formudur.
+    - [login_form_widget.dart](lib/features/auth/widgets/login_form_widget.dart) – E-posta ve şifre alanlarından oluşan giriş formudur.
+    - [register_view.dart](lib/features/auth/views/register_view.dart) – Kayıt ekranıdır; başarılı kayıtta ana sayfaya geçer.
+    - [login_view.dart](lib/features/auth/views/login_view.dart) – Giriş ekranıdır; başarılı girişte ana sayfaya geçer, hatada uyarı gösterir.
+    - [home_shell_model.dart](lib/features/home_shell/models/home_shell_model.dart) – Ana kabukta seçili sekmenin numarasını tutar.
+    - [home_shell_controller.dart](lib/features/home_shell/controllers/home_shell_controller.dart) – Sekme değişimini yönetir.
+    - [home_navigation_bar_widget.dart](lib/features/home_shell/widgets/home_navigation_bar_widget.dart) – Kitaplığım / Okuma Durumu / Hedef sekmelerinden oluşan alt gezinme çubuğudur.
+    - [home_shell_view.dart](lib/features/home_shell/views/home_shell_view.dart) – Üst çubuk, sağ üst Ayarlar butonu ve alt gezinme çubuğuyla sekme sayfalarını barındıran ana ekrandır.
+    - [pump_app.dart](test/helpers/pump_app.dart) – Testlerde uygulamayı veya tek bir ekranı tema ve dil desteğiyle açan yardımcıdır.
+    - [auth_controller_test.dart](test/features/auth/auth_controller_test.dart) – Kayıt, giriş, çıkış, oturum geri yükleme ve hesap güncellemeyi test eder.
+    - [register_form_test.dart](test/features/auth/register_form_test.dart) – Kayıt formunun hata mesajlarını, telefon maskesini ve başarılı kayıt sonrası yönlendirmeyi test eder.
+    - [splash_controller_test.dart](test/features/splash/splash_controller_test.dart) – Oturuma göre doğru ekrana yönlendirmeyi ve örnek verinin yüklenmesini test eder.
+  - **Güncellenen:**
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Splash, Kayıt, Giriş ve Ana kabuk rotaları bağlandı.
+    - [pubspec.yaml](pubspec.yaml) – Splash ekranının logoyu gösterebilmesi için `splash_logo.png` asset olarak eklendi.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Kayıt/giriş alanları, butonlar, hata mesajları ve sekme adları eklendi (aynısı `app_en.arb`'de).
+    - [PROJECT.md](PROJECT.md) – Sayfa 0 ve Sayfa 1 `[x]` işaretlendi.
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 63 test geçti.
 - Alınan kararlar ve nedenleri:
   - **Splash'ın oturum yoksa hedefi Kayıt ekranıdır** (PROJECT.md 6.2/6.4); çıkış yapınca ise Giriş ekranına dönülür (6.4). Kayıt ekranında "Giriş yap" bağlantısı vardır.
@@ -81,11 +184,23 @@
   - Sayfa 2: kapakların grid/raf düzeninde listelenmesi (`GridView.builder`), başlık/yazar araması (Türkçe harf duyarsız), okuma durumu ve tür çipleriyle filtre, ödünçteki kitaplarda "Ödünçte" rozeti, boş / sonuçsuz durum mesajları, "Kitap Ekle" FAB'ı.
   - Seed verisi Aşama 1'de hazırlanmıştı; Splash ilk açılışta `kitalog.seeded` false iken bir kez yükler (36 kitap, 23 alıntı, 4 not, 4 ödünç, 24 kitaplık hedef).
   - Arama için `foldForSearch` (İ/I/ı, ç/ğ/ö/ş/ü sadeleştirme).
-- Oluşturulan / değişen dosyalar:
-  - [library_view.dart](lib/features/library/views/library_view.dart), [library_shelf_controller.dart](lib/features/library/controllers/library_shelf_controller.dart), [library_shelf_model.dart](lib/features/library/models/library_shelf_model.dart)
-  - [book_shelf_grid_widget.dart](lib/features/library/widgets/book_shelf_grid_widget.dart), [book_shelf_item_widget.dart](lib/features/library/widgets/book_shelf_item_widget.dart), [library_filter_bar_widget.dart](lib/features/library/widgets/library_filter_bar_widget.dart), [loan_badge_widget.dart](lib/features/library/widgets/loan_badge_widget.dart), [library_empty_widget.dart](lib/features/library/widgets/library_empty_widget.dart)
-  - [search_utils.dart](lib/core/utils/search_utils.dart), [app_routes.dart](lib/core/routing/app_routes.dart)
-  - Testler: [library_shelf_controller_test.dart](test/features/library/library_shelf_controller_test.dart), [library_view_test.dart](test/features/library/library_view_test.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [search_utils.dart](lib/core/utils/search_utils.dart) – Aramada "İ/ı/ş/ç" gibi harfleri sadeleştirip büyük-küçük harf farkını kaldırır.
+    - [library_shelf_model.dart](lib/features/library/models/library_shelf_model.dart) – Arama metnini, seçili tür/durum filtresini ve süzülmüş kitap listesini tutar.
+    - [library_shelf_controller.dart](lib/features/library/controllers/library_shelf_controller.dart) – Paylaşılan kitap listesini dinleyip arama ve filtrelere göre süzer.
+    - [library_filter_bar_widget.dart](lib/features/library/widgets/library_filter_bar_widget.dart) – Arama kutusu ile okuma durumu ve tür filtre çiplerini gösterir.
+    - [book_shelf_grid_widget.dart](lib/features/library/widgets/book_shelf_grid_widget.dart) – Kitapları raf/ızgara düzeninde listeler.
+    - [book_shelf_item_widget.dart](lib/features/library/widgets/book_shelf_item_widget.dart) – Raftaki tek kitabı kapak, başlık ve yazarla gösterir.
+    - [loan_badge_widget.dart](lib/features/library/widgets/loan_badge_widget.dart) – Ödünçteki kitabın kapağına "Ödünçte" rozeti koyar.
+    - [library_empty_widget.dart](lib/features/library/widgets/library_empty_widget.dart) – Kitaplık boşken veya arama sonuç vermezken uygun mesajı gösterir.
+    - [library_view.dart](lib/features/library/views/library_view.dart) – Kitaplığım sekmesidir; filtreleri, rafı ve "Kitap Ekle" butonunu bir araya getirir.
+    - [library_shelf_controller_test.dart](test/features/library/library_shelf_controller_test.dart) – Arama, tür ve durum filtrelerinin birlikte çalışmasını ve listenin canlı güncellenmesini test eder.
+    - [library_view_test.dart](test/features/library/library_view_test.dart) – Raf ekranında kitapların, çiplerin, rozetin, aramanın ve boş sonucun görünmesini test eder.
+  - **Güncellenen:**
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Ana kabuğun ilk sekmesine `LibraryView` bağlandı.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Arama, filtre, boş durum ve rozet metinleri eklendi (aynısı `app_en.arb`'de).
+    - [PROJECT.md](PROJECT.md) – Sayfa 2 `[x]` işaretlendi.
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 70 test geçti.
 - Alınan kararlar ve nedenleri:
   - **Raf controller'ı kitap listesini kopyalamaz;** paylaşılan `LibraryController.books` dinlenir, yalnızca filtre durumu ve türetilmiş liste tutulur (state_flow.md "tek doğruluk kaynağı"). `dispose`'ta `removeListener` çağrılır.
@@ -99,11 +214,34 @@
   - Sayfa 5: kapak ve künye (tür etiketi, ISBN, sayfa sayısı, sahiplik), sayfa sayacı + ilerleme çubuğu (±1, ±10 ve doğrudan sayfa girişi), durum değiştirme (SegmentedButton), puan (1-5) ve şahsi inceleme, alıntılar (sayfa no, favori işaretleme – favoriler üstte, silme), notlar, ödünç bilgisi (kime, ne zaman, iade tarihi, gecikme uyarısı, iade alma), kitap silme (onay diyaloğuyla; bağlı alıntı/notlar da silinir).
   - Son sayfaya ulaşınca SnackBar ile "Bitti olarak işaretle" önerisi (PROJECT.md 6.3: "pageCount'a ulaşınca durum finished önerilir").
   - Rota: `AppRoutes.bookDetail` (argüman: kitap id'si).
-- Oluşturulan / değişen dosyalar:
-  - [book_detail_view.dart](lib/features/book_detail/views/book_detail_view.dart), [book_detail_controller.dart](lib/features/book_detail/controllers/book_detail_controller.dart), [book_detail_model.dart](lib/features/book_detail/models/book_detail_model.dart), [book_detail_actions.dart](lib/features/book_detail/models/book_detail_actions.dart)
-  - Widget'lar: [book_detail_content_widget.dart](lib/features/book_detail/widgets/book_detail_content_widget.dart), [book_header_widget.dart](lib/features/book_detail/widgets/book_header_widget.dart), [page_counter_widget.dart](lib/features/book_detail/widgets/page_counter_widget.dart), [status_selector_widget.dart](lib/features/book_detail/widgets/status_selector_widget.dart), [rating_review_widget.dart](lib/features/book_detail/widgets/rating_review_widget.dart), [quotes_section_widget.dart](lib/features/book_detail/widgets/quotes_section_widget.dart), [notes_section_widget.dart](lib/features/book_detail/widgets/notes_section_widget.dart), [loan_section_widget.dart](lib/features/book_detail/widgets/loan_section_widget.dart) ve diyaloglar ([quote_dialog.dart](lib/features/book_detail/widgets/quote_dialog.dart), [loan_dialog.dart](lib/features/book_detail/widgets/loan_dialog.dart), [page_input_dialog.dart](lib/features/book_detail/widgets/page_input_dialog.dart), [text_entry_dialog.dart](lib/features/book_detail/widgets/text_entry_dialog.dart))
-  - [context_extensions.dart](lib/core/extensions/context_extensions.dart) (`formatDate`), [app_routes.dart](lib/core/routing/app_routes.dart)
-  - Testler: [book_detail_controller_test.dart](test/features/book_detail/book_detail_controller_test.dart), [book_detail_view_test.dart](test/features/book_detail/book_detail_view_test.dart), [pump_app.dart](test/helpers/pump_app.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [book_detail_model.dart](lib/features/book_detail/models/book_detail_model.dart) – Detayı açılan kitabı, alıntılarını, notlarını ve "bitirdin mi?" önerisini tutar.
+    - [book_detail_actions.dart](lib/features/book_detail/models/book_detail_actions.dart) – Widget'ların controller'ı tanımadan çağırabildiği eylemleri (sayfa, puan, alıntı, ödünç vb.) bir arada tutar.
+    - [book_detail_controller.dart](lib/features/book_detail/controllers/book_detail_controller.dart) – Tek bir kitabın sayfa, durum, puan, inceleme, alıntı, not, ödünç ve silme işlemlerini yönetir.
+    - [book_detail_content_widget.dart](lib/features/book_detail/widgets/book_detail_content_widget.dart) – Detay ekranındaki tüm bölümleri alt alta dizen kaydırılabilir gövdedir.
+    - [book_header_widget.dart](lib/features/book_detail/widgets/book_header_widget.dart) – Kapağı ve künyeyi (başlık, yazar, tür, sayfa, ISBN, sahiplik) gösterir.
+    - [section_card_widget.dart](lib/features/book_detail/widgets/section_card_widget.dart) – Bölümlerin ortak başlıklı kart çerçevesidir.
+    - [page_counter_widget.dart](lib/features/book_detail/widgets/page_counter_widget.dart) – İlerleme çubuğu ile ±1 / ±10 sayfa butonlarını gösterir.
+    - [page_input_dialog.dart](lib/features/book_detail/widgets/page_input_dialog.dart) – Mevcut sayfanın elle girildiği diyalogdur.
+    - [status_selector_widget.dart](lib/features/book_detail/widgets/status_selector_widget.dart) – Okunacak / Okunuyor / Bitti seçicisini ve başlangıç/bitiş tarihlerini gösterir.
+    - [rating_review_widget.dart](lib/features/book_detail/widgets/rating_review_widget.dart) – Yıldız puanını ve şahsi incelemeyi gösterip düzenletir.
+    - [text_entry_dialog.dart](lib/features/book_detail/widgets/text_entry_dialog.dart) – İnceleme ve not yazmak için kullanılan çok satırlı metin diyaloğudur.
+    - [quotes_section_widget.dart](lib/features/book_detail/widgets/quotes_section_widget.dart) – Alıntıları favoriler üstte olacak şekilde listeler ve yeni alıntı ekletir.
+    - [quote_tile_widget.dart](lib/features/book_detail/widgets/quote_tile_widget.dart) – Tek bir alıntıyı sayfa numarası, favori ve silme butonlarıyla gösterir.
+    - [quote_dialog.dart](lib/features/book_detail/widgets/quote_dialog.dart) – Alıntı metni ve isteğe bağlı sayfa numarası girilen diyalogdur.
+    - [notes_section_widget.dart](lib/features/book_detail/widgets/notes_section_widget.dart) – Notları tarihleriyle listeler, not ekletir ve sildirir.
+    - [loan_section_widget.dart](lib/features/book_detail/widgets/loan_section_widget.dart) – Ödünç bilgisini (kime, ne zaman, iade tarihi, gecikme) gösterir; ödünç verme ve iade alma sağlar.
+    - [loan_dialog.dart](lib/features/book_detail/widgets/loan_dialog.dart) – Kime ödünç verildiğinin ve iade tarihinin girildiği diyalogdur.
+    - [book_detail_view.dart](lib/features/book_detail/views/book_detail_view.dart) – Kitap detay ekranıdır; silme onayını ve "Bitti olarak işaretle" önerisini yönetir.
+    - [book_detail_controller_test.dart](test/features/book_detail/book_detail_controller_test.dart) – Sayfa sınırlamasını, bitirme önerisini, puan/alıntı/not/ödünç işlemlerini ve silmeyi test eder.
+    - [book_detail_view_test.dart](test/features/book_detail/book_detail_view_test.dart) – Detay ekranının görünümünü ve sayaç, alıntı ekleme, favori, ödünç, silme akışlarını test eder.
+  - **Güncellenen:**
+    - [context_extensions.dart](lib/core/extensions/context_extensions.dart) – Tarihleri uygulama diline göre biçimleyen `formatDate` eklendi.
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Kitap detay rotası (kitap id'siyle) bağlandı.
+    - [pump_app.dart](test/helpers/pump_app.dart) – Tek bir ekranı istenen boyutta açan `pumpScreen` eklendi.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Detay bölümlerinin, diyalogların ve uyarıların metinleri eklendi (aynısı `app_en.arb`'de).
+    - [PROJECT.md](PROJECT.md) – Sayfa 5 `[x]` işaretlendi.
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 83 test geçti.
 - Alınan kararlar ve nedenleri:
   - **Widget'lar controller'a bağımlı değildir:** controller'ın eylemleri `BookDetailActions` nesnesiyle verilir (8.1 ve state_flow.md "widget katmanı"). Bölümler ayrı widget sınıflarıdır; hiçbir `build` 40 satırı aşmaz.
@@ -117,11 +255,22 @@
 - Yapılanlar:
   - Sayfa 4: Okunuyor / Okunacak / Bitti sekmeleri (sekme başlığında kitap sayısı). Okunuyor kartlarında ilerleme yüzdesi, ilerleme çubuğu ve hızlı sayfa sayacı (−/+); Okunacak kartlarında "Okumaya Başla"; Bitti kartlarında puan ve bitiş tarihi. Karta dokununca Kitap Detay açılır. Boş sekmeler için mesajlar.
   - Hızlı sayacla son sayfaya ulaşılırsa "Bitti olarak işaretle" önerisi gösterilir.
-- Oluşturulan / değişen dosyalar:
-  - [reading_status_view.dart](lib/features/reading_status/views/reading_status_view.dart), [reading_status_controller.dart](lib/features/reading_status/controllers/reading_status_controller.dart), [reading_status_model.dart](lib/features/reading_status/models/reading_status_model.dart)
-  - [reading_book_card_widget.dart](lib/features/reading_status/widgets/reading_book_card_widget.dart), [simple_book_card_widget.dart](lib/features/reading_status/widgets/simple_book_card_widget.dart), [quick_page_counter_widget.dart](lib/features/reading_status/widgets/quick_page_counter_widget.dart), [status_book_list_widget.dart](lib/features/reading_status/widgets/status_book_list_widget.dart), [status_empty_widget.dart](lib/features/reading_status/widgets/status_empty_widget.dart)
-  - [app_routes.dart](lib/core/routing/app_routes.dart)
-  - Testler: [reading_status_controller_test.dart](test/features/reading_status/reading_status_controller_test.dart), [reading_status_view_test.dart](test/features/reading_status/reading_status_view_test.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [reading_status_model.dart](lib/features/reading_status/models/reading_status_model.dart) – Kitapları üç duruma göre gruplanmış halde ve "bitirdin mi?" önerisini tutar.
+    - [reading_status_controller.dart](lib/features/reading_status/controllers/reading_status_controller.dart) – Paylaşılan kitap listesini durumlara göre gruplayıp sıralar; hızlı sayacı ve "Okumaya Başla"yı yönetir.
+    - [reading_book_card_widget.dart](lib/features/reading_status/widgets/reading_book_card_widget.dart) – "Okunuyor" kartıdır; ilerleme yüzdesini ve hızlı sayfa sayacını gösterir.
+    - [simple_book_card_widget.dart](lib/features/reading_status/widgets/simple_book_card_widget.dart) – "Okunacak" ve "Bitti" kartıdır; tür, sayfa ya da puan ve bitiş tarihini gösterir.
+    - [quick_page_counter_widget.dart](lib/features/reading_status/widgets/quick_page_counter_widget.dart) – Kart üzerindeki −/+ hızlı sayfa sayacıdır.
+    - [status_book_list_widget.dart](lib/features/reading_status/widgets/status_book_list_widget.dart) – Bir sekmenin kart listesini oluşturur.
+    - [status_empty_widget.dart](lib/features/reading_status/widgets/status_empty_widget.dart) – Boş sekme için duruma özel mesajı gösterir.
+    - [reading_status_view.dart](lib/features/reading_status/views/reading_status_view.dart) – Okunuyor / Okunacak / Bitti sekmelerini kitap sayılarıyla gösteren ekrandır.
+    - [reading_status_controller_test.dart](test/features/reading_status/reading_status_controller_test.dart) – Gruplamayı, sıralamayı, sayacı, bitirme önerisini ve "Okumaya Başla"yı test eder.
+    - [reading_status_view_test.dart](test/features/reading_status/reading_status_view_test.dart) – Sekme sayılarını, sayaç butonunu, "Okumaya Başla"yı ve boş durumu test eder.
+  - **Güncellenen:**
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Ana kabuğun ikinci sekmesine `ReadingStatusView` bağlandı.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Sekme etiketleri, boş durum mesajları ve "Okumaya Başla" eklendi (aynısı `app_en.arb`'de).
+    - [PROJECT.md](PROJECT.md) – Sayfa 4 `[x]` işaretlendi.
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 90 test geçti.
 - Alınan kararlar ve nedenleri:
   - **Sekme sırası** PROJECT.md'deki gibi Okunuyor → Okunacak → Bitti.
@@ -139,11 +288,44 @@
   - Gerçek API yanıt biçimi `curl` ile doğrulandı (`search.json?q=isbn:...&fields=...`).
   - `BookSearchRepository` (`http` ile, 10 sn zaman aşımı) `AppScope`/`AppDependencies` üzerinden sağlanır; testte `http.Client` enjekte edilebilir.
   - Kod kalite taraması: tüm `build` metotları 40 satır sınırının altına indirildi (Aşama 2.1-2.4 dosyaları dahil, ör. ortak `BookCardLayoutWidget`, `AuthFormActionsWidget`).
-- Oluşturulan / değişen dosyalar:
-  - [add_book_view.dart](lib/features/add_book/views/add_book_view.dart), [add_book_controller.dart](lib/features/add_book/controllers/add_book_controller.dart), [add_book_model.dart](lib/features/add_book/models/add_book_model.dart)
-  - [add_book_body_widget.dart](lib/features/add_book/widgets/add_book_body_widget.dart), [manual_book_form_widget.dart](lib/features/add_book/widgets/manual_book_form_widget.dart), [book_identity_fields_widget.dart](lib/features/add_book/widgets/book_identity_fields_widget.dart), [book_classification_fields_widget.dart](lib/features/add_book/widgets/book_classification_fields_widget.dart), [book_optional_fields_widget.dart](lib/features/add_book/widgets/book_optional_fields_widget.dart), [search_section_widget.dart](lib/features/add_book/widgets/search_section_widget.dart), [search_result_tile_widget.dart](lib/features/add_book/widgets/search_result_tile_widget.dart), [search_message_widget.dart](lib/features/add_book/widgets/search_message_widget.dart), [book_search_bar_widget.dart](lib/features/add_book/widgets/book_search_bar_widget.dart)
-  - [book_search_repository.dart](lib/core/repositories/book_search_repository.dart), [book_search_result.dart](lib/core/models/book_search_result.dart), [isbn_utils.dart](lib/core/utils/isbn_utils.dart), [validators.dart](lib/core/utils/validators.dart), [app_dependencies.dart](lib/core/di/app_dependencies.dart), [app_scope.dart](lib/core/di/app_scope.dart)
-  - Testler: [add_book_controller_test.dart](test/features/add_book/add_book_controller_test.dart), [add_book_view_test.dart](test/features/add_book/add_book_view_test.dart), [book_search_repository_test.dart](test/core/book_search_repository_test.dart), [isbn_utils_test.dart](test/core/isbn_utils_test.dart), [fake_open_library.dart](test/helpers/fake_open_library.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [isbn_utils.dart](lib/core/utils/isbn_utils.dart) – ISBN'i tire/boşluktan temizler ve ISBN-10/13 sağlama toplamını doğrular.
+    - [book_search_result.dart](lib/core/models/book_search_result.dart) – Open Library'den gelen, henüz kitaplığa eklenmemiş bir arama sonucunu tutar.
+    - [book_search_repository.dart](lib/core/repositories/book_search_repository.dart) – Open Library'de ISBN veya başlık/yazarla arama yapar, sonuçları ayrıştırır ve türü tahmin eder.
+    - [add_book_model.dart](lib/features/add_book/models/add_book_model.dart) – Arama/manuel modunu, sonuçları, hata anahtarını ve formdan gelen kitap taslağını tutar.
+    - [add_book_controller.dart](lib/features/add_book/controllers/add_book_controller.dart) – Aramayı yürütür, hataları yakalar, sonucu forma taşır ve kitabı kitaplığa ekler.
+    - [add_book_view.dart](lib/features/add_book/views/add_book_view.dart) – Yeni Kitap Ekle ekranıdır; kayıt sonrası kapanır ve bilgi mesajı gösterir.
+    - [add_book_body_widget.dart](lib/features/add_book/widgets/add_book_body_widget.dart) – Mod seçicinin altında arama bölümünü veya manuel formu gösterir.
+    - [add_book_mode_selector_widget.dart](lib/features/add_book/widgets/add_book_mode_selector_widget.dart) – "ISBN / Arama" ile "Manuel" arasında geçiş sağlar.
+    - [book_search_bar_widget.dart](lib/features/add_book/widgets/book_search_bar_widget.dart) – ISBN, başlık veya yazar yazılan arama kutusudur.
+    - [search_section_widget.dart](lib/features/add_book/widgets/search_section_widget.dart) – Arama kutusunu ve altında yükleniyor / hata / sonuç / ipucu alanını gösterir.
+    - [search_result_tile_widget.dart](lib/features/add_book/widgets/search_result_tile_widget.dart) – Tek bir arama sonucunu kapak, yazar, sayfa ve tür etiketiyle gösterir.
+    - [search_message_widget.dart](lib/features/add_book/widgets/search_message_widget.dart) – Sonuç yok / internet yok / API hatası mesajını "Tekrar dene" ve "Manuel Ekle" seçenekleriyle gösterir.
+    - [manual_book_form_widget.dart](lib/features/add_book/widgets/manual_book_form_widget.dart) – Manuel kitap formunu yönetir ve geçerliyse taslağı kaydetmeye gönderir.
+    - [book_identity_fields_widget.dart](lib/features/add_book/widgets/book_identity_fields_widget.dart) – Formun başlık, yazar ve sayfa sayısı alanlarıdır.
+    - [book_classification_fields_widget.dart](lib/features/add_book/widgets/book_classification_fields_widget.dart) – Formun tür ve okuma durumu seçicileridir.
+    - [book_optional_fields_widget.dart](lib/features/add_book/widgets/book_optional_fields_widget.dart) – Formun ISBN, kapak URL ve "bu kitap bende var" alanlarıdır.
+    - [book_card_layout_widget.dart](lib/features/reading_status/widgets/book_card_layout_widget.dart) – Okuma Durumu kartlarının ortak kapak + başlık iskeletidir (build kısaltma için ayrıldı).
+    - [auth_form_actions_widget.dart](lib/features/auth/widgets/auth_form_actions_widget.dart) – Kayıt ve Giriş formlarının ortak ana butonu ve geçiş bağlantısıdır (build kısaltma için ayrıldı).
+    - [fake_open_library.dart](test/helpers/fake_open_library.dart) – Testlerde gerçek ağa çıkmadan Open Library yanıtlarını taklit eden sahte HTTP istemcisidir.
+    - [isbn_utils_test.dart](test/core/isbn_utils_test.dart) – ISBN temizleme ve sağlama toplamı doğrulamasını test eder.
+    - [book_search_repository_test.dart](test/core/book_search_repository_test.dart) – Arama sonuçlarının ayrıştırılmasını, ISBN yedek isteğini, ağ/sunucu hatalarını ve tür tahminini test eder.
+    - [add_book_controller_test.dart](test/features/add_book/add_book_controller_test.dart) – Arama, hata durumları, tekrar deneme, sonucu forma taşıma, kaydetme ve mükerrer ISBN engelini test eder.
+    - [add_book_view_test.dart](test/features/add_book/add_book_view_test.dart) – Aramadan ekleme, manuel form doğrulaması, internet yok ve geçersiz ISBN akışlarını test eder.
+  - **Güncellenen:**
+    - [validators.dart](lib/core/utils/validators.dart) – Sayfa sayısı, isteğe bağlı URL ve isteğe bağlı ISBN doğrulamaları eklendi.
+    - [validation_extensions.dart](lib/core/extensions/validation_extensions.dart) – Yeni doğrulama hatalarının ARB karşılıkları eklendi.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) – `BookSearchRepository` oluşturuldu ve testte sahte HTTP istemcisi verilebilir hale geldi.
+    - [app_scope.dart](lib/core/di/app_scope.dart) – `BookSearchRepository` ağaca eklendi.
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Yeni Kitap Ekle rotası bağlandı.
+    - [test_dependencies.dart](test/helpers/test_dependencies.dart) – Sahte HTTP istemcisi alabilecek şekilde genişletildi.
+    - [reading_book_card_widget.dart](lib/features/reading_status/widgets/reading_book_card_widget.dart) – Ortak kart iskeletini kullanacak şekilde kısaltıldı (40 satır kuralı; aynı nedenle `simple_book_card_widget.dart` de güncellendi).
+    - [book_header_widget.dart](lib/features/book_detail/widgets/book_header_widget.dart) – Künye satırları ayrı bir widget'a taşınarak kısaltıldı (aynı nedenle `book_detail_content_widget`, `page_counter_widget`, `quote_tile_widget`, `loan_dialog` de bölündü).
+    - [library_filter_bar_widget.dart](lib/features/library/widgets/library_filter_bar_widget.dart) – Durum ve tür çip satırları ayrı widget'lara bölündü (aynı nedenle `book_shelf_item_widget` de bölündü).
+    - [register_form_widget.dart](lib/features/auth/widgets/register_form_widget.dart) – Buton bölümü ortak `AuthFormActionsWidget`'a taşındı (aynısı `login_form_widget.dart`'ta).
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Arama, hata mesajları ve manuel form alanlarının metinleri eklendi (aynısı `app_en.arb`'de).
+    - [PROJECT.md](PROJECT.md) – Sayfa 3 `[x]` işaretlendi.
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 109 test geçti.
 - Alınan kararlar ve nedenleri:
   - **ISBN araması iki adımlıdır:** önce `search.json?q=isbn:<ISBN>` (yazar ve sayfa sayısı için), sonuç yoksa `isbn/<ISBN>.json` (PROJECT.md 6.1'deki iki endpoint de kullanılır). `isbn/<ISBN>.json` yazar adını doğrudan vermediği için yalnızca yedek olarak kullanılır.
@@ -158,11 +340,22 @@
 - Yapılanlar:
   - Sayfa 6: yıllık hedef kitap sayısı (−/+ ile 1-365 arası, kalıcı), Biten / Hedef ilerleme çubuğu ve "kalan" mesajı (hedefe ulaşılınca tebrik), toplam okunan sayfa, aylık biten kitap dağılımı (paket kullanmadan çizilen çubuk grafik, erişilebilirlik etiketli) ve türlere göre dağılım (tür renkleriyle).
   - Tüm değerler `BookModel.finishedAt` yılından hesaplanır; kitap durumu değişince panel otomatik güncellenir.
-- Oluşturulan / değişen dosyalar:
-  - [reading_goal_view.dart](lib/features/reading_goal/views/reading_goal_view.dart), [reading_goal_controller.dart](lib/features/reading_goal/controllers/reading_goal_controller.dart), [reading_goal_state.dart](lib/features/reading_goal/models/reading_goal_state.dart)
-  - [goal_progress_card_widget.dart](lib/features/reading_goal/widgets/goal_progress_card_widget.dart), [goal_target_stepper_widget.dart](lib/features/reading_goal/widgets/goal_target_stepper_widget.dart), [goal_stat_card_widget.dart](lib/features/reading_goal/widgets/goal_stat_card_widget.dart), [monthly_chart_widget.dart](lib/features/reading_goal/widgets/monthly_chart_widget.dart), [genre_breakdown_widget.dart](lib/features/reading_goal/widgets/genre_breakdown_widget.dart)
-  - [app_routes.dart](lib/core/routing/app_routes.dart)
-  - Testler: [reading_goal_controller_test.dart](test/features/reading_goal/reading_goal_controller_test.dart), [reading_goal_view_test.dart](test/features/reading_goal/reading_goal_view_test.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [reading_goal_state.dart](lib/features/reading_goal/models/reading_goal_state.dart) – Hedefi, biten kitap sayısını, toplam sayfayı, aylık ve türe göre dağılımı tutar; ilerleme ve kalanı hesaplar.
+    - [reading_goal_controller.dart](lib/features/reading_goal/controllers/reading_goal_controller.dart) – Bu yıl biten kitaplardan tüm istatistikleri hesaplar ve hedefi 1-365 arasında değiştirir.
+    - [goal_progress_card_widget.dart](lib/features/reading_goal/widgets/goal_progress_card_widget.dart) – Biten / Hedef sayısını, ilerleme çubuğunu ve kalan veya tebrik mesajını gösterir.
+    - [goal_target_stepper_widget.dart](lib/features/reading_goal/widgets/goal_target_stepper_widget.dart) – Hedef kitap sayısını −/+ ile değiştirtir.
+    - [goal_stat_card_widget.dart](lib/features/reading_goal/widgets/goal_stat_card_widget.dart) – Toplam okunan sayfa gibi tek değerli bir istatistiği gösterir.
+    - [monthly_chart_widget.dart](lib/features/reading_goal/widgets/monthly_chart_widget.dart) – Aylık biten kitapları paket kullanmadan çizilmiş çubuk grafikle gösterir.
+    - [genre_breakdown_widget.dart](lib/features/reading_goal/widgets/genre_breakdown_widget.dart) – Biten kitapların türlere göre dağılımını tür renkleriyle gösterir.
+    - [reading_goal_view.dart](lib/features/reading_goal/views/reading_goal_view.dart) – Yıllık hedef sekmesidir; tüm kartları alt alta dizer.
+    - [reading_goal_controller_test.dart](test/features/reading_goal/reading_goal_controller_test.dart) – İstatistik hesaplarını, hedef sınırlarını ve kitap bitince otomatik güncellenmeyi test eder.
+    - [reading_goal_view_test.dart](test/features/reading_goal/reading_goal_view_test.dart) – Panelin görünümünü, hedef butonlarını ve tebrik mesajını test eder.
+  - **Güncellenen:**
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Ana kabuğun üçüncü sekmesine `ReadingGoalView` bağlandı.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Hedef paneli metinleri eklendi (aynısı `app_en.arb`'de).
+    - [PROJECT.md](PROJECT.md) – Sayfa 6 `[x]` işaretlendi.
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 117 test geçti.
 - Alınan kararlar ve nedenleri:
   - **Feature state sınıfı `ReadingGoalState`** (örnek dosyadaki `ReadingGoalModel` adı `core/models/` altındaki paylaşılan `ReadingGoalModel` ile çakışacağı için; state_flow.md de `ReadingGoalState` adını kullanır).
@@ -178,11 +371,31 @@
   - Sayfa 7: profil resmi ve kullanıcı özeti (e-posta, maskeli telefon, üyelik tarihi); profil resmi seçimi (6 hazır avatar, galeriden yükleme, mobilde kameradan çekme, kaldırma); tema (Karanlık varsayılan / Aydınlık) ve dil (Türkçe varsayılan / English) seçimi – anında uygulanır ve kalıcıdır; e-posta, telefon ve şifre güncelleme (Kayıt ekranıyla AYNI alanlar ve validator'lar, şifrede mevcut şifre doğrulanır, e-posta değişimi giriş bilgisini de günceller); onaylı "Çıkış Yap" (oturum kapanır, veriler silinmez, Giriş ekranına dönülür).
   - Ana kabuktaki sağ üst Ayarlar simgesi artık gerçek ekrana gidiyor.
   - `UserAvatar` ortak widget'ı (`core/widgets/`), `AppAssets` sabitleri.
-- Oluşturulan / değişen dosyalar:
-  - [settings_view.dart](lib/features/settings/views/settings_view.dart), [settings_screen_controller.dart](lib/features/settings/controllers/settings_screen_controller.dart), [avatar_picker.dart](lib/features/settings/controllers/avatar_picker.dart), [settings_screen_model.dart](lib/features/settings/models/settings_screen_model.dart)
-  - [settings_body_widget.dart](lib/features/settings/widgets/settings_body_widget.dart), [profile_summary_widget.dart](lib/features/settings/widgets/profile_summary_widget.dart), [appearance_section_widget.dart](lib/features/settings/widgets/appearance_section_widget.dart), [account_section_widget.dart](lib/features/settings/widgets/account_section_widget.dart), [email_update_form_widget.dart](lib/features/settings/widgets/email_update_form_widget.dart), [phone_update_form_widget.dart](lib/features/settings/widgets/phone_update_form_widget.dart), [password_update_form_widget.dart](lib/features/settings/widgets/password_update_form_widget.dart), [avatar_options_sheet.dart](lib/features/settings/widgets/avatar_options_sheet.dart)
-  - [user_avatar.dart](lib/core/widgets/user_avatar.dart), [app_assets.dart](lib/core/constants/app_assets.dart), [app_routes.dart](lib/core/routing/app_routes.dart)
-  - Testler: [settings_screen_controller_test.dart](test/features/settings/settings_screen_controller_test.dart), [settings_view_test.dart](test/features/settings/settings_view_test.dart), [fake_avatar_picker.dart](test/helpers/fake_avatar_picker.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [app_assets.dart](lib/core/constants/app_assets.dart) – Açılış logosu ve hazır avatarların dosya yollarını tek yerde tutar.
+    - [user_avatar.dart](lib/core/widgets/user_avatar.dart) – Kullanıcının hazır avatarını, yüklediği resmi veya varsayılan simgeyi yuvarlak olarak gösterir.
+    - [settings_screen_model.dart](lib/features/settings/models/settings_screen_model.dart) – Ayarlar ekranının meşgul durumunu, yanlış şifre işaretini ve gösterilecek bilgi mesajını tutar.
+    - [avatar_picker.dart](lib/features/settings/controllers/avatar_picker.dart) – Galeriden/kameradan resim seçmeyi soyutlar; gerçek uygulaması `image_picker` kullanır.
+    - [settings_screen_controller.dart](lib/features/settings/controllers/settings_screen_controller.dart) – E-posta, telefon, şifre ve profil resmi güncellemelerini ve çıkışı yönetir.
+    - [settings_view.dart](lib/features/settings/views/settings_view.dart) – Ayarlar ekranıdır; bilgi mesajlarını ve çıkış sonrası Giriş'e dönüşü yönetir.
+    - [settings_body_widget.dart](lib/features/settings/widgets/settings_body_widget.dart) – Ayarlar bölümlerini alt alta dizer, avatar panelini ve çıkış onayını açar.
+    - [profile_summary_widget.dart](lib/features/settings/widgets/profile_summary_widget.dart) – Profil resmini ve e-posta, telefon, üyelik tarihi özetini gösterir.
+    - [avatar_options_sheet.dart](lib/features/settings/widgets/avatar_options_sheet.dart) – Hazır avatarlar, galeri, kamera ve kaldırma seçeneklerini sunan alt paneldir.
+    - [appearance_section_widget.dart](lib/features/settings/widgets/appearance_section_widget.dart) – Tema (Karanlık/Aydınlık) ve dil (Türkçe/English) seçicileridir.
+    - [account_section_widget.dart](lib/features/settings/widgets/account_section_widget.dart) – E-posta, telefon ve şifre güncelleme formlarını açılır bölümler halinde gösterir.
+    - [email_update_form_widget.dart](lib/features/settings/widgets/email_update_form_widget.dart) – Kayıt ekranıyla aynı alan ve doğrulamayla e-posta günceller.
+    - [phone_update_form_widget.dart](lib/features/settings/widgets/phone_update_form_widget.dart) – Kayıt ekranıyla aynı maske ve doğrulamayla telefon günceller.
+    - [password_update_form_widget.dart](lib/features/settings/widgets/password_update_form_widget.dart) – Mevcut şifreyi doğrulatıp yeni şifreyi kayıt kurallarına göre günceller.
+    - [fake_avatar_picker.dart](test/helpers/fake_avatar_picker.dart) – Testlerde galeri/kamera yerine sabit veri döndüren sahte resim seçicidir.
+    - [settings_screen_controller_test.dart](test/features/settings/settings_screen_controller_test.dart) – Hesap güncellemelerini, şifre doğrulamasını, avatar seçme/kaldırmayı ve çıkışı test eder.
+    - [settings_view_test.dart](test/features/settings/settings_view_test.dart) – Tema/dilin anında değişmesini, form doğrulamalarını, avatar panelini ve çıkışı test eder.
+  - **Güncellenen:**
+    - [splash_logo_widget.dart](lib/features/splash/widgets/splash_logo_widget.dart) – Logo yolu `AppAssets` sabitinden okunacak şekilde değiştirildi.
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Ayarlar rotası bağlandı.
+    - [pump_app.dart](test/helpers/pump_app.dart) – Ayar değişince yeniden çizilen test uygulaması `KitalogAppWithHome` eklendi.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Profil, tema, dil, hesap güncelleme ve çıkış metinleri eklendi (aynısı `app_en.arb`'de).
+    - [PROJECT.md](PROJECT.md) – Sayfa 7 `[x]` işaretlendi.
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 129 test geçti.
 - Alınan kararlar ve nedenleri:
   - **Yüklenen profil resmi dosya yolu yerine küçültülmüş (512 px) baytların base64'ü olarak `UserModel.avatarValue`'da saklanır.** PROJECT.md "uygulama dizinine kopyalanır ve yolu avatarValue'ya yazılır" der; ancak uygulama dizinini bulmak için `path_provider` gerekir ve bu paket onaylı listede yok. Ayrıca web hedefinde dosya yolu kavramı yoktur ve `image_picker`'ın döndürdüğü geçici yol (cache/tmp) sistem tarafından silinebilir. Base64 saklama onaylı paketlerle (`image_picker` + `shared_preferences`) çalışır, tüm platformlarda kalıcıdır. Ödün: kullanıcı JSON'ı ~30-60 KB büyür. **Karar sana kalıyor:** `path_provider` onaylanırsa yalnızca `AvatarPicker` implementasyonu ve `UserAvatar` değişir.
@@ -201,9 +414,23 @@
   - **Farklı ekran boyutları ve erişilebilirlik:** 8 ekran × 4 boyut (320×568, 390×844, 820×1180, 1280×800) × 2 yazı ölçeği (1.0 / 1.6) taşma testleri; Android/iOS dokunma hedefi (48/44 dp), etiketli dokunma hedefi ve metin kontrastı kılavuz testleri.
   - **Bulunan ve düzeltilen sorunlar:** hedef adımlayıcı, ilerleme çubuğu alt yazısı ve hızlı sayaç dar ekranda taşıyordu; `EmptyStateView` küçük ekranda dikey taşıyordu (kaydırılabilir yapıldı); filtre çiplerinin dokunma hedefi 40 dp idi (56 dp satır + `MaterialTapTargetSize.padded`).
   - **Kod standartları taraması:** `Color(0x…)` yalnızca `app_colors.dart`'ta; widget içinde `fontSize` yok; sabit kullanıcı metni yok (yalnızca sayı gösteren `Text('$n')`); `SharedPreferences` yalnızca `LocalStorageService`'te; `setState` yalnızca yerel UI durumunda (şifre göster/gizle, diyalog tarihi, form seçimleri); tüm `build` metotları ≤ 40 satır.
-- Oluşturulan / değişen dosyalar:
-  - [responsive_test.dart](test/accessibility/responsive_test.dart), [guidelines_test.dart](test/accessibility/guidelines_test.dart), [book_cover_image_test.dart](test/core/book_cover_image_test.dart), [local_storage_service_test.dart](test/core/local_storage_service_test.dart), [library_empty_test.dart](test/features/library/library_empty_test.dart), [validators_test.dart](test/core/validators_test.dart)
-  - [empty_state_view.dart](lib/core/widgets/empty_state_view.dart), [reading_progress_bar.dart](lib/core/widgets/reading_progress_bar.dart), [goal_target_stepper_widget.dart](lib/features/reading_goal/widgets/goal_target_stepper_widget.dart), [reading_book_card_widget.dart](lib/features/reading_status/widgets/reading_book_card_widget.dart), [library_filter_bar_widget.dart](lib/features/library/widgets/library_filter_bar_widget.dart), [app_theme.dart](lib/core/theme/app_theme.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) – 8 ekranı 4 farklı ekran boyutunda ve 2 yazı ölçeğinde açıp taşma olmadığını test eder.
+    - [guidelines_test.dart](test/accessibility/guidelines_test.dart) – Dokunma hedefi boyutlarını, buton etiketlerini ve metin kontrastını erişilebilirlik kurallarına göre test eder.
+    - [book_cover_image_test.dart](test/core/book_cover_image_test.dart) – Kapak yoksa veya yüklenemezse yer tutucunun göründüğünü test eder.
+    - [local_storage_service_test.dart](test/core/local_storage_service_test.dart) – JSON okuma/yazmayı ve bozuk kayıtlı veride uygulamanın çökmediğini test eder.
+    - [library_empty_test.dart](test/features/library/library_empty_test.dart) – Kitaplık boşken boş durum mesajının göründüğünü test eder.
+  - **Güncellenen:**
+    - [validators_test.dart](test/core/validators_test.dart) – Sayfa sayısı, URL ve ISBN doğrulamalarının testleri eklendi.
+    - [empty_state_view.dart](lib/core/widgets/empty_state_view.dart) – Küçük ekranda dikey taşmasın diye kaydırılabilir yapıldı.
+    - [reading_progress_bar.dart](lib/core/widgets/reading_progress_bar.dart) – Dar ekranda sayfa yazısı taşmasın diye kısaltılabilir (üç noktalı) yapıldı.
+    - [goal_target_stepper_widget.dart](lib/features/reading_goal/widgets/goal_target_stepper_widget.dart) – Hedef yazısı dar ekranda taşmasın diye esnek yapıldı.
+    - [reading_book_card_widget.dart](lib/features/reading_status/widgets/reading_book_card_widget.dart) – Hızlı sayaç dar kartta taşmasın diye gerektiğinde küçülecek hale getirildi.
+    - [library_filter_bar_widget.dart](lib/features/library/widgets/library_filter_bar_widget.dart) – Filtre çiplerinin dokunma alanı 48 dp'ye ulaşsın diye satır yüksekliği artırıldı.
+    - [app_theme.dart](lib/core/theme/app_theme.dart) – Tüm dokunma hedefleri en az 48 dp olsun diye `MaterialTapTargetSize.padded` eklendi.
+  - **Silinen:**
+    - `test/_debug_test.dart` (silindi) – Taşmaya hangi widget'ın yol açtığını bulmak için geçici olarak yazılıp silinen hata ayıklama testiydi (`test/_debug2_test.dart` da aynı amaçla yazılıp silindi).
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 227 test geçti.
 - Alınan kararlar ve nedenleri:
   - **Taşma testleri `flutter_test`'in Ahem yazı tipiyle çalışır** (her harf 1 em genişliğinde, gerçek Roboto'dan yaklaşık %80 daha geniş); bu yüzden testi geçen bir ekran gerçek cihazda ~3× yazı ölçeğine kadar taşmaz. Daha sıkı olduğu için bilinçli olarak korundu.
@@ -221,10 +448,32 @@
   - Son kontroller: `flutter build apk --debug` ✔ ve `flutter build ios --simulator` ✔; uygulama iOS simülatöründe (iPhone 18 Pro) çalıştırılıp 9 ekran görüntüsü alındı. Görüntülerde bulunan bir sorun düzeltildi: kitap detayında durum seçicisinin etiketleri ("Okunacak", "Okunuyor") kelime ortasından bölünüyordu → segment simgeleri kaldırıldı.
   - README ve ekran görüntüleri eklendi.
   - Ana kabuğa `initialIndex` parametresi eklendi (test ve ekran görüntüsü için; varsayılan davranış değişmedi) ve [home_shell_test.dart](test/features/home_shell/home_shell_test.dart) yazıldı.
-- Oluşturulan / değişen dosyalar:
-  - [README.md](README.md), [docs/screenshots/](docs/screenshots/), [pubspec.yaml](pubspec.yaml)
-  - [AndroidManifest.xml](android/app/src/main/AndroidManifest.xml), [Info.plist](ios/Runner/Info.plist), [manifest.json](web/manifest.json), [index.html](web/index.html), [AppInfo.xcconfig](macos/Runner/Configs/AppInfo.xcconfig), [main.cpp](windows/runner/main.cpp), [my_application.cc](linux/runner/my_application.cc)
-  - [status_selector_widget.dart](lib/features/book_detail/widgets/status_selector_widget.dart), [home_shell_view.dart](lib/features/home_shell/views/home_shell_view.dart)
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [README.md](README.md) – Projenin özelliklerini, kurulum/çalıştırma komutlarını, mimarisini ve ekran görüntülerini anlatır.
+    - [screenshots/](docs/screenshots/) – iOS simülatöründen alınan 9 ekran görüntüsünü (koyu/aydınlık tema, Türkçe/İngilizce) içerir.
+    - [home_shell_test.dart](test/features/home_shell/home_shell_test.dart) – Sekme değişimini, başlangıç sekmesi sınırlamasını ve Ayarlar simgesini test eder.
+    - [mipmap-anydpi-v26/](android/app/src/main/res/mipmap-anydpi-v26/) – `flutter_launcher_icons`'ın ürettiği Android adaptive + monochrome ikon tanımıdır (mipmap-*dpi klasörlerindeki ikon PNG'leri ve `values/colors.xml` de onunla üretildi).
+    - [values-v31/](android/app/src/main/res/values-v31/) – `flutter_native_splash`'ın ürettiği Android 12+ açılış ekranı stilidir (`values-night-v31` ve drawable-* klasörlerindeki açılış görselleri de onunla üretildi).
+    - [Assets.xcassets/](ios/Runner/Assets.xcassets/) – iOS uygulama ikonlarını (`AppIcon`) ve açılış ekranı görsellerini (`LaunchImage`, `LaunchBackground`) içerir.
+    - [icons/](web/icons/) – Web uygulamasının PWA ikonlarını içerir (`web/favicon.png` ve `web/splash/` da araçlarla üretildi).
+    - [Assets.xcassets/](macos/Runner/Assets.xcassets/) – macOS uygulama ikonlarını içerir.
+    - [app_icon.ico](windows/runner/resources/app_icon.ico) – Windows uygulama ikonudur.
+  - **Güncellenen:**
+    - [AndroidManifest.xml](android/app/src/main/AndroidManifest.xml) – Cihazda görünen ad "Kitalog" yapıldı.
+    - [Info.plist](ios/Runner/Info.plist) – Uygulama adı "Kitalog" yapıldı, galeri/kamera izin metinleri eklendi ve açılış ekranı ayarı yazıldı.
+    - [LaunchScreen.storyboard](ios/Runner/Base.lproj/LaunchScreen.storyboard) – iOS açılış ekranı mürekkep zemin ve logoyla yeniden üretildi.
+    - [manifest.json](web/manifest.json) – Web uygulamasının adı, açıklaması ve renkleri "Kitalog" paletine göre ayarlandı.
+    - [index.html](web/index.html) – Sayfa başlığı, açıklaması ve açılış ekranı stilleri güncellendi.
+    - [AppInfo.xcconfig](macos/Runner/Configs/AppInfo.xcconfig) – macOS ürün adı "Kitalog" yapıldı.
+    - [project.pbxproj](macos/Runner.xcodeproj/project.pbxproj) – Ürün adı değiştiği için `Kitalog.app` referansları ve test hedefi yolu güncellendi (`Runner.xcscheme` de aynı nedenle güncellendi).
+    - [main.cpp](windows/runner/main.cpp) – Windows pencere başlığı "Kitalog" yapıldı (`Runner.rc` içindeki ürün adı da güncellendi).
+    - [my_application.cc](linux/runner/my_application.cc) – Linux pencere başlığı "Kitalog" yapıldı.
+    - [status_selector_widget.dart](lib/features/book_detail/widgets/status_selector_widget.dart) – Etiketler kelime ortasından bölünmesin diye segment simgeleri kaldırıldı.
+    - [home_shell_controller.dart](lib/features/home_shell/controllers/home_shell_controller.dart) – Başlangıç sekmesi verilebilmesi için `initialIndex` eklendi (aynısı `home_shell_view.dart`'ta).
+    - [DONE.md](DONE.md) – Aşama 4 kaydı ve final özeti eklendi.
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Ekran görüntülerini istenen ekran/tema/dille almak için geçici olarak yazılıp silinen giriş noktasıydı.
 - Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 230 test geçti; Android debug APK ve iOS simülatör derlemesi başarılı.
 - Alınan kararlar ve nedenleri:
   - **Ekran görüntüleri için geçici bir giriş noktası kullanıldı ve silindi** (`tool/screenshot_main.dart`); üretim koduna ekran görüntüsü modu eklenmedi.
@@ -232,32 +481,706 @@
   - macOS ürün adı değiştiği için Xcode proje (`TEST_HOST`, ürün referansı) ve şema dosyaları da `Kitalog.app` olacak şekilde güncellendi; macOS derlemesi çalıştırılıp doğrulanmadı.
 - Açık konular / sonraki adım: aşağıdaki final özetine bakın.
 
+## [2026-10-21] Ek Düzeltme – Profil Resmi Paneli Taşması
+
+- Yapılanlar:
+  - Ayarlar'daki profil resmi değiştirme panelinde en alttaki "Profil resmini kaldır" satırı 10 piksel taşıyordu; panel içeriği kaydırılabilir yapıldı ve panelin gerektiği kadar yükselmesine izin verildi.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [avatar_sheet_test.dart](test/features/settings/avatar_sheet_test.dart) – Profil resmi panelini iki küçük ekran boyutunda açıp taşma olmadığını test eder.
+  - **Güncellenen:**
+    - [avatar_options_sheet.dart](lib/features/settings/widgets/avatar_options_sheet.dart) – Panel içeriği sığmadığında taşmak yerine kayması için `SingleChildScrollView` içine alındı.
+    - [settings_body_widget.dart](lib/features/settings/widgets/settings_body_widget.dart) – Alt panelin ekranın yarısıyla sınırlı kalmaması için `isScrollControlled: true` verildi.
+- Doğrulama: `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 232 test geçti.
+- Alınan kararlar ve nedenleri: Liste kısaltılmadı, kaydırma eklendi; böylece kamera seçeneği olan mobilde de tüm seçenekler erişilebilir kalır.
+- Açık konular / sonraki adım: Düzeltme simülatörde elle denenmedi.
+
+## [2026-10-22] Aşama 5.1 – Dijital Okuma: Veri Katmanı
+
+- Yapılanlar:
+  - Kullanıcı isteğiyle "Dijital (çevrimdışı) okuma" özelliği planlandı. Kararlar: telifi bitmiş kitaplarla seed yeniden kurulacak; Türkçe eserler Vikikaynak'tan, dünya klasikleri Project Gutenberg'den gelecek; derlemeler kullanılmayacak. Plan: `~/.claude/plans/memoized-juggling-map.md`.
+  - Proje hafızasına "Kitalog'da her değişiklikte DONE.md bu formatta güncellenir" kuralı eklendi.
+  - PROJECT.md güncellendi: 6.1'e `path_provider`, Project Gutenberg, Gutendex ve Vikikaynak; 6.2'ye Dijital Okuyucu akışı ve "Sayfa 8"; 6.3'e yeni enum, modeller ve depolama anahtarları; 6.5 seed kuralları; 6.6'ya Aşama 5; 7'deki ağaca `reader/` (6.7'ye dokunulmadı).
+  - `path_provider` eklendi; dijital sürüm ve indirilmiş kopya modelleri, çevrimdışı dosya depolama, metin temizleyici ve sayfalayıcı yazıldı.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [digital_source.dart](lib/core/models/digital_source.dart) – Dijital metnin kaynağını (Gutenberg / Vikikaynak) belirten enum'dur.
+    - [digital_edition_model.dart](lib/core/models/digital_edition_model.dart) – Kitabın dijital metninin hangi kaynakta, hangi kimlikle ve hangi dilde olduğunu tutar.
+    - [digital_copy_model.dart](lib/core/models/digital_copy_model.dart) – Cihaza indirilmiş metnin dosya adını, uzunluğunu ve kalınan yeri tutar; okuma ilerlemesini hesaplar.
+    - [digital_file_storage.dart](lib/core/storage/digital_file_storage.dart) – Metin dosyalarının yazılıp okunduğu soyut depolamayı ve web/test için bellek içi sürümünü tanımlar.
+    - [digital_file_storage_io.dart](lib/core/storage/digital_file_storage_io.dart) – Metinleri `path_provider` ile uygulama belgeler klasörüne kalıcı dosya olarak yazan gerçek depolamadır.
+    - [digital_file_storage_stub.dart](lib/core/storage/digital_file_storage_stub.dart) – Dosya sistemi olmayan web için bellek içi depolamayı seçer.
+    - [platform_digital_file_storage.dart](lib/core/storage/platform_digital_file_storage.dart) – Platforma göre dosya veya bellek depolamasını seçen koşullu dışa aktarımdır.
+    - [text_cleaner.dart](lib/core/utils/text_cleaner.dart) – Gutenberg lisans bloklarını, Vikikaynak wikitext'ini ve HTML'i okunabilir düz metne çevirir.
+    - [text_paginator.dart](lib/core/utils/text_paginator.dart) – Metni paragraf sınırlarında sayfalara böler ve konum, yüzde ve basılı sayfa arasında dönüşüm yapar.
+    - [digital_models_test.dart](test/core/digital_models_test.dart) – Yeni modellerin JSON gidiş-dönüşünü, eski kayıt uyumunu ve yazı boyutu sınırlarını test eder.
+    - [text_cleaner_test.dart](test/core/text_cleaner_test.dart) – Gutenberg, wikitext ve HTML temizliğini ve entity çözümünü test eder.
+    - [text_paginator_test.dart](test/core/text_paginator_test.dart) – Sayfalamanın tüm metni kapsadığını ve konum/ilerleme dönüşümlerini test eder.
+    - [digital_file_storage_test.dart](test/core/digital_file_storage_test.dart) – Bellek ve dosya depolamasının yazma, kalıcı okuma ve silme işlemlerini test eder.
+    - [settings_controller_test.dart](test/core/settings_controller_test.dart) – Okuyucu yazı boyutunun kalıcı kaydedilip sınırlandığını test eder.
+  - **Güncellenen:**
+    - [pubspec.yaml](pubspec.yaml) – Çevrimdışı dosya saklama için `path_provider` eklendi.
+    - [book_model.dart](lib/core/models/book_model.dart) – İsteğe bağlı `digitalEdition` alanı ve `hasDigitalEdition` eklendi; eski kayıtlar sorunsuz okunur.
+    - [app_settings_model.dart](lib/core/models/app_settings_model.dart) – Okuyucu yazı boyutu (`readerTextScale`, 0.8-1.8) eklendi.
+    - [storage_keys.dart](lib/core/constants/storage_keys.dart) – `kitalog.digital` ve `kitalog.seedVersion` anahtarları eklendi.
+    - [local_storage_service.dart](lib/core/storage/local_storage_service.dart) – Seed sürümü için tam sayı okuma/yazma eklendi.
+    - [settings_controller.dart](lib/core/controllers/settings_controller.dart) – Okuyucu yazı boyutunu kaydeden `setReaderTextScale` eklendi.
+    - [PROJECT.md](PROJECT.md) – Dijital okuma için paketler, akış, modeller, seed kuralları, Aşama 5 ve klasör ağacı eklendi.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 251 test geçti.
+- Alınan kararlar ve nedenleri:
+  - **Tek yeni paket `path_provider`:** Kitap metinleri 0,1-2 MB olduğu için `shared_preferences` yerine dosyada tutulur; uygulama belgeler klasörünü bulmanın çekirdek API'si yok. EPUB/HTML paketi eklenmedi: Gutenberg düz metin kullanılır, Vikikaynak HTML'i Dart'ın regex'iyle temizlenir.
+  - **Web'de çevrimdışı saklama yok:** `path_provider` web'de belgeler klasörü sunmadığı için web'de metin oturum boyunca bellekte tutulur (koşullu import); Android, iOS ve masaüstünde dosyaya yazılır.
+  - **Kalınan yer karakter konumu olarak saklanır** (`lastOffset`); yazı boyutu veya sayfalama değişse bile okuyucu doğru yere döner.
+  - **Dosya önce `.part` uzantısıyla yazılıp sonra yeniden adlandırılır;** indirme yarıda kesilirse bozuk dosya kalmaz.
+  - Şiir kitaplarında satır sonları korunacak (`reflowParagraphs` yalnızca düzyazıya uygulanacak).
+- Açık konular / sonraki adım: Aşama 5.2 – Gutenberg ve Vikikaynak metin kaynakları ile `DigitalBookRepository`.
+
+## [2026-10-22] Aşama 5.2 – Dijital Okuma: Metin Kaynakları
+
+- Yapılanlar:
+  - Project Gutenberg (düz metin + Gutendex arama) ve Vikikaynak (MediaWiki API) kaynakları ile bunları birleştiren `DigitalBookRepository` yazıldı: indirme, cihaza kaydetme, okuma, kalınan yeri saklama, silme ve dijital sürüm arama.
+  - Vikikaynak'ta bir eserin kök sayfasından başlanıp alt sayfalar sayfadaki sırayla (derinlik öncelikli) toplanıyor; bölüm başlıkları metne ekleniyor. Taranmış kaynaktan gömülü sayfalar işlenmiş HTML'den okunuyor.
+  - Gerçek kaynaklarla geçici bir testle doğrulandı:
+    - Kürk Mantolu Madonna: 301.675 karakter, 2 istek, ~1 sn.
+    - Antigone: 69.205 karakter, 2 istek.
+    - Nutuk: 1.321.269 karakter, 109 istek, ~42 sn; Gençliğe Hitabe dahil tam.
+    - Suç ve Ceza (Gutenberg 2554): 1.135.473 karakter.
+  - Gerçek veriyle bulunan ve düzeltilen sorunlar:
+    - HTTP başlığındaki Türkçe karakter isteği tamamen engelliyordu; başlık ASCII yapıldı.
+    - 50 başlıklı toplu sorgu URL sınırını aşıyordu; POST'a çevrildi.
+    - Wikimedia 429 (çok fazla istek) döndürdü; User-Agent'a iletişim URL'si eklendi, istekler arasına bekleme ve `Retry-After`'a uyan yeniden deneme konuldu.
+    - Metin sonunda lisans kutusu ve "↑" dipnot bağlantıları kalıyordu; temizlendi.
+    - Kaynakta kapanışı eksik bir şablon (`{{orta|…}`) artık bırakıyordu; temizlendi.
+    - Gutenberg içindekiler satırları birleşiyordu; kısa satırlı bloklar korunuyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - `lib/core/models/digital_search_hit.dart` (sonradan silindi, bkz. "Kendi PDF / EPUB" kaydı) – Dijital sürüm aramasında bulunan eserin başlığını, yazarlarını ve kaynak bilgisini tutar.
+    - [source_http.dart](lib/core/repositories/digital_sources/source_http.dart) – Dijital kaynaklar için zaman aşımı, tanıtıcı başlık, istek aralığı, 429/503'te yeniden deneme ve hata eşlemesi yapan ortak HTTP katmanıdır.
+    - [gutenberg_source.dart](lib/core/repositories/digital_sources/gutenberg_source.dart) – Gutenberg düz metnini indirip lisans bloklarını atar ve Gutendex'te kitap arar.
+    - [wikisource_source.dart](lib/core/repositories/digital_sources/wikisource_source.dart) – Vikikaynak'taki bir eserin tüm alt sayfalarını doğru sırayla toplu isteklerle çekip tek metin yapar ve Vikikaynak'ta arama yapar.
+    - [digital_book_repository.dart](lib/core/repositories/digital_book_repository.dart) – Dijital metni indirip cihaza kaydeden, okuyan, kalınan yeri saklayan, silen ve iki kaynakta dijital sürüm arayan repository'dir.
+    - [fake_digital_sources.dart](test/helpers/fake_digital_sources.dart) – Testlerde gerçek ağa çıkmadan Gutenberg, Gutendex ve Vikikaynak yanıtlarını taklit eden sahte HTTP istemcisidir.
+    - [digital_sources_test.dart](test/core/digital_sources_test.dart) – İki kaynağın ayrıştırmasını, sayfa sırasını, toplu isteği, göreli bağlantıları, yeniden denemeyi, istek aralığını ve ASCII başlıkları test eder.
+    - [digital_book_repository_test.dart](test/core/digital_book_repository_test.dart) – İndirme, şiirde satır koruma, kalınan yer, silme, kaybolan dosya, hata türleri ve arama davranışını test eder.
+  - **Güncellenen:**
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) – Dijital repository oluşturuldu; tek HTTP istemcisi paylaşılıyor; testte bellek içi depolama ve sıfır istek aralığı verilebiliyor.
+    - [app_scope.dart](lib/core/di/app_scope.dart) – `DigitalBookRepository` ağaca eklendi.
+    - [text_cleaner.dart](lib/core/utils/text_cleaner.dart) – Lisans kutusu, başlık şablonu, dipnot listesi ve eksik şablon temizliği ile kısa satırlı blokları koruma eklendi.
+    - [text_cleaner_test.dart](test/core/text_cleaner_test.dart) – Gerçek veride bulunan sorunlar için testler eklendi.
+    - [test_dependencies.dart](test/helpers/test_dependencies.dart) – Testlerde bellek içi dosya depolaması ve beklemesiz istek kullanılır hale getirildi.
+  - **Silinen:**
+    - `test/_live_sources_test.dart` (silindi) – Kaynakları gerçek API'lere karşı bir kez doğrulamak için geçici olarak yazılıp silinen testti (`test/_live_probe_test.dart` da aynı amaçla yazılıp silindi).
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 272 test geçti.
+- Alınan kararlar ve nedenleri:
+  - **User-Agent'ta iletişim bilgisi olarak projenin herkese açık GitHub adresi kullanıldı** (`https://github.com/knetrix/SoftITo-Projects/tree/main/Kitalog`). Wikimedia'nın 2026 sınır politikası iletişim bilgisi içermeyen istemcilere dakikada 10, içerene 200 istek veriyor; Nutuk tek başına 109 istek gerektiriyor. Kişisel e-posta uygulamaya gömülmedi. Adres `SourceHttp.contactUrl` sabitinde.
+  - **İstekler arası en az 350 ms** (~170 istek/dk, 200 sınırının altında); en fazla 3 deneme; `Retry-After`'a uyulur; tek seferde tek istek gönderilir (Wikimedia en fazla 3 eşzamanlı istek öneriyor).
+  - **Toplu wikitext sorgusu POST ile gönderilir:** 50 uzun Türkçe başlık yüzde-kodlanınca URL sınırını aşıyordu.
+  - **Vikikaynak'ta alt sayfa sırası sayfadaki bağlantı sırasından alınır;** `list=allpages` alfabetik sıraladığı (ör. "10. bölüm" "2. bölüm"den önce) için kullanılmadı.
+  - **Hatalar tek tip `DigitalBookException`** (network, server, notFound, storage, unavailable) olarak yükseltilir; arama bir kaynak hata verse de diğerinin sonuçlarını döner.
+  - **`notheme` sınıfı da temizleniyor:** Vikikaynak bu sınıfı kaynak/telif alt bilgisi kutusu için kullanıyor; okuma metnine ait değil.
+- Açık konular / sonraki adım:
+  - Nutuk'un indirilmesi ~40 saniye ve 109 istek sürüyor (sayfalarının çoğu taranmış kaynaktan gömülü olduğu için tek tek isteniyor); okuyucuda ilerleme çubuğu gösterilecek.
+  - Sonraki adım: Aşama 5.3 – Seed'in telifi bitmiş kitaplarla yeniden kurulması.
+
+## [2026-10-22] Aşama 5.3 – Dijital Okuma: Seed Yeniden Kurulumu
+
+- Yapılanlar:
+  - Örnek veri yalnızca telifi bitmiş ve dijital okunabilir 31 kitapla yeniden kuruldu: 29 dünya klasiği (Project Gutenberg) ve 2 Türkçe eser (Vikikaynak: Kürk Mantolu Madonna, Nutuk).
+  - Her türden en az 2 kitap var: Roman 5, Bilim Kurgu 4, Bilim 3, Tarih 3, Felsefe 3, Kişisel Gelişim 2, Biyografi 3, Şiir 2, Çocuk 4, Diğer 2. Kitaplar 12 bitti / 7 okunuyor / 12 okunacak olarak dağıldı; 4 kitapta ödünç bilgisi var.
+  - Doğrulama betiklerle yapıldı:
+    - Her Gutenberg numarasının dosya başlığındaki `Title`/`Author` satırı kontrol edildi.
+    - Her kitap için Open Library'de modern bir baskı bulundu: ISBN-13 sağlama toplamı, `/isbn/<ISBN>.json` kaydı, baskı başlığı, sayfa sayısı ve kapak (200).
+    - Kısaltılmış/çocuk uyarlaması (Moby Dick 72 s., 20.000 Leagues 48 s.), iki dilli (War of the Worlds), eksik (Republic I-V) ve yabancı yayınevi baskıları elenip yerine uygun İngilizce baskılar seçildi.
+  - 20 alıntının her biri indirilen dijital metinde birebir aranarak doğrulandı. Gerçek yazımlar düzeltildi (ör. Pride and Prejudice'de "fortune"dan sonra virgül yok, Frankenstein'da "Beware, for…").
+  - Seed sürümü (`kitalog.seedVersion`) eklendi. Eski sürümde yalnızca `seed-` önekli kitaplar ve onlara ait alıntı/notlar yenilenir; kullanıcının kendi kitapları, alıntıları ve hedefi korunur.
+  - Metin temizleyici görünmez yumuşak tireleri (U+00AD) de atıyor; Kürk Mantolu Madonna metninde bulundu ve arama/alıntı eşleştirmesini bozuyordu.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [seed_data.dart](lib/core/data/seed_data.dart) – 31 telifi bitmiş kitap, dijital sürümleri, doğrulanmış ISBN'leri, 20 alıntı, 4 not ile yeniden yazıldı; seed sürümü ve `seed-` öneki eklendi.
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – Seed sürümü eskiyse yalnızca örnek kitapları yenileyen geçiş eklendi.
+    - [book_repository.dart](lib/core/repositories/book_repository.dart) – Seed sürümünü okuyup yazan metotlar eklendi.
+    - [text_cleaner.dart](lib/core/utils/text_cleaner.dart) – Görünmez yumuşak tireler atılıyor.
+    - [seed_data_test.dart](test/core/seed_data_test.dart) – Her kitabın dijital sürümü, kaynak/dil kuralları, Türkçe ve dünya eserlerinin birlikte bulunması ve seed öneki test ediliyor.
+    - [library_storage_test.dart](test/core/library_storage_test.dart) – Eski seed sürümünden geçişte kullanıcı verisinin korunduğu test ediliyor.
+    - [text_cleaner_test.dart](test/core/text_cleaner_test.dart) – Yumuşak tire testi eklendi.
+    - [book_detail_view_test.dart](test/features/book_detail/book_detail_view_test.dart) – Örnek kitap Dune yerine Suç ve Ceza oldu (aynı değişiklik `book_detail_controller_test`, `reading_status_*_test`, `reading_goal_view_test`, `library_*_test`, `add_book_controller_test`, `responsive_test`, `guidelines_test` dosyalarında yeni seed'e göre yapıldı).
+    - [local_storage_service_test.dart](test/core/local_storage_service_test.dart) – Seed'in yüklenmemesi beklenen testlere güncel seed sürümü verildi (aynısı `library_empty_test.dart`'ta).
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 277 test geçti.
+- Alınan kararlar ve nedenleri:
+  - **Antigone seed'e alınmadı:** Vikikaynak'ta tam metni var, ama Open Library'de kapaklı bir Türkçe baskısı bulunamadı. Plandaki kurala göre ("doğrulanamayan kitap alınmaz") çıkarıldı. "Diğer" türünde zaten 2 kitap olduğu için yerine ekleme gerekmedi. Sonuç: Türkçe kitap sayısı 2.
+  - **Herodotus yerine Wells'in "A Short History of the World" alındı:** Gutenberg'deki Herodotus yalnızca 1. cilt, basılı baskının ISBN'i ise tüm eseri kapsıyor. **Relativity** için 404 dönen 5001 yerine doğru numara 30155 kullanıldı.
+  - **Kitap kaydı modern baskıya, dijital metin telifi bitmiş baskıya aittir:** Örneğin Suç ve Ceza'nın ISBN'i 2011 baskısı, metni Constance Garnett çevirisi. İkisinin sayfa düzeni farklı olduğu için okuyucudaki ilerleme yüzde olarak basılı sayfa sayısına çevrilir.
+  - **Alıntı sayfa numaraları** alıntının dijital metindeki konumunun basılı sayfa sayısına oranlanmasıyla hesaplandı (önceki seed'deki "doğrulanamadı" sorunu böylece kapandı).
+  - **Geçişte kullanıcının yıllık hedefi korunur;** bu yıl için hedef yoksa örnek hedef (24) eklenir.
+- Açık konular / sonraki adım: Aşama 5.4 – Dijital okuyucu ekranı.
+
+## [2026-10-22] Aşama 5.4 – Dijital Okuma: Okuyucu Ekranı
+
+- Yapılanlar:
+  - Sayfa 8'in okuyucu kısmı yazıldı:
+    - Kitap cihazda yoksa "İndir ve Oku" çağrısı ve yüzdeli indirme ilerlemesi gösterilir.
+    - İndirilen metin paragraf sınırlarında ~1.500 karakterlik sayfalara bölünür; sayfalar kaydırarak, önceki/sonraki düğmeleriyle veya kaydırıcıyla geçilir.
+    - Yazı boyutu %80-%180 arasında ayarlanır ve kalıcıdır.
+    - Kalınan yer saklanır; kitap internetsiz tekrar açıldığında aynı sayfadan devam edilir.
+  - Okuma konumu kitabın sayfa sayacına yansıtılır (`LibraryController.setCurrentPage`). Okuma Durumu yüzdesi ve Yıllık Hedef otomatik güncellenir, son sayfada "Bitti olarak işaretle" önerisi çıkar.
+  - Kitap ilk kez açıldığında, sayaçta ilerleme varsa (ör. Suç ve Ceza %52) okuyucu o noktadan başlar; bitmiş kitaplar baştan açılır.
+  - Hata durumları ayrı mesajlarla gösterilir: internet yok, kaynak yanıt vermiyor, metin bulunamadı, kayıt hatası, dijital sürüm yok. Uygun olanlarda "Tekrar dene" düğmesi var.
+  - Okuyucu ekranı taşma (4 boyut × 2 yazı ölçeği, en büyük okuyucu yazısıyla) ve erişilebilirlik kılavuz testlerine eklendi.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [reader_model.dart](lib/features/reader/models/reader_model.dart) – Okuyucunun durumunu (yükleniyor/indirilmedi/indiriliyor/hazır/hata), sayfaları, geçerli sayfayı ve bitirme önerisini tutar.
+    - [reader_controller.dart](lib/features/reader/controllers/reader_controller.dart) – Metni cihazdan açar veya indirir, sayfalar, kalınan yeri kaydeder ve ilerlemeyi kitabın sayfa sayacına yansıtır.
+    - [reader_view.dart](lib/features/reader/views/reader_view.dart) – Okuyucu ekranıdır; sayfa denetleyicisini, yazı boyutu panelini ve bitirme önerisini yönetir.
+    - [reader_body_widget.dart](lib/features/reader/widgets/reader_body_widget.dart) – Duruma göre indirme, hata veya sayfalı metni gösteren gövdedir.
+    - [reader_page_widget.dart](lib/features/reader/widgets/reader_page_widget.dart) – Tek bir okuma sayfasını seçilebilir metin olarak, ayarlanan yazı boyutuyla ve kendi içinde kaydırılabilir gösterir.
+    - [reader_bottom_bar_widget.dart](lib/features/reader/widgets/reader_bottom_bar_widget.dart) – Önceki/sonraki sayfa düğmeleri, sayfa göstergesi ve hızlı geçiş kaydırıcısıdır.
+    - [reader_download_widget.dart](lib/features/reader/widgets/reader_download_widget.dart) – Kitap cihazda yokken indirme çağrısını, indirirken ilerlemeyi gösterir.
+    - [reader_error_widget.dart](lib/features/reader/widgets/reader_error_widget.dart) – İndirme/açma hatasını anlaşılır mesaj ve "Tekrar dene" ile gösterir.
+    - [reader_settings_sheet.dart](lib/features/reader/widgets/reader_settings_sheet.dart) – Okuyucu yazı boyutunu ayarlayan alt paneldir.
+    - [reader_controller_test.dart](test/features/reader/reader_controller_test.dart) – İndirme, ilk konum, kalınan yerden devam, sayfa sınırları, son sayfa önerisi ve hata durumlarını test eder.
+    - [reader_view_test.dart](test/features/reader/reader_view_test.dart) – İndir-oku akışını, sayfa geçişini, yazı boyutunu, ağ hatasını ve bitirme önerisini ekranda test eder.
+  - **Güncellenen:**
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Okuyucu rotası (`/reader`, argüman: kitap kimliği) eklendi.
+    - [app_sizes.dart](lib/core/constants/app_sizes.dart) – Rahat okunur satır uzunluğu için okuyucu azami genişliği eklendi.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Okuyucu metinleri eklendi (aynısı `app_en.arb`'de).
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) – Okuyucu ekranı (indirilmemiş ve metin açık) taşma testlerine eklendi.
+    - [guidelines_test.dart](test/accessibility/guidelines_test.dart) – Okuyucu ekranı erişilebilirlik kılavuz testlerine eklendi.
+  - **Silinen:**
+    - `lib/features/reader/widgets/reader_widget.dart` (silindi) – `generate_feature.sh`'nin ürettiği genel liste öğesi şablonuydu; yerine amaca özel okuyucu widget'ları yazıldı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 305 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Sayfalama karakter sayısıyla yapılır** (ekran ölçümüyle değil). Her sayfa kendi içinde kaydırılabildiği için yazı boyutu ne olursa olsun taşma olmaz ve sayfa sınırları cihazdan bağımsız kalır. Kalınan yer karakter konumu olarak saklandığından sayfalama değişse bile yer kaybolmaz.
+  - **Yazı boyutu `TextScaler` ile uygulanır:** widget içinde `fontSize` kullanılmaz (PROJECT.md 8.2); sistemin erişilebilirlik ölçeğiyle çarpılır.
+  - **Sayfa geçişi tek yoldan yönetilir:** düğmeler ve kaydırıcı `PageController`'ı hareket ettirir, `onPageChanged` controller'ı günceller; böylece konum iki kaynaktan çakışmaz.
+  - **İlerleme, bulunulan sayfanın başlangıç konumuna göre hesaplanır;** son sayfada %100 sayılır ve bitirme önerisi buradan tetiklenir.
+- Açık konular / sonraki adım: Aşama 5.5 – Kitap Detay'a dijital sürüm bölümü ("İndir / Oku / Sil") ve "Dijital sürüm ara" akışı.
+
+## [2026-10-22] Aşama 5.5 – Dijital Okuma: Detay Entegrasyonu
+
+- Yapılanlar:
+  - Kitap Detay'a "Dijital Sürüm" bölümü eklendi:
+    - Kaynak ve dil gösterilir ("Project Gutenberg · İngilizce" / "Vikikaynak · Türkçe").
+    - Cihazdaki kopyanın boyutu ve okunma yüzdesi görünür.
+    - "İndir (çevrimdışı okuma)" düğmesi indirme ilerlemesiyle çalışır; indirilmişse "Oku" ve "Cihazdan sil" sunulur.
+    - Kaynak atfı gösterilir.
+  - Dijital sürümü olmayan kitaplarda (ör. kullanıcının Open Library'den eklediği) "Dijital sürüm ara" ile Vikikaynak ve Gutenberg'de başlıkla arama yapılır. Seçilen sonuç kitaba kaydedilir; sonuç yoksa "telifi süren bir eser olabilir" açıklaması gösterilir.
+  - Kitap silinince cihazdaki dijital kopya da silinir; okuyucudan dönünce kalınan yer yenilenir.
+  - **Elle kontrol (iOS simülatörü, iPhone 18 Pro):**
+    1. Temiz kurulumda gerçek ağla Frankenstein ve Nutuk indirildi; Nutuk okuyucuda seed ilerlemesiyle tutarlı olarak 236/783. sayfadan açıldı.
+    2. Uygulama, her ağ isteğini reddeden istemciyle yeniden başlatıldı; Frankenstein cihazdaki dosyadan açıldı. Dosyalar `Documents/books/` altında doğrulandı.
+  - Yeni ve eski seed'i gösteren ekran görüntüleri yeniden alındı; README dijital okuma özelliğiyle güncellendi. `flutter build apk --debug` ve `flutter build ios --simulator` başarılı.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [digital_edition_state.dart](lib/features/book_detail/models/digital_edition_state.dart) – Detaydaki dijital sürüm bölümünün indirme, cihaz kopyası, arama ve hata durumunu tutar.
+    - [digital_edition_actions.dart](lib/features/book_detail/models/digital_edition_actions.dart) – Bölüm widget'larının controller'ı tanımadan çağırdığı indir/sil/ara/seç eylemleridir.
+    - [digital_edition_controller.dart](lib/features/book_detail/controllers/digital_edition_controller.dart) – Kitabın dijital kopyasını indirir, siler, kalınan yeri yeniler ve dijital sürüm arayıp seçileni kitaba kaydeder.
+    - [digital_edition_section_widget.dart](lib/features/book_detail/widgets/digital_edition_section_widget.dart) – Kitabın dijital sürümü varsa indirme/okuma, yoksa arama bölümünü gösteren karttır.
+    - [digital_available_widget.dart](lib/features/book_detail/widgets/digital_available_widget.dart) – Kaynak/dil, cihaz durumu, İndir / Oku / Cihazdan sil düğmeleri ve kaynak atfını gösterir.
+    - `lib/features/book_detail/widgets/digital_search_widget.dart` (sonradan silindi, bkz. "Kendi PDF / EPUB" kaydı) – Dijital sürüm arama düğmesini, sonuç listesini ve "bulunamadı" açıklamasını gösterir.
+    - [digital_extensions.dart](lib/core/extensions/digital_extensions.dart) – Kaynak adı, dil adı ve dijital hata türlerini ARB metnine çeviren ortak eklentilerdir.
+    - [digital_edition_controller_test.dart](test/features/book_detail/digital_edition_controller_test.dart) – İndirme, silme, hata, arama ve sonuç seçimini test eder.
+    - [digital_edition_section_test.dart](test/features/book_detail/digital_edition_section_test.dart) – İndir → Oku → okuyucu → sil akışını, aramayı, boş sonucu ve kitap silinince kopyanın silinmesini ekranda test eder.
+    - [10-reader.png](docs/screenshots/10-reader.png) – Simülatörde gerçek ağla indirilmiş Nutuk'un okuyucu ekranıdır (aynı klasörde `11-reader-offline.png` ağ kapalıyken açılan Frankenstein'ı, `12-detail-digital.png` detaydaki dijital sürüm bölümünü gösterir).
+  - **Güncellenen:**
+    - [book_detail_view.dart](lib/features/book_detail/views/book_detail_view.dart) – Dijital sürüm controller'ı eklendi; okuyucuya geçiş ve dönüşte yenileme, kitap silinince kopyanın silinmesi bağlandı.
+    - [book_detail_content_widget.dart](lib/features/book_detail/widgets/book_detail_content_widget.dart) – Dijital sürüm bölümü künyenin hemen altına yerleştirildi.
+    - [reader_error_widget.dart](lib/features/reader/widgets/reader_error_widget.dart) – Hata metinleri ortak `digital_extensions` eklentisinden okunuyor.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Dijital sürüm bölümü metinleri eklendi (aynısı `app_en.arb`'de).
+    - [README.md](README.md) – Dijital okuma özelliği, yeni seed ve okuyucu ekran görüntüleri eklendi.
+    - [02-library.png](docs/screenshots/02-library.png) – Yeni seed ile yeniden alındı (aynı şekilde `03-library-light`, `04-reading`, `05-goal`, `06-detail`, `09-goal-en`).
+    - [PROJECT.md](PROJECT.md) – Sayfa 8 – Dijital Okuyucu `[x]` işaretlendi.
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Simülatörde indirme/çevrimdışı kontrolü ve ekran görüntüleri için geçici olarak yazılıp silinen giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 313 test geçti; Android debug APK ve iOS simülatör derlemesi başarılı.
+- Alınan kararlar ve nedenleri:
+  - **Dijital sürüm bölümünün kendi controller'ı var** (`DigitalEditionController`); kitap detay controller'ı şişirilmedi ve indirme durumu kitap verisinden bağımsız güncelleniyor.
+  - **Dijital sürüm araması kitap başlığıyla yapılır;** yazar adı eklendiğinde Vikikaynak araması eşleşmeyi kaçırıyordu. Kullanıcı sonucu kendisi seçtiği için yanlış eşleşme otomatik kaydedilmez.
+  - **Çevrimdışı kontrolde Mac'in ağı kapatılmadı;** bunun yerine uygulamaya her isteği reddeden bir HTTP istemcisi verildi. Bu, metnin yalnızca cihazdaki dosyadan açılabildiğini aynı şekilde kanıtlar.
+- Açık konular / sonraki adım: Yok; aşağıdaki final özetine bakın.
+
+## [2026-10-22] Ek Geliştirme – Nutuk'un Uygulamayla Paketlenmesi
+
+- Yapılanlar:
+  - Nutuk'un ilk indirmesi kaynağından ~40 saniye ve 109 istek sürüyordu. Metin uygulamanın kendi indirme hattıyla (`WikisourceSource.fetchText`, güncel temizleyiciyle) bir kez üretilip `assets/books/nutuk.txt` olarak paketlendi.
+  - "İndir"e basınca metin ağ yerine paketten okunur. İndirme anında biter, ilk açılışta bile internet gerekmez; web'de de çalışır. Okuyucu, kalınan yer ve "Cihazdan sil" akışı değişmedi. Paket okunamazsa kaynağından indirmeye düşülür.
+  - Paketlenen metin doğrulandı: 1.321.260 karakter; şablon, tablo, HTML, lisans ve yumuşak tire artığı yok; seed'deki iki Nutuk alıntısı birebir mevcut.
+  - Üretim sırasında bir artık bulundu ve düzeltildi: taranmış kaynaktan gömülü bir sayfada kapanışı eksik bir şablon (`{{orta|23.10.335}`) HTML'de düz metin olarak kalıyordu. Temizlik kuralı HTML yoluna da eklendi; aynı dönüşüm asset'e uygulandı.
+  - Boyut ölçüldü: dosya 1,45 MB. APK içinde sıkıştırılmış olarak 0,59 MB (Android indirme boyutu ~0,6 MB artar); iOS kurulumunda 1,45 MB.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [nutuk.txt](assets/books/nutuk.txt) – Nutuk'un Vikikaynak'tan uygulamanın kendi indirme hattıyla üretilmiş, uygulamayla birlikte gelen tam metnidir.
+    - [bundled_texts.dart](lib/core/data/bundled_texts.dart) – Hangi dijital sürümün uygulamayla paketlendiğini ve asset yolunu tutan kayıttır.
+    - [bundled_texts_test.dart](test/core/bundled_texts_test.dart) – Paketlenen metnin tam ve temiz olduğunu, seed alıntılarını içerdiğini, ağsız indirildiğini ve paket okunamazsa kaynağa düşüldüğünü test eder.
+  - **Güncellenen:**
+    - [digital_book_repository.dart](lib/core/repositories/digital_book_repository.dart) – İndirmeden önce paketlenmiş metin olup olmadığına bakılıyor; varsa ağa çıkılmadan asset'ten okunuyor.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) – Repository'ye asset okuyucu olarak `rootBundle.loadString` verildi.
+    - [text_cleaner.dart](lib/core/utils/text_cleaner.dart) – Bozuk şablon temizliği (`stripBrokenTemplates`) HTML yoluna da uygulanıyor.
+    - [text_cleaner_test.dart](test/core/text_cleaner_test.dart) – HTML'de düz metin kalan bozuk şablon testi eklendi.
+    - [reader_view_test.dart](test/features/reader/reader_view_test.dart) – Ağ yokken Nutuk'un paketten anında ve kalınan yerden açıldığı test edildi.
+    - [test_dependencies.dart](test/helpers/test_dependencies.dart) – Repository'yi doğrudan kuran testler için `testStorage` yardımcısı eklendi.
+    - [pubspec.yaml](pubspec.yaml) – `assets/books/` asset klasörü eklendi.
+    - [PROJECT.md](PROJECT.md) – 6.5'e çok parçalı eserlerin paketlenmesi kuralı, 7'deki ağaca `assets/books/` eklendi (6.7'ye dokunulmadı).
+    - [README.md](README.md) – Nutuk'un paketlendiği notu eklendi.
+  - **Silinen:**
+    - `test/_gen_bundled_test.dart` (silindi) – Paketlenecek Nutuk metnini gerçek kaynaktan bir kez üretmek için geçici olarak yazılıp silinen testti.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 319 test geçti; `flutter build apk --debug` ve `flutter build ios --simulator` başarılı.
+- Alınan kararlar ve nedenleri:
+  - **Asset, indirme hattının ham çıktısı olarak saklanır** (paragraf birleştirmeden önce). Böylece paketten gelen metin, kaynaktan indirilen metinle aynı işlemden geçer ve sonuç birebir aynı olur.
+  - **Paketten "indirilen" metin de belgeler klasörüne kopyalanır** (~1,45 MB ek disk). Ödünü kabul ettim; karşılığında okuyucu, kalınan yer ve "Cihazdan sil" akışı tüm kitaplar için aynı kaldı ve özel durum kodu yazılmadı.
+  - **Yalnızca Nutuk paketlendi.** Diğer kitaplar 1-2 istekte iniyor, paketlemeleri uygulama boyutunu gereksiz büyütür.
+  - **Paketlenen metin güncellenmek istenirse:** geçici bir testte `WikisourceSource(...).fetchText('Nutuk')` çıktısı `assets/books/nutuk.txt` dosyasına yazılır (bu kayıtta yapıldığı gibi).
+- Açık konular / sonraki adım: Yok.
+
+## [2026-10-22] Ek Düzeltme – Kitap Detay'daki Kaynak Atfı Satırının Kaldırılması
+
+- Yapılanlar:
+  - Kullanıcı isteğiyle Kitap Detay'ın "Dijital Sürüm" bölümündeki "Kaynak: Project Gutenberg – telifi bitmiş eser." satırı kaldırıldı. Kaynak bilgisi bölümün üstündeki "Project Gutenberg · İngilizce" satırında görünmeye devam ediyor.
+  - Artık kullanılmayan `digitalAttribution` ARB anahtarı iki dil dosyasından silindi.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [digital_available_widget.dart](lib/features/book_detail/widgets/digital_available_widget.dart) – Bölümün sonundaki kaynak atfı satırı kaldırıldı.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Kullanılmayan `digitalAttribution` anahtarı silindi (aynısı `app_en.arb`'de).
+- Doğrulama: `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 319 test geçti.
+- Alınan kararlar ve nedenleri: Kaynak ve dil satırı ("Project Gutenberg · İngilizce") korundu; metnin nereden geldiği bilgisi bölümde kalmaya devam ediyor.
+- Açık konular / sonraki adım: Yok.
+
+## [2026-10-22] Ek Geliştirme – Kendi PDF / EPUB Dosyanı Yükleyip Okuma
+
+- Yapılanlar:
+  - Kullanıcı isteğiyle "Dijital sürüm ara" özelliği tamamen kaldırıldı: arama ilgisiz sonuçlar getiriyordu (ör. Toni Morrison'ın "Sula"sı için Pir Sultan Abdal şiiri). Gutendex ve Vikikaynak arama kodu, ekranı, metinleri ve testleri silindi; seed kitaplarının Gutenberg/Vikikaynak okuması aynen kaldı.
+  - Yerine, kullanıcının eklediği (dijital sürümü olmayan) kitaplarda "Dosya yükle (PDF / EPUB)" geldi:
+    - **EPUB:** zip açılır; `container.xml` → OPF → spine sırasına göre bölümler metne çevrilir ve mevcut okuyucuda açılır (yazı boyutu, kalınan yer, ilerleme senkronu).
+    - **PDF:** `pdfrx` ile orijinal sayfa düzeninde gösterilir. Sayfa sayısı belgeden okunur; bulunulan sayfa kalınan yer olarak saklanır ve kitabın sayfa sayacına yansır; son sayfada bitirme önerisi çıkar.
+    - **Dosya yönetimi:** Dosya yalnızca cihazda saklanır. "Başka dosya yükle" ile değiştirilebilir. "Cihazdan sil" kitabın dosya bağlantısını da kaldırır ve bölüm yeniden yükleme ekranına döner; kullanıcı dosyası yeniden indirilemez.
+    - **Hatalar ayrı mesajlarla gösterilir:** desteklenmeyen dosya, bozuk dosya, kopya korumalı (DRM) EPUB, 150 MB sınırı, cihazda kaybolmuş dosya.
+  - **Elle kontrol (iOS simülatörü):**
+    - Python ile üretilmiş 3 sayfalık gerçek bir PDF `pdfrx` ile çizildi; sayfa sayısı (1/3) belgeden okundu.
+    - Gerçek bir EPUB bölüm sırasıyla okuyucuda açıldı; detayda "Kendi dosyan · PDF" bölümü görüldü.
+    - Dosyalar repository üzerinden içe aktarıldı; sistemin dosya seçme penceresi elle açılmadı.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [digital_format.dart](lib/core/models/digital_format.dart) – Dijital metnin okuyucuda sayfalanan metin mi yoksa orijinal sayfalı PDF mi olduğunu belirten enum'dur.
+    - [epub_text_extractor.dart](lib/core/utils/epub_text_extractor.dart) – EPUB'u açıp bölümleri okuma sırasıyla düz metne çevirir; kopya korumalı içeriği ve bozuk dosyayı ayırt eder.
+    - [book_file_picker.dart](lib/features/book_detail/controllers/book_file_picker.dart) – Cihazdan PDF / EPUB seçimini soyutlar; gerçek uygulaması `file_picker` kullanır, testte sahtesi verilir.
+    - [digital_import_widget.dart](lib/features/book_detail/widgets/digital_import_widget.dart) – Kullanıcının kitabında "Dosya yükle (PDF / EPUB)" düğmesini, hazırlanma göstergesini ve hata mesajını gösterir.
+    - [pdf_reader_widget.dart](lib/features/reader/widgets/pdf_reader_widget.dart) – PDF'i `pdfrx` ile orijinal sayfalarıyla gösterir; sayfa değişimini ve sayfa sayısını okuyucuya bildirir.
+    - [test_books.dart](test/helpers/test_books.dart) – Testler için bellekte gerçek EPUB, sahte PDF baytları ve sahte dosya seçici üretir.
+    - [epub_text_extractor_test.dart](test/core/epub_text_extractor_test.dart) – Spine sırasını, `<head>` dışlamayı, DRM / font gizleme ayrımını ve geçersiz dosyaları test eder.
+    - [13-reader-pdf.png](docs/screenshots/13-reader-pdf.png) – Simülatörde `pdfrx` ile çizilen gerçek PDF'tir (aynı klasörde `14-reader-epub.png` EPUB okuyucuyu, `15-detail-own-file.png` detaydaki "Kendi dosyan" bölümünü gösterir).
+  - **Güncellenen:**
+    - [pubspec.yaml](pubspec.yaml) – Kullanıcı onayıyla `file_picker`, `archive` ve `pdfrx` eklendi.
+    - [digital_source.dart](lib/core/models/digital_source.dart) – Kullanıcı dosyası için `localFile` kaynağı eklendi.
+    - [digital_edition_model.dart](lib/core/models/digital_edition_model.dart) – Biçim (`format`) ve `isLocalFile` eklendi; eski kayıtlar metin sayılır.
+    - [digital_copy_model.dart](lib/core/models/digital_copy_model.dart) – Biçim ve dosya boyutu (`byteSize`) eklendi; PDF'te uzunluk ve konum sayfa olarak tutulur.
+    - [source_http.dart](lib/core/repositories/digital_sources/source_http.dart) – Dosya hataları (desteklenmeyen, bozuk, korumalı, çok büyük, kayıp) eklendi.
+    - [digital_book_repository.dart](lib/core/repositories/digital_book_repository.dart) – PDF/EPUB içe aktarma, biçim algılama, PDF okuma ve sayfa sayısı kaydı eklendi; dijital sürüm araması kaldırıldı.
+    - [digital_file_storage.dart](lib/core/storage/digital_file_storage.dart) – PDF için bayt yazma/okuma eklendi (aynısı `digital_file_storage_io.dart`'ta, yarım kalan yazmaya karşı `.part` dosyasıyla).
+    - [gutenberg_source.dart](lib/core/repositories/digital_sources/gutenberg_source.dart) – Gutendex araması kaldırıldı (aynı şekilde `wikisource_source.dart`'tan Vikikaynak araması).
+    - [digital_extensions.dart](lib/core/extensions/digital_extensions.dart) – "Kendi dosyan · PDF/EPUB" satırı, dosya hata mesajları, okunur dosya boyutu ve yeniden denenebilir hata ayrımı eklendi.
+    - [digital_edition_controller.dart](lib/features/book_detail/controllers/digital_edition_controller.dart) – Arama/seçme yerine dosya yükleme geldi; kullanıcı dosyası silinince kitabın bağlantısı da kaldırılıyor (durum ve eylem modelleri `digital_edition_state.dart` ve `digital_edition_actions.dart` buna göre sadeleşti).
+    - [digital_edition_section_widget.dart](lib/features/book_detail/widgets/digital_edition_section_widget.dart) – Dijital sürüm yoksa veya kullanıcı dosyası kaybolmuşsa yükleme ekranı gösteriliyor.
+    - [digital_available_widget.dart](lib/features/book_detail/widgets/digital_available_widget.dart) – Kullanıcı dosyasında "Başka dosya yükle" eklendi; cihaz boyutu KB/MB olarak gösteriliyor.
+    - [book_detail_view.dart](lib/features/book_detail/views/book_detail_view.dart) – Dosya seçici dijital sürüm controller'ına veriliyor (testte sahtesi verilebilir).
+    - [reader_controller.dart](lib/features/reader/controllers/reader_controller.dart) – PDF açma, sayfa sayısı kaydı ve PDF sayfa değişiminin sayaca yansıması eklendi; kayıp kullanıcı dosyasında "yeniden yükle" hatası veriliyor (model alanları `reader_model.dart`'a eklendi).
+    - [reader_body_widget.dart](lib/features/reader/widgets/reader_body_widget.dart) – PDF için görüntüleyici, metin için sayfalı okuyucu seçiliyor; metin okuyucu ayrı widget'a taşındı (aynı bağlantı `reader_view.dart`'ta; PDF'te yazı boyutu düğmesi gizli).
+    - [reader_error_widget.dart](lib/features/reader/widgets/reader_error_widget.dart) – "Tekrar dene" yalnızca ağ/sunucu hatalarında gösteriliyor.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Dosya yükleme ve dosya hata metinleri eklendi, arama metinleri silindi (aynısı `app_en.arb`'de).
+    - [PROJECT.md](PROJECT.md) – 6.1'e üç yeni paket eklendi, Gutendex çıkarıldı; Sayfa 8 açıklaması ve 6.3'teki enum/model alanları güncellendi (6.7'ye dokunulmadı).
+    - [README.md](README.md) – Kendi PDF / EPUB özelliği ve ekran görüntüleri eklendi.
+    - [digital_edition_section_test.dart](test/features/book_detail/digital_edition_section_test.dart) – Arama testleri yerine EPUB/PDF yükleme, okuma, silme ve DRM hatası testleri yazıldı (aynı şekilde `digital_edition_controller_test.dart`).
+    - [digital_book_repository_test.dart](test/core/digital_book_repository_test.dart) – İçe aktarma, biçim değiştirme, hata türleri ve yeniden indirilememe testleri eklendi; arama testi silindi.
+    - [reader_controller_test.dart](test/features/reader/reader_controller_test.dart) – PDF ve EPUB kullanıcı dosyası ile kayıp dosya testleri eklendi.
+    - [digital_models_test.dart](test/core/digital_models_test.dart) – Biçim ve dosya boyutu gidiş-dönüş testleri eklendi (bayt depolama testi `digital_file_storage_test.dart`'a eklendi).
+    - [fake_digital_sources.dart](test/helpers/fake_digital_sources.dart) – Gutendex ve Vikikaynak arama taklidi kaldırıldı (aynı şekilde `digital_sources_test.dart`'tan arama testleri).
+    - [12-detail-digital.png](docs/screenshots/12-detail-digital.png) – Kaynak atfı satırı olmadan yeniden alındı.
+  - **Silinen:**
+    - `lib/core/models/digital_search_hit.dart` (silindi) – Dijital sürüm arama sonucunu tutan modeldi; arama kaldırıldığı için gereksiz kaldı.
+    - `lib/features/book_detail/widgets/digital_search_widget.dart` (silindi) – "Dijital sürüm ara" düğmesi ve sonuç listesiydi; yerine dosya yükleme widget'ı geldi.
+    - `tool/screenshot_main.dart` (silindi) – Gerçek PDF/EPUB'ı simülatörde açıp ekran görüntüsü almak için geçici olarak yazılıp silinen giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 330 test geçti; `flutter build apk --debug` ve `flutter build ios --simulator` başarılı; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Kullanıcı onayıyla 3 paket eklendi:** `file_picker` (dosya seçme), `archive` (EPUB/zip, saf Dart) ve `pdfrx` (PDF görüntüleme, PDFium). Çekirdek API'lerle PDF/EPUB okunamıyor; `image_picker` yalnızca resim seçebiliyor.
+  - **EPUB metne çevrilip kendi okuyucumuzda gösterilir:** yazı boyutu, kalınan yer ve sayaç senkronu tüm metin kitaplarıyla aynı çalışır; HTML temizliği mevcut `TextCleaner.htmlToText` ile yapılır. **PDF ise metne çevrilmez,** orijinal düzeniyle gösterilir; metin çıkarma tablo/sütun düzenini bozar.
+  - **Biçim, uzantıya değil içeriğe göre algılanır** (`%PDF` imzası, zip imzası). Uzantı yalnızca hata mesajını seçmek için kullanılır; yanlış uzantılı dosya da doğru açılır.
+  - **Yalnızca font gizleme amaçlı şifreleme DRM sayılmaz:** birçok yasal EPUB fontlarını bu şekilde gizliyor; bölüm içeriği şifreliyse dosya korumalı kabul edilir.
+  - **Kullanıcı dosyası silinince kitabın dosya bağlantısı da kaldırılır:** dosya yeniden indirilemeyeceği için "İndir" düğmesi gösterilmez, bölüm yeniden "Dosya yükle"ye döner.
+  - **150 MB üst sınır:** dosya içe aktarılırken belleğe okunuyor; çok büyük dosyalar uygulamayı zorlayabilir.
+- Açık konular / sonraki adım:
+  - iOS/Android'in yerel dosya seçme penceresi gerçek cihazda elle denenmedi (testlerde sahte seçici kullanıldı).
+  - Web'de PDF görüntüleme (`pdfrx` WASM) denenmedi; web'de yüklenen dosya yalnızca oturum boyunca saklanır.
+  - Taranmış (yalnızca resimden oluşan) PDF'ler sayfa olarak görüntülenir, ama metin seçilemez.
+
+## [2026-10-22] Ek Düzeltme – Kitap Metinlerinin Başındaki ve İçindeki Gereksiz İşaretlerin Temizlenmesi
+
+- Yapılanlar:
+  - **Sorun:** Okuyucu, kitabı başlık sayfası, "CONTENTS" listesi ve Gutenberg notlarıyla açıyordu (ör. Frankenstein). Metinde Gutenberg'in italik işareti olan alt çizgiler (`_metin_`), `[Illustration]` notları, dipnot numaraları ve `{12}` sayfa işaretleri kalıyordu.
+  - **Genel kontrol:** 29 Gutenberg kitabının tamamı, Kürk Mantolu Madonna ve paketlenmiş Nutuk gerçek metinleriyle tek tek tarandı. Sonuçta her kitap ilk asıl bölümüyle başlıyor:
+    - Frankenstein → "Letter 1"
+    - Alice → "CHAPTER I. Down the Rabbit-Hole"
+    - Darwin → "INTRODUCTION"
+    - Moby Dick → "ETYMOLOGY"
+    - Kürk Mantolu Madonna → ilk cümle
+    - Nutuk: değişmedi ("1335 senesi Mayıs'ının…" korunuyor)
+  - Alt çizgi, görsel notu ve `{n}` işareti hiçbir kitapta kalmadı. Metnin parçası olan köşeli ifadeler (ör. `[i.e. Wu Yuan]`, `[1758]`) korunuyor.
+  - **Alıntı kontrolü:** Seed'deki 20 alıntının hepsi temizlenmiş metinlerde hâlâ birebir bulunuyor.
+  - **İleride eklenecek kitaplar için önlem:** Kurallar kitaba özel değil, geneldir:
+    - İçindekiler başlığı algılanır; gövde, listedeki ilk girdilerden biri metinde yeniden görünüp ardından düzyazı geldiğinde başlar.
+    - Ayrıntılı içindekiler, sayfa numaralı listeler, görsel listeleri ve "PAGE" sütun başlığı ayırt edilir.
+    - İçindekiler yoksa yalnızca kısa satırlardan oluşan başlık sayfası atılır. Şiir dizeleri, cümleler ve bölüm başlıkları korunur.
+    - Bir kural metnin %30'undan fazlasını silecekse uygulanmaz, metin olduğu gibi kalır.
+  - **Tüm yollarda çalışır:** Gutenberg indirmesi, Vikikaynak indirmesi, paketlenmiş metin ve kullanıcının yüklediği EPUB.
+  - **Önceden indirilmiş kopyalar da düzelir:** Kopyaya temizlik sürümü (`textVersion`) eklendi. Eski kopya ilk açılışta güncel kurallarla yeniden temizlenir:
+    - Gutenberg kitabı çevrimiçiyse ham metinden yeniden indirilerek temizlenir.
+    - Çevrimdışıysa cihazdaki metin temizlenir.
+    - Okuma oranı korunur; kalınan yer kaybolmaz.
+  - Taramada bulunan bir hata da düzeltildi: Dart'ın `replaceAll` metodu `$1` grup başvurusunu çözmüyor. Bu yüzden dipnot silinen yerlere metne "$1" yazılıyordu. Kod `replaceAllMapped` ile değiştirildi.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [reading_text_cleaner.dart](lib/core/utils/reading_text_cleaner.dart) – Gutenberg biçim işaretlerini, notları ve kitap başındaki başlık sayfası/içindekiler bölümünü tüm kitaplar için genel kurallarla temizler.
+    - [reading_text_cleaner_test.dart](test/core/reading_text_cleaner_test.dart) – Frankenstein, Alice, Darwin, Franklin, Art of War, Kürk Mantolu Madonna, Nutuk ve Leaves of Grass'tan alınan gerçek parçalarla temizlik kurallarını ve güvenlik sınırını test eder.
+  - **Güncellenen:**
+    - [gutenberg_source.dart](lib/core/repositories/digital_sources/gutenberg_source.dart) – İndirilen metin, lisans bloklarından sonra biçim işaretlerinden de temizleniyor.
+    - [digital_book_repository.dart](lib/core/repositories/digital_book_repository.dart) – İndirilen ve içe aktarılan metinde kitap başı temizleniyor; eski kopyalar okunurken yeniden temizlenip kaydediliyor.
+    - [digital_copy_model.dart](lib/core/models/digital_copy_model.dart) – Metnin hangi temizlik sürümüyle hazırlandığını tutan `textVersion` alanı eklendi (eski kayıtlarda 0).
+    - [reader_controller.dart](lib/features/reader/controllers/reader_controller.dart) – Metin açılırken kitap bilgisi repository'ye veriliyor; eski kopyanın yeniden temizlenmesi bu sayede tetikleniyor.
+    - [digital_book_repository_test.dart](test/core/digital_book_repository_test.dart) – İndirmede temizlik ile eski kopyanın çevrimiçi ve çevrimdışı yeniden temizlenmesi test ediliyor (oran korunması ve tek seferlik çalışma dahil).
+    - [PROJECT.md](PROJECT.md) – 6.3'teki `DigitalCopyModel` satırına `textVersion` eklendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `test/_survey_test.dart` (silindi) – Tüm gerçek kitap metinlerini yeni temizlik hattından geçirip başlangıçlarını incelemek için geçici olarak yazılan tarama testiydi.
+    - `test/_quotes_test.dart` (silindi) – Seed alıntılarının temizlenmiş metinlerde birebir bulunduğunu doğrulayan geçici testti.
+    - `test/_reclean_test.dart` (silindi) – Eski yöntemle kaydedilmiş kopyaların yeniden temizlenme sonucunu karşılaştıran geçici testti.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 348 test geçti. `flutter build apk --debug` ve `flutter build ios --simulator` başarılı; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Kurallar kitaba özel değil, sezgiseldir.** Kitap kitap kural yazmak ileride eklenecek kitaplarda işe yaramaz. Bunun yerine her kitapta görülen yapılar (içindekiler, başlık sayfası, Gutenberg işaretleri) tanınır.
+  - **Alt çizgi yalnızca Gutenberg metinlerinden silinir.** Gutenberg düz metninde alt çizgi yalnızca italik işaretidir. Kullanıcının EPUB'unda ise anlamlı olabilir (ör. yazılım kitabında `dosya_adi`). `_____` gibi boşluk doldurma çizgileri korunur.
+  - **Metin içi köşeli ifadeler korunur.** Yalnızca `[Illustration…]`, `[Footnote…]`, `[Transcriber's note…]` ve 1-3 haneli dipnot numaraları silinir. Editör eklemeleri ve yıllar (`[1758]`) metnin parçasıdır.
+  - **Önsöz ve giriş korunur.** Bunlar kitabın parçasıdır (ör. Pride and Prejudice'in Saintsbury önsözü). Yalnızca başlık sayfası, içindekiler ve yayın/transkripsiyon notları atılır.
+  - **Eski kopyalar çevrimiçiyken yeniden indirilir.** Eski kopyalarda paragraflar birleştirildiği için bazı içindekiler listeleri tek satıra dönmüş. Ham metinden temizlik en doğru sonucu veriyor. Çevrimdışıyken de iyileştirilmiş sonuç verilir, okuma engellenmez.
+  - **Kaynak metindeki yazım korunur.** Kürk Mantolu Madonna'nın Vikikaynak metnindeki "Simdiye" yazımı kaynağın kendisinde böyledir. Uydurma veri yasağı gereği düzeltilmedi; seed alıntısı da kaynakla aynı.
+- Açık konular / sonraki adım:
+  - Eski kopyaların yeniden temizlenmesi birim testlerle doğrulandı; simülatördeki indirilmiş kopyayla elle açılıp ekran görüntüsü alınmadı.
+  - Çevrimdışı yeniden temizlemede altı kitap (Darwin, Franklin, Keller, Grimm, Self-Help, Kısa Dünya Tarihi) içindekilerin bir kısmıyla başlayabilir. İnternet geldiğinde kopyayı silip yeniden indirmek tam temiz metni verir.
+  - Leaves of Grass hâlâ kitap adı ve yazar satırıyla başlıyor: başlık sayfası kuralı en az 3 kısa paragraf arıyor. Bu iki satır gereksiz bir işaret değil.
+
+## [2026-10-22] Ek Düzeltme – Dijital Sürüm Bilgi Satırlarının Kaldırılması ve Bölüm Başlıklarının Ortalanması
+
+- Yapılanlar:
+  - Kitap Detay'daki "Dijital Sürüm" bölümünden iki bilgi satırı kaldırıldı:
+    - kaynak ve dil satırı ("Project Gutenberg · İngilizce", kullanıcı dosyasında "Kendi dosyan · PDF")
+    - cihaz durumu satırı ("Cihazda (412 KB) · %0 okundu", indirilmemişse "Henüz cihaza indirilmedi.")
+  - İndirme sırasında görünen ilerleme çubuğu ve yüzde yazısı korundu.
+  - Kitap Detay'daki tüm bölüm başlıkları ortalandı: Dijital Sürüm, Okuma İlerlemesi, Okuma Durumu, Puan ve İnceleme, Alıntılar, Notlar, Ödünç Bilgisi. Başlığın yanındaki düğme (ör. düzenle kalemi) sağda kalıyor ve başlığın ortalanmasını kaydırmıyor.
+  - Simülatörde Frankenstein detay ekranı açılıp sonuç ekran görüntüsüyle kontrol edildi.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [section_card_widget.dart](lib/features/book_detail/widgets/section_card_widget.dart) – Bölüm başlığı kart genişliğinde ortalanıyor; varsa sağdaki düğme başlığın üstüne binmeyecek şekilde ayrı konumlanıyor.
+    - [digital_available_widget.dart](lib/features/book_detail/widgets/digital_available_widget.dart) – Kaynak/dil ve cihaz durumu satırları kaldırıldı; yalnızca indirme ilerlemesi ve düğmeler kaldı.
+    - [digital_extensions.dart](lib/core/extensions/digital_extensions.dart) – Artık kullanılmayan kaynak etiketi, dil etiketi, kaynak satırı ve dosya boyutu biçimlendirme yardımcıları silindi.
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Kullanılmayan 10 metin anahtarı silindi (kaynak/dil adları, kaynak satırı, cihaz durumu, KB/MB); aynısı `app_en.arb`'de yapıldı.
+    - [digital_edition_section_test.dart](test/features/book_detail/digital_edition_section_test.dart) – Bilgi satırlarının artık gösterilmediği doğrulanıyor.
+    - [12-detail-digital.png](docs/screenshots/12-detail-digital.png) – Ortalanmış başlıklarla ve bilgi satırları olmadan yeniden alındı.
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Detay ekranını simülatörde doğrudan açıp ekran görüntüsü almak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 348 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **İndirme ilerlemesi korundu.** Kaldırılması istenen bilgi satırlarıydı; ilerleme çubuğu olmadan uzun indirmelerde (ör. Kürk Mantolu Madonna) kullanıcı bir şey olup olmadığını göremez.
+  - **Başlık ortalaması ortak kart widget'ında yapıldı.** Tüm bölümler aynı `SectionCardWidget`'ı kullanıyor. Tek yerde yapılan değişiklik hepsine uygulanır ve ileride eklenecek bölümler de ortalı gelir.
+  - **Düğmeli başlıklarda iki yana eşit boşluk bırakıldı** (Material dokunma alanı kadar). Böylece başlık, düğmesi olmayan bölümlerle aynı hizada, kartın tam ortasında durur.
+- Açık konular / sonraki adım: Yok.
+
+## [2026-10-22] Ek Düzeltme – Okuma Durumu Mantığının Yenilenmesi (Onaylı Bitirme, Tekrar Oku)
+
+- Yapılanlar:
+  - **Sorun:** Kitap Detay'daki Okuma Durumu, üç durumu her zaman serbestçe seçilebilen bir düğme grubuydu. Bu yüzden:
+    - biten kitapta "Okunacak" ve "Okunuyor" seçilebiliyordu,
+    - okunan kitap "Okunacak"a geri alınabiliyordu,
+    - "Bitti" onay almadan uygulanıyordu,
+    - biten kitabın sayfası geri alınabiliyordu (ör. "Bitti" ama 192/207).
+  - **Yeni akış:** Bölüm, mevcut durumu ("Durum: Okunuyor", simgesiyle) ve tarihleri gösteriyor. Altında yalnızca anlamlı bir sonraki adım çıkıyor:
+    - **Okunacak:** "Okumaya Başla" ve "Bitti olarak işaretle" (daha önce okunmuş bir kitabı doğrudan kaydetmek için).
+    - **Okunuyor:** yalnızca "Bitti olarak işaretle". "Okunacak"a geri dönülemiyor.
+    - **Bitti:** yalnızca "Tekrar Oku".
+  - **Onaylar:**
+    - "Bitti olarak işaretle" önce "Kitabı bitirdin mi?" onayı istiyor; onaylanınca ilerleme son sayfaya getiriliyor.
+    - "Tekrar Oku" da onay istiyor. Onaylanınca ilerleme 0'a iniyor, durum "Okunuyor" oluyor, başlangıç bugüne alınıyor ve bitiş tarihi siliniyor. Dijital kopyadaki kalınan yer de başa alınıyor.
+  - **Biten kitabın ilerlemesi kilitli:** Okuma İlerlemesi'nde ±1/±10 düğmeleri ve düzenle kalemi gizleniyor. Okuyucuda geri sayfalara bakmak da sayacı değiştirmiyor.
+  - **Eski kayıtlar düzeltiliyor:** Önceki sürümden kalan, sayfası geri alınmış biten kitaplar uygulama açılırken son sayfaya düzeltiliyor. Simülatördeki Frankenstein 192/207'den 207/207'ye geçti.
+  - Simülatörde Frankenstein (Bitti → "Tekrar Oku", ilerleme %100, sayaç düğmesiz) ve Dracula (Okunacak → "Okumaya Başla" / "Bitti olarak işaretle") ekranları kontrol edildi.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [confirm_dialog.dart](lib/features/book_detail/widgets/confirm_dialog.dart) – Bitirme ve tekrar okuma gibi işlemler için "Vazgeç / onayla" penceresini gösterir.
+  - **Güncellenen:**
+    - [status_selector_widget.dart](lib/features/book_detail/widgets/status_selector_widget.dart) – Serbest seçimli düğme grubu yerine mevcut durumu, tarihleri ve duruma göre yalnızca anlamlı sonraki adımı (onaylı) gösteriyor.
+    - [page_counter_widget.dart](lib/features/book_detail/widgets/page_counter_widget.dart) – Biten kitapta sayfa düğmeleri ve düzenle kalemi gizleniyor.
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – "Tekrar oku" (`restartReading`) eklendi; biten kitabın sayacı değiştirilemiyor ve tutarsız eski kayıtlar açılışta düzeltiliyor.
+    - [book_detail_controller.dart](lib/features/book_detail/controllers/book_detail_controller.dart) – "Tekrar oku" eylemi eklendi; dijital kopyanın kalınan yerini de sıfırlıyor (eylem `book_detail_actions.dart`'a eklendi).
+    - [book_detail_view.dart](lib/features/book_detail/views/book_detail_view.dart) – Detay controller'ına dijital kitap repository'si veriliyor (bağlantı `book_detail_content_widget.dart`'ta).
+    - [app_tr.arb](lib/l10n/app_tr.arb) – Durum etiketi, "Tekrar Oku" ve iki onay penceresinin metinleri eklendi; aynısı `app_en.arb`'de yapıldı.
+    - [book_detail_view_test.dart](test/features/book_detail/book_detail_view_test.dart) – Her durumda gösterilen düğmeler, vazgeç/onay, ilerlemenin kilitlenmesi ve tekrar okumada sıfırlama test ediliyor.
+    - [book_detail_controller_test.dart](test/features/book_detail/book_detail_controller_test.dart) – Tekrar okumada sayaç, tarihler ve dijital konumun sıfırlanması ile biten kitabın sayacının değişmemesi test ediliyor.
+    - [library_storage_test.dart](test/core/library_storage_test.dart) – Sayfası geri alınmış eski biten kayıtların açılışta düzeltilmesi test ediliyor.
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Detay ekranlarını simülatörde doğrudan açıp kontrol etmek için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 353 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Okunacak kitapta "Bitti olarak işaretle" bırakıldı.** Kullanıcı daha önce okuduğu bir kitabı, okumaya başlatmadan doğrudan "bitti" olarak kaydedebilmeli.
+  - **Okunuyor → Okunacak geçişi kaldırıldı.** Kullanıcı isteği; okunmakta olan bir kitabı "okunacak"a almak anlamsız.
+  - **Tekrar okumada bitiş tarihi siliniyor.** Durum "Okunuyor"ken kitabın "bitti" sayılması çelişkili olurdu. Bu yüzden kitap yeniden bitirilene kadar yıllık hedefte sayılmıyor. Onay penceresi bunu açıkça söylüyor.
+  - **Tekrar okumada puan, inceleme, alıntı ve notlar korunuyor.** Bunlar kullanıcının emeği; okuma ilerlemesiyle ilgili değiller.
+  - **Son sayfaya gelince çıkan "Bitti olarak işaretle" önerisi ayrıca onay istemiyor.** Önerinin kendisi zaten "Kitabı bitirdin mi?" sorusu; ikinci bir pencere gereksiz tekrar olurdu.
+  - **Okuma Durumu sekmesindeki (Sayfa 4) "Okumaya Başla" / "Bitti" kısayolları değiştirilmedi.** İstek Kitap Detay sayfası içindi.
+- Açık konular / sonraki adım: Okuma Durumu sekmesindeki "Bitti" kısayoluna da onay eklenmesi istenirse aynı `ConfirmDialog` kullanılabilir.
+
+## [2026-10-22] Ek Geliştirme – Giriş / Kayıt Ekranlarına Animasyonlu Arka Plan
+
+- Yapılanlar:
+  - Giriş ve Kayıt ekranlarına animasyonlu bir arka plan eklendi. Sahne uygulamanın "Gece Kütüphanesi" temasını yansıtıyor:
+    - sağ üstte hafifçe "nefes alan" sıcak bir lamba ışığı,
+    - altta iki raf dolusu kitap sırtı (bazıları kehribar renkli),
+    - lamba ışığında yukarı doğru süzülüp yana salınan toz zerreleri.
+  - Sahne tamamen kodla (Flutter `CustomPainter`) çiziliyor; dışarıdan resim, video veya animasyon dosyası kullanılmadı.
+  - **Renkler temadan geliyor:** koyu temada gece kütüphanesi, aydınlık temada kağıt tonlarında görünüyor.
+  - Form, okunabilirlik için hafif saydam bir kart içine alındı.
+  - Simülatörde koyu temada Giriş, aydınlık temada Kayıt ekranı açıldı. Birkaç saniye arayla alınan iki karede zerrelerin hareket ettiği görüldü.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [auth_background_painter.dart](lib/features/auth/widgets/auth_background_painter.dart) – Lamba ışığını, kitap raflarını ve süzülen toz zerrelerini tema renkleriyle ve animasyon değerine göre çizer.
+    - [auth_background_widget.dart](lib/features/auth/widgets/auth_background_widget.dart) – Arka plan animasyonunu 24 saniyelik döngüde çalıştırır; sistemde "hareketi azalt" açıksa veya testlerde sabit tek kare gösterir.
+    - [auth_background_test.dart](test/features/auth/auth_background_test.dart) – Arka planın sürekli animasyonlu olduğunu ve "hareketi azalt" açıkken durduğunu test eder.
+  - **Güncellenen:**
+    - [auth_page_layout_widget.dart](lib/features/auth/widgets/auth_page_layout_widget.dart) – Animasyonlu arka plan formun arkasına yerleşti; form yarı saydam kart içinde gösteriliyor.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) – Süs animasyonlarını açıp kapatan `animateDecorations` ayarı eklendi ve `AppScope`'a aktarılıyor (alan `app_scope.dart`'a eklendi).
+    - [test_dependencies.dart](test/helpers/test_dependencies.dart) – Testlerde süs animasyonları kapatılıyor; sonsuz animasyon `pumpAndSettle`'ın bitmesini engellerdi.
+    - [01-register.png](docs/screenshots/01-register.png) – Kayıt ekranı yeni arka planla (aydınlık tema) yeniden alındı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 355 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Hazır bir resim indirmek yerine arka plan kodla çizildi.**
+    - Telifsizlik kesin: eser bu projeye ait, lisans takibi ya da atıf gerekmiyor (uydurma veri/kaynak yasağıyla da uyumlu).
+    - Paket gerekmiyor: Lottie/Rive gibi animasyon paketleri onaylı listede yok.
+    - Uygulama boyutu artmıyor, her ekran çözünürlüğünde net görünüyor.
+    - Koyu/aydınlık temaya kendiliğinden uyuyor.
+  - **Erişilebilirlik:** Sistemde "hareketi azalt" açıksa animasyon durur, sahne sabit kalır. Arka plan ekran okuyuculardan gizlenir (yalnızca süs).
+  - **Performans:** Sahne ayrı bir katmanda (`RepaintBoundary`) yeniden çiziliyor; form her karede yeniden çizilmiyor. Animasyon başka ekrana geçilince Flutter tarafından otomatik durduruluyor.
+  - **Form yarı saydam kartta:** Arka plan hareketliyken metin ve alanların okunması zorlaşmasın diye.
+- Açık konular / sonraki adım: Arka plan yalnızca iOS simülatöründe denendi; düşük donanımlı gerçek Android cihazda akıcılığı ölçülmedi.
+
+## [2026-10-22] Ek Düzeltme – Giriş / Kayıt Arka Planının Yeniden Tasarlanması (Uçan Harfler)
+
+- Yapılanlar:
+  - Kullanıcı alttaki kitap raflarını bar grafiğine benzettiği için beğenmedi; raflar tamamen kaldırıldı ve sahne yeniden tasarlandı:
+    - **Açık kitap:** Ekranın altında kavisli sayfaları, alttan taşan sert kapağı, kademeli sayfa destesi ve sırtında gölgesi olan bir kitap duruyor. Sayfalarda kavisi izleyen satır çizgileri var.
+    - **Sayfa çevirme:** Kitabın sayfası düzenli aralıklarla (24 saniyede 4 kez) sağdan sola, ucu kalkarak çevriliyor.
+    - **Uçuşan harfler:** Kitabın üstünden harfler (Türkçe karakterler dahil: ç, ğ, ı, ö, ş, ü) doğuyor. Harfler dönerek ve yana salınarak ekranın üst kısmına kadar yükselip sönüyor; "kelimeler kitaptan uçuşuyor" etkisi veriyor.
+    - **Gökyüzü:** Üstte göz kırpan yıldızlar (parlak olanlarda ince ışıltı) ve sağ üstte hafifçe "nefes alan" lamba ışığı var; kitabın üstünde de sıcak bir ışık parlıyor.
+  - Form kartı daha opak yapıldı (%88 → %95). Kartın arkasından geçen harfler form yazılarının okunmasını zorlaştırmıyor.
+  - Simülatörde koyu temada Giriş ekranı açılıp birkaç saniye arayla kareler alındı; harflerin uçtuğu ve yıldızların göz kırptığı görüldü.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [auth_background_painter.dart](lib/features/auth/widgets/auth_background_painter.dart) – Raflar kaldırıldı; açık kitap (kapak, sayfa destesi, sırt gölgesi, satırlar), sayfa çevirme, uçuşan harfler ve göz kırpan yıldızlar çiziliyor.
+    - [auth_background_widget.dart](lib/features/auth/widgets/auth_background_widget.dart) – Harflerin yazı tipi temadaki başlık stilinden çiziciye veriliyor.
+    - [auth_page_layout_widget.dart](lib/features/auth/widgets/auth_page_layout_widget.dart) – Form kartının saydamlığı azaltıldı (okunabilirlik).
+    - [01-register.png](docs/screenshots/01-register.png) – Yeni arka planla (koyu tema, Giriş ekranı) yeniden alındı; README'deki bağlantı adı "Giriş / Kayıt" oldu ([README.md](README.md)).
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Giriş / Kayıt ekranını simülatörde doğrudan açıp kare kare kontrol etmek için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 355 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Tema: "kelimeler kitaptan uçuşuyor".** Kitalog'un okuma odağını doğrudan anlatıyor ve soyut grafik şekillerden uzak, hikâyesi olan bir sahne sunuyor.
+  - **Çizim hâlâ tamamen kodla yapılıyor.**
+    - Telif sorunu yok, paket eklenmedi.
+    - Harfler temadaki yazı tipiyle çiziliyor; ayrıca yazı boyutu tanımlanmadı.
+    - Koyu/aydınlık temaya kendiliğinden uyuyor.
+  - **Performans:**
+    - Harfler bir kez dizilip önbelleğe alınıyor; her karede yalnızca konumları ve saydamlıkları değişiyor.
+    - Saydamlık katmanı yalnızca harfin küçük alanıyla sınırlı.
+  - **Döngü atlamasız:** Tüm hız ve çevirme sayıları döngüye tam bölünüyor; 24 saniyelik döngü başa sarılırken görüntü sıçramıyor.
+- Açık konular / sonraki adım:
+  - Sayfa çevirme anı ve aydınlık temadaki yeni görünüm simülatörde ekran görüntüsüyle ayrıca doğrulanmadı; kullanıcı bu çekimleri durdurdu. Çizim kodu analyze ve testlerden geçti.
+  - Düşük donanımlı gerçek Android cihazda akıcılık ölçülmedi.
+
+## [2026-10-22] Ek Düzeltme – Kayıt Ekranında Formun Kitabın Üstüne Taşması
+
+- Yapılanlar:
+  - **Sorun:** Kayıt formu Giriş formundan uzun (4 alan). Bu yüzden form kartı ekranın altındaki açık kitabın üstüne biniyordu.
+  - **Çözüm:** Sayfa düzeni artık ekranın altında kitabın kapladığı alanı (sayfa kubbesi ve küçük bir pay dahil) forma kapatıyor.
+    - Form, kalan üst alanda ortalanıyor; sığmazsa kendi içinde kaydırılıyor.
+    - Kart hiçbir ekran boyutunda kitabın üstüne binmiyor.
+  - **Kısa ekranlar:** Yatay telefon gibi kısa ekranlarda kitap ekran yüksekliğine göre küçülüyor, böylece forma yeterli yer kalıyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [auth_background_painter.dart](lib/features/auth/widgets/auth_background_painter.dart) – Kitabın ekranın altında kapladığı yüksekliği veren `bookReserve` eklendi; kısa ekranlarda kitap küçülüyor.
+    - [auth_page_layout_widget.dart](lib/features/auth/widgets/auth_page_layout_widget.dart) – Form alanı kitaba ayrılan bölgenin üstünde sınırlandı; kart ayrı bir widget'a taşındı.
+    - [register_form_test.dart](test/features/auth/register_form_test.dart) – Kayıt ve Giriş kartının üç ekran boyutunda (390x844, 320x568, yatay 844x390) kitabın üstüne binmediği test ediliyor; kısa test ekranında düğmeye önce kaydırılıyor.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 358 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Kitabı gizlemek yerine alanı ayrıldı.** Kitap sahnenin odağı ve harfler ondan çıkıyor; kartın altında kalırsa sahne anlamını yitirir.
+  - **Form kaydırılabilir kaldı.** Küçük ekranlarda ve büyük yazı boyutunda tüm alanlar yine erişilebilir.
+- Açık konular / sonraki adım: Düzeltme simülatörde ekran görüntüsüyle ayrıca kontrol edilmedi; üç ekran boyutunda widget testleriyle doğrulandı.
+
+## [2026-10-22] Ek Geliştirme – Giriş / Kayıt Başlığında "Kitalog" Yazısı ve Ortalanmış Tasarım
+
+- Yapılanlar:
+  - Giriş / Kayıt kartının üst kısmı yeniden tasarlandı; tüm öğeler ortalandı:
+    - **Marka satırı:** Işıklı, yuvarlak bir rozet içinde uygulama ikonu; yanında kehribar tonlarında geçişli "Kitalog" yazısı.
+    - **Slogan:** "Sanal kütüphanen, cebinde." hafif harf aralığıyla, yumuşak renkte.
+    - **Süs:** İnce bir çizgi ve ortasında küçük bir baklava; başlığı formdan ayırıyor.
+    - **Sayfa başlığı:** "Giriş Yap" / "Kayıt Ol", marka yazı tipiyle.
+  - **Yazı tipi:** "Kitalog" ve sayfa başlıkları DM Serif Display ile yazılıyor; kitap kapaklarını andıran, zarif ve yüksek kontrastlı bir serif.
+    - Google Fonts deposundan lisansıyla birlikte indirildi.
+    - Türkçe karakterleri (ş, ğ, ı, İ, ç, ö, ü, â) içerdiği kontrol edildi.
+  - Lisans metni uygulamanın "Lisanslar" sayfasına kaydediliyor.
+  - Simülatörde koyu temada Kayıt ekranı açılıp tasarım kontrol edildi. Aynı karede alttaki kitabın sayfa çevirme anı da görüldü.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [DMSerifDisplay-Regular.ttf](assets/fonts/DMSerifDisplay-Regular.ttf) – Uygulama adı ve giriş başlıklarında kullanılan marka yazı tipidir (Colophon Foundry, SIL Open Font License 1.1).
+    - [OFL.txt](assets/fonts/OFL.txt) – Yazı tipinin lisans metnidir; uygulamayla birlikte dağıtılması lisansın şartıdır.
+  - **Güncellenen:**
+    - [auth_header_widget.dart](lib/features/auth/widgets/auth_header_widget.dart) – Başlık; ikon rozeti, geçişli "Kitalog" yazısı, slogan, süs çizgisi ve sayfa başlığından oluşan ortalanmış bir düzene geçti.
+    - [app_theme.dart](lib/core/theme/app_theme.dart) – Marka yazı tipiyle türetilen `brandWordmark` ve `brandTitle` metin stilleri eklendi; PROJECT.md gereği stiller tema dosyasında duruyor.
+    - [app_assets.dart](lib/core/constants/app_assets.dart) – Yazı tipi ailesinin adı ve lisans dosyasının yolu eklendi.
+    - [main.dart](lib/main.dart) – Yazı tipinin OFL lisansı Flutter'ın lisans kayıtlarına ekleniyor.
+    - [pubspec.yaml](pubspec.yaml) – Yazı tipi `fonts` altında tanımlandı ve lisans dosyası varlıklara eklendi (paket eklenmedi).
+    - [PROJECT.md](PROJECT.md) – 7. bölümdeki klasör ağacına `assets/fonts/` eklendi (6.7'ye dokunulmadı).
+    - [01-register.png](docs/screenshots/01-register.png) – Kayıt ekranı yeni başlık tasarımıyla yeniden alındı.
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Kayıt ekranını simülatörde doğrudan açıp ekran görüntüsü almak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 358 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **`google_fonts` paketi yerine yazı tipi dosyası uygulamaya eklendi.**
+    - Paket onaylı listede değil.
+    - Dosya uygulamayla geldiği için yazı tipi internetsiz de çalışıyor ve ilk açılışta yazı "zıplamıyor".
+  - **DM Serif Display seçildi.**
+    - Kitap kapağı / dergi başlığı havasında, uygulamanın kütüphane temasıyla uyumlu.
+    - SIL OFL lisanslı: ücretsiz, ticari kullanıma açık; tek şart lisans metninin birlikte dağıtılması.
+  - **Yazı tipi yalnızca marka adı ve sayfa başlıklarında kullanıldı.** Form alanları ve düğmeler okunabilirlik için uygulamanın standart yazı tipinde kaldı.
+  - **Marka yazısı ekran okuyucuya tek parça "Kitalog" başlığı olarak okunuyor;** ikon ve geçiş efekti erişilebilirlik ağacından gizlendi.
+- Açık konular / sonraki adım: Aydınlık temadaki görünüm simülatörde ayrıca çekilmedi; renkler temadan geldiği için aynı düzende görünür.
+
+## [2026-10-22] Ek Düzeltme – Giriş / Kayıt Ekranında Klavye Açılınca Oluşan Taşma
+
+- Yapılanlar:
+  - **Sorun:** Klavye açılınca ekran klavye kadar kısalıyordu. Bu iki soruna yol açıyordu:
+    - Arka plan da küçülüyor, kitap yukarı kayıp formun hemen altına geliyordu.
+    - Kitaba ayrılan alt bölge forma kapalı kaldığı için form dar bir şeride sıkışıp kesiliyordu (Giriş'te "Giriş Yap" düğmesi, Kayıt'ta şifre alanları görünmüyordu).
+  - **Çözüm:**
+    - Ekran artık klavye için küçülmüyor (`resizeToAvoidBottomInset: false`). Arka plan ve kitap yerinde kalıyor; kitap klavyenin arkasında görünmez oluyor.
+    - Formun alt sınırı klavye kapalıyken kitabın alanı, açıkken klavyenin üstü. Böylece klavye açıkken kitaba ayrılan alan forma geri veriliyor.
+    - Form kalan alanda kaydırılabiliyor; odaklanılan alan otomatik olarak klavyenin üstünde görünür tutuluyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [auth_page_layout_widget.dart](lib/features/auth/widgets/auth_page_layout_widget.dart) – Klavye boşluğu elle yönetiliyor: arka plan sabit kalıyor, formun alt sınırı klavye açıkken klavyeye, kapalıyken kitaba göre belirleniyor.
+    - [register_form_test.dart](test/features/auth/register_form_test.dart) – Klavye açıkken arka planın küçülmediği, formun klavyenin üstünde kaldığı ve kitaba ayrılan alanı geri aldığı, odaklanılan alanın görünür olduğu test ediliyor.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 359 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Klavye açıkken kitap gizlendi.** Kitabı klavyenin üstünde tutmak formun zaten dar olan alanını daha da küçültürdü. Yazarken öncelik form; klavye kapanınca kitap aynı yerinde yeniden görünüyor.
+  - **Arka plan klavyeyle yeniden boyutlanmıyor.** Klavye açılıp kapanırken sahnenin zıplaması engellendi; animasyon da yeniden ölçeklenmeden akmaya devam ediyor.
+  - **Kalıcılık:** Çözüm, belirli bir ekran boyutuna ya da klavye yüksekliğine göre ayarlanmadı; o anki klavye boşluğu (`viewInsets`) kullanılıyor. Telefon/tablet, dikey/yatay ve farklı klavye türlerinde (harf, sayı) aynı şekilde çalışıyor. Regresyon testi eski kodla başarısız olacak şekilde yazıldı.
+- Açık konular / sonraki adım: Klavyeli görünüm simülatörde ekran görüntüsüyle ayrıca kontrol edilmedi; widget testinde klavye boşluğu verilerek doğrulandı.
+
+## [2026-10-22] Ek Düzeltme – Kayıt Ekranında Doğrulama Hatalarıyla "Giriş yap" Bağlantısının Görünmemesi
+
+- Yapılanlar:
+  - **Sorun:** Kayıt formunda doğrulama hataları görününce her alanın altına bir satır ekleniyor ve form uzuyordu. Form, alttaki kitaba ayrılmış sabit bölgenin üstündeki dar alanda kaydırılıyordu. Kart kitabın hemen üstünde kesildiği için kaydırılabildiği anlaşılmıyordu; taşma gibi görünüyordu ve "Zaten hesabın var mı? Giriş yap" bağlantısı görünmüyordu.
+  - **Çözüm:** Kitap sabit arka plandan çıkarıldı; artık sayfanın kaydırılan içeriğinin en altında, formun altında duruyor.
+    - Form sığıyorsa sayfa kaymıyor; kart kitabın üstündeki alanda ortalı, kitap ekranın altında. İlk görünüm değişmedi (simülatörde kontrol edildi).
+    - Form uzarsa (hata mesajları, büyük yazı boyutu, küçük ekran) sayfanın tamamı kayıyor: önce form, sonra "Giriş yap" bağlantısı, en altta kitap. Kart hiçbir durumda kitabın üstüne binmiyor ya da kesilmiyor.
+    - Yıldızlar, lamba ışığı ve uçuşan harfler arka planda sabit; kitabın sayfa çevirme animasyonu aynı döngüyle sürüyor.
+    - Klavye açıkken kitap içerikten çıkarılıyor; form klavyenin üstündeki tüm alanı kullanıyor (önceki düzeltme korunuyor).
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [auth_background_painter.dart](lib/features/auth/widgets/auth_background_painter.dart) – Kitap çizimi ayrı bir çiziciye (`AuthBookPainter`) taşındı; arka plan yalnızca yıldız, ışık ve harfleri çiziyor.
+    - [auth_background_widget.dart](lib/features/auth/widgets/auth_background_widget.dart) – Arka plan, animasyonunu içerikteki kitapla paylaşan bir sahneye dönüştü; kitabı çizen `AuthBookWidget` eklendi.
+    - [auth_page_layout_widget.dart](lib/features/auth/widgets/auth_page_layout_widget.dart) – Kaydırılan içerik "ortalanmış kart + altında kitap" oldu; form sığmazsa sayfanın tamamı kayıyor.
+    - [register_form_test.dart](test/features/auth/register_form_test.dart) – Hata mesajları açıkken bile kartın kitaba binmediği (üç ekran boyutunda), "Giriş yap" bağlantısına kaydırılıp dokunulabildiği, form sığınca kitabın ekranın altında durduğu ve klavye davranışı test ediliyor (arka plan testi `auth_background_test.dart` yeni yapıya uyarlandı).
+    - [01-register.png](docs/screenshots/01-register.png) – Değişmedi; ilk görünüm aynı kaldığı için yeniden alınmadı.
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Kayıt ekranını simülatörde doğrudan açıp yeni düzeni kontrol etmek için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 361 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Kitap kaydırılan içeriğe alındı.** Sabit bir alt bölge ayırmak, form uzadığında formu daraltıp kesik görünmesine yol açıyordu. İçerikle birlikte kayan kitap hem çakışmayı imkânsız kılıyor hem de sayfanın sonunu doğal biçimde gösteriyor.
+  - **Ölçü sabit değil.** Formun yüksekliği ölçülmeden, Flutter'ın en az ekran yüksekliği kadar olan kaydırılabilir sütunuyla çözüldü. Hata sayısı, yazı boyutu, dil veya ekran boyutu ne olursa olsun aynı şekilde çalışıyor.
+  - **Form alanları sıkıştırılmadı.** Dokunma hedefleri ve okunabilirlik korundu; gerekiyorsa sayfa kayıyor.
+- Açık konular / sonraki adım: Hata mesajlı görünüm simülatörde ekran görüntüsüyle ayrıca kontrol edilmedi; üç ekran boyutunda widget testleriyle doğrulandı.
+
+## [2026-10-22] Ek Düzeltme – Giriş / Kayıt Ekranında Kitabın Yarım Görünmesi ve Genel Taşma Kontrolü
+
+- Yapılanlar:
+  - **Sorun 1 – Yarım kitap:** Kitap kaydırılan içeriğin sonuna alındığı için sayfa tam kaydırılmadığında kitap ekranın altında yarım kesik görünüyordu. Özellikle klavye kapanıp kitap yeniden belirdiğinde ya da hata mesajları çıktığında oluyordu.
+  - **Sorun 2 (kod incelemesinde bulundu) – Çevrilen sayfa:** Sayfa çevrilirken kalkan sayfa kitabın kendi alanının üstüne taşıyordu. Kart kitaba yakınken sayfa kartın ya da "Giriş yap" bağlantısının üstüne çizilebilirdi.
+  - **Çözüm – yerleşim:** Yeni yerleşim bileşeni (`AuthFitLayout`) kitabı **yalnızca tamamına kartın altında yer varsa** çiziyor.
+    - Yer yoksa (hata mesajları, klavye, küçük ekran, büyük yazı) kitap hiç çizilmiyor; kart tek başına ortalanıyor ve gerekirse sayfa kayıyor.
+    - Karar her yerleşimde tek adımda veriliyor: ölçüp yeniden çizme yok, ekranda titreme ya da bir karelik kayma yok.
+    - Kitap dokunma ve ekran okuyucu ağacının dışında tutuluyor.
+  - **Çözüm – sayfa çevirme:** Kitabın alanına çevrilen sayfanın en yüksek noktası dahil edildi; sayfanın kalkma yüksekliği biraz azaltıldı. Kitap ayrıca kendi alanına kırpılıyor; çizim hiçbir koşulda dışarı taşmıyor.
+  - **Kayıt ekranında da kitap görünsün diye:** Kitap biraz küçültüldü, kartın iç boşlukları sıkılaştırıldı. Yaygın telefonlarda (ör. 402x874, 430x932) Kayıt ekranında da kitap görünüyor. iPhone SE gibi küçük ekranlarda kitap çizilmiyor, form tam görünüyor.
+  - **Genel kontrol:**
+    - Giriş ve Kayıt ekranı altı ekran boyutunda denendi: 390x844, 402x874, 430x932, 320x568, yatay 844x390 ve masaüstü 1280x800.
+    - Her boyutta şu durumlar kontrol edildi: ilk açılış, dört hata mesajı birden, sayfa sonuna kaydırma, 1,6 kat yazı boyutu, klavye açık.
+    - Hiçbirinde taşma veya istisna yok; kitap ya hiç çizilmiyor ya da tamamı kartın altında ve ekranın içinde.
+  - **Ek iyileştirmeler:**
+    - Kaydırırken klavye kapanıyor.
+    - Yerleşim bileşeni Flutter'ın kuru ölçüm (dry layout) isteğini de destekliyor; bu yüzden ileride başka bir yerleşimin içine konsa da hata vermez.
+  - Simülatörde Kayıt ekranında kitabın tamamen ve sayfa çevirme boşluğuyla birlikte göründüğü kontrol edildi.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [auth_fit_layout.dart](lib/features/auth/widgets/auth_fit_layout.dart) – Kartı ortalayıp kitabı yalnızca tamamına yer varsa altına yerleştiren, gerekmiyorsa hiç çizmeyen yerleşim bileşenidir.
+  - **Güncellenen:**
+    - [auth_page_layout_widget.dart](lib/features/auth/widgets/auth_page_layout_widget.dart) – Kart ve kitap `AuthFitLayout` ile yerleşiyor; kart boşlukları sıkılaştırıldı, kaydırırken klavye kapanıyor.
+    - [auth_background_painter.dart](lib/features/auth/widgets/auth_background_painter.dart) – Kitabın alanına çevrilen sayfanın yüksekliği eklendi; sayfanın kalkışı ve kitabın boyu biraz küçültüldü.
+    - [auth_background_widget.dart](lib/features/auth/widgets/auth_background_widget.dart) – Kitap kendi alanına kırpılıyor.
+    - [auth_header_widget.dart](lib/features/auth/widgets/auth_header_widget.dart) – Süs çizgisinin üst/alt boşlukları azaltıldı.
+    - [register_form_test.dart](test/features/auth/register_form_test.dart) – Altı ekran boyutunda; hata mesajı, sayfa sonu, büyük yazı ve klavye durumlarında kitabın yarım görünmediği ve kartla çakışmadığı test ediliyor. Yaygın telefonda kitabın göründüğü ve kuru ölçümün doğru olduğu da test ediliyor.
+    - [01-register.png](docs/screenshots/01-register.png) – Kayıt ekranı son düzenle yeniden alındı.
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Kayıt ekranını simülatörde doğrudan açıp kontrol etmek için geçici olarak yazılan giriş noktasıydı.
+    - `test/features/auth/_probe_test.dart` (silindi) – Kitabın farklı ekran boyutlarında sığıp sığmadığını ölçmek için geçici olarak yazılan testti.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 366 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **"Ya tam ya hiç" kuralı.**
+    - Kitap süs amaçlıdır. Yarım görünmesi ya da formla yarışması, gizlenmesinden daha kötü bir izlenim bırakıyor.
+    - Bu kural ekran boyutu, hata sayısı, yazı boyutu ve klavyeden bağımsız, her durumda aynı şekilde çalışıyor.
+  - **Ölçüm ayrı bir yerleşim bileşeninde yapıldı.** Kart çizildikten sonra ölçüp ekranı yeniden kurmak bir kare boyunca yanlış görünüme ve titremeye yol açardı. Özel yerleşim bileşeni kararı aynı yerleşim adımında veriyor.
+  - **Form alanları küçültülmedi.** Yalnızca kartın kenar boşlukları azaltıldı; dokunma hedefleri ve okunabilirlik korundu.
+- Açık konular / sonraki adım: Yok.
+
 ---
 
 ## Final Özeti
 
 **Tamamlananlar**
-- PROJECT.md 6.6'daki 4 aşamanın tamamı; Aşama 2'deki 7 ekran belirtilen sırayla. PROJECT.md 6.2'deki 8 sayfa maddesi `[x]` işaretlendi. 6.7 bölümüne ve git'e dokunulmadı (commit atılmadı).
-- 9 feature (`splash`, `auth`, `home_shell`, `library`, `add_book`, `reading_status`, `book_detail`, `reading_goal`, `settings`), 6 repository, 3 paylaşılan controller, ortak widget'lar, TR/EN ARB (218 anahtar), koyu/aydınlık tema.
-- Yalnızca onaylı paketler kullanıldı (`cupertino_icons` kaldırıldı). Ağır `setState` yok; `build` metotları ≤ 40 satır; renk/metin/kullanıcı metni kodda gömülü değil.
+- PROJECT.md 6.6'daki 5 aşamanın tamamı. Aşama 2'deki 7 ekran ve Aşama 5'teki dijital okuma (5.1-5.5) belirtilen sırayla yapıldı. PROJECT.md 6.2'deki 9 sayfa maddesi (Sayfa 0-8) `[x]` işaretlendi. 6.7 bölümüne ve git'e dokunulmadı (commit atılmadı).
+- 10 feature (`splash`, `auth`, `home_shell`, `library`, `add_book`, `reading_status`, `book_detail`, `reading_goal`, `settings`, `reader`), 8 repository, 3 paylaşılan controller, ortak widget'lar, TR/EN ARB (229 anahtar), koyu/aydınlık tema.
+- **Dijital okuma:**
+  - Telifi bitmiş kitaplar Project Gutenberg ve Vikikaynak'tan indirilir ve cihazda dosya olarak saklanır (`path_provider`); internetsiz okunur.
+  - Sayfalı okuyucu, yazı boyutu, kalınan yerden devam ve ilerlemenin sayfa sayacına/Okuma Durumu'na/Yıllık Hedef'e otomatik yansıması.
+  - Kullanıcının eklediği kitaplarda kendi PDF / EPUB dosyasını yükleyip okuma (EPUB okuyucuda metin olarak, PDF orijinal sayfalarıyla).
+  - Okuma metinleri kitap başındaki başlık sayfası, içindekiler ve Gutenberg işaretlerinden genel kurallarla temizlenir; önceden indirilmiş kopyalar da ilk açılışta düzelir.
+- **Seed:** 31 telifi bitmiş ve dijital okunabilir kitap: 29 Gutenberg + 2 Vikikaynak (Kürk Mantolu Madonna, Nutuk). ISBN, baskı başlığı, sayfa sayısı ve kapaklar Open Library'de, Gutenberg numaraları kaynağında doğrulandı. 20 alıntı metinde birebir doğrulandı. 4 not, 4 ödünç, 24 kitaplık hedef.
+- Yalnızca onaylı paketler kullanıldı. Aşama 5 için `path_provider`, PDF/EPUB için kullanıcı onayıyla `file_picker`, `archive`, `pdfrx` eklendi (hepsi PROJECT.md 6.1'de). Ağır `setState` yok, `build` metotları ≤ 40 satır, renk/metin/kullanıcı metni kodda gömülü değil.
 - Özel ikon (SVG → PNG), 6 hazır avatar, yerel açılış ekranı, ad "Kitalog".
-- Seed: 36 gerçek kitap (ISBN'leri Open Library'de ve ISBN-13 sağlama toplamıyla doğrulandı, kapakları 200 dönüyor), 23 alıntı, 4 not, 4 ödünç, 24 kitaplık hedef.
+- Giriş / Kayıt ekranlarında uygulamaya özel çizilmiş, animasyonlu arka plan: sayfaları çevrilen açık kitaptan uçuşan harfler, göz kırpan yıldızlar ve lamba ışığı (dış görsel yok, telif sorunu yok).
 
 **Son sonuçlar**
-- `flutter analyze`: 0 uyarı, 0 hata. `flutter test`: 230 test, hepsi geçti.
-- Android debug APK ve iOS simülatör derlemesi başarılı; uygulama iOS simülatöründe çalıştırıldı.
+- `flutter analyze`: 0 uyarı, 0 hata. `flutter test`: 366 test, hepsi geçti.
+- Android debug APK ve iOS simülatör derlemesi başarılı. Uygulama iOS simülatöründe çalıştırıldı; gerçek ağla indirme ve çevrimdışı açma doğrulandı.
 
 **Ertelenen / yapılmayan işler**
-- Gerçek cihazda (fiziksel Android/iOS), macOS/Windows/Linux masaüstünde ve web'de çalıştırma yapılmadı; yalnızca Android/iOS derlemesi ve iOS simülatörü denendi.
-- Galeri/kamera ile profil resmi seçimi simülatörde elle denenmedi (birim ve widget testleri sahte seçiciyle yapıldı).
+- Gerçek cihazda (fiziksel Android/iOS), macOS/Windows/Linux masaüstünde ve web'de çalıştırma yapılmadı. Yalnızca Android/iOS derlemesi ve iOS simülatörü denendi.
+- Web'de çevrimdışı okuma yok: metin oturum boyunca bellekte tutuluyor, çünkü `path_provider` web'de dosya klasörü sunmuyor.
+- Galeri/kamera ile profil resmi seçimi ve PDF/EPUB için sistemin dosya seçme penceresi elle denenmedi (testler sahte seçicilerle yapıldı; PDF/EPUB görüntüleme simülatörde gerçek dosyalarla doğrulandı).
+- Web'de PDF görüntüleme (`pdfrx` WASM) denenmedi.
 - Sunum (Aşama 4 "Sunum" maddesi) hazırlanmadı; PROJECT.md 6.7 senin için boş bırakıldı.
 - PROJECT.md 6.4'teki iki `[]` kutusu dokunulmadan bırakıldı (yalnızca 6.2 işaretlenmesi istenmişti).
 
 **Bana kalan kararlar**
-1. **Profil resmi saklama:** Yüklenen resim dosya yolu yerine base64 olarak saklanıyor (`path_provider` onaylı listede yok; web ve kalıcılık için). `path_provider` onaylarsan dosya tabanlı saklamaya geçilir.
-2. **Alıntı sayfa numaraları:** Alıntı metinleri yayımlanmış eserlerden birebir, ancak sayfa numaralarını seçilen ISBN baskısında doğrulayamadım; baskıya göre kayabilir. Kesin istiyorsan numaralar kaldırılabilir veya elle düzeltilebilir.
-3. **Seed kapakları:** Bazı Open Library kapakları kitabın ön kapağı değil (örn. "Tutunamayanlar" için bir iç sayfa görseli); veri doğru ISBN'e ait olduğu için olduğu gibi bırakıldı.
-4. **Şifre özeti** tuzsuz SHA-256'dır (PROJECT.md'nin istediği yöntem); gerçek bir sunucuya geçilirse sunucu taraflı güvenli hash gerekir.
-5. Splash'ın oturum yokken Kayıt ekranına (çıkış sonrası Giriş ekranına) yönlendirmesi PROJECT.md'ye göre uygulandı; çıkış yapmış kullanıcıyı da önce Giriş'e götürmek istersen tek satırlık değişiklik.
+1. **Wikimedia iletişim adresi:** Vikikaynak istekleri, Wikimedia'nın 2026 sınır politikası gereği User-Agent'ta iletişim bilgisi taşıyor. Şu an projenin GitHub adresi kullanılıyor (`SourceHttp.contactUrl`). Uygulama yayınlanacaksa kalıcı bir proje sayfası veya iletişim e-postasıyla değiştirmen önerilir.
+2. **Türkçe kitap sayısı 2:**
+   - Vikikaynak'ta kitap uzunluğunda tam metni olan Türkçe eser çok az; Aşk-ı Memnu ve Rübâb-ı Şikeste eksik, Kuyucaklı Yusuf boş.
+   - Antigone (Sabahattin Ali çevirisi) tam ama Open Library'de kapaklı Türkçe baskısı yok, bu yüzden alınmadı.
+   - Daha fazla Türkçe eser istersen iki yol var: derlemeleri kabul etmek (ör. Ömer Seyfettin seçkisi) veya kapaksız/ISBN'siz kayda izin vermek.
+3. **Profil resmi saklama:** Hâlâ base64 olarak saklanıyor. Aşama 5'te `path_provider` eklendiği için artık dosya tabanlı saklamaya geçilebilir.
+4. **Nutuk uygulamayla paketlendi** (Ek Geliştirme kaydı): artık anında ve internetsiz açılıyor; Android indirme boyutu ~0,6 MB, iOS kurulumu 1,45 MB arttı. Başka çok parçalı eser eklenirse aynı yöntem kullanılabilir.
+5. **Seed kapakları:** Bazı Open Library kapakları kitabın ön kapağı değil (ör. Self-Help için bir iç sayfa görseli). Veri doğru ISBN'e ait olduğu için olduğu gibi bırakıldı.
+6. **Şifre özeti** tuzsuz SHA-256 (PROJECT.md'nin istediği yöntem). Gerçek bir sunucuya geçilirse sunucu taraflı güvenli hash gerekir.
+7. **Splash yönlendirmesi** PROJECT.md'ye göre uygulandı: oturum yoksa Kayıt ekranına, çıkış sonrası Giriş ekranına gidiliyor. Çıkış yapmış kullanıcıyı da önce Giriş'e götürmek istersen tek satırlık değişiklik.
 
 Şimdi `flutter analyze` ile kontrol edebilirsin.

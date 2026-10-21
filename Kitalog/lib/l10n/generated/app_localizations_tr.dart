@@ -10,6 +10,9 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get readerTitle => 'Okuyucu';
+
+  @override
   String get appName => 'Kitalog';
 
   @override
@@ -649,4 +652,127 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get settingsLogoutMessage =>
       'Verilerin silinmez; tekrar giriş yapabilirsin.';
+
+  @override
+  String get readerDownloadTitle => 'Bu kitap henüz cihazında değil';
+
+  @override
+  String get readerDownloadMessage =>
+      'Bir kez indir; sonra internet olmadan da okuyabilirsin.';
+
+  @override
+  String get readerDownloadWebNote =>
+      'Web sürümünde metin yalnızca bu oturum boyunca saklanır; çevrimdışı okuma için mobil uygulamayı kullan.';
+
+  @override
+  String get readerDownloadButton => 'İndir ve Oku';
+
+  @override
+  String readerDownloading(int percent) {
+    return 'İndiriliyor… %$percent';
+  }
+
+  @override
+  String get readerErrorNetwork =>
+      'İnternet bağlantısı kurulamadı. İndirmek için bağlantı gerekiyor.';
+
+  @override
+  String get readerErrorServer =>
+      'Kaynak şu an yanıt vermiyor. Biraz sonra tekrar dene.';
+
+  @override
+  String get readerErrorNotFound => 'Bu kitabın metni kaynağında bulunamadı.';
+
+  @override
+  String get readerErrorStorage =>
+      'Metin cihaza kaydedilemedi. Depolama alanını kontrol et.';
+
+  @override
+  String get readerErrorUnavailable =>
+      'Bu kitabın ücretsiz dijital sürümü yok.';
+
+  @override
+  String readerPageIndicator(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get readerPrevious => 'Önceki sayfa';
+
+  @override
+  String get readerNext => 'Sonraki sayfa';
+
+  @override
+  String get readerTextSize => 'Yazı boyutu';
+
+  @override
+  String readerTextScaleValue(int percent) {
+    return '%$percent';
+  }
+
+  @override
+  String get digitalSectionTitle => 'Dijital Sürüm';
+
+  @override
+  String get digitalDownload => 'İndir (çevrimdışı okuma)';
+
+  @override
+  String get digitalRead => 'Oku';
+
+  @override
+  String get digitalDelete => 'Cihazdan sil';
+
+  @override
+  String get fileErrorUnsupported =>
+      'Yalnızca PDF ve EPUB dosyaları desteklenir.';
+
+  @override
+  String get fileErrorInvalid =>
+      'Dosya açılamadı; bozuk ya da geçersiz bir PDF/EPUB olabilir.';
+
+  @override
+  String get fileErrorProtected =>
+      'Bu dosya kopya korumalı (DRM); korumalı kitaplar açılamaz.';
+
+  @override
+  String get fileErrorTooLarge => 'Dosya çok büyük (en fazla 150 MB).';
+
+  @override
+  String get fileErrorMissing =>
+      'Dosya bu cihazda bulunamadı. Kitap detayından yeniden yükleyebilirsin.';
+
+  @override
+  String get digitalImportHint =>
+      'Kendi PDF veya EPUB dosyanı yükleyip uygulamada okuyabilirsin. Dosya yalnızca bu cihazda saklanır.';
+
+  @override
+  String get digitalImportButton => 'Dosya yükle (PDF / EPUB)';
+
+  @override
+  String get digitalImporting => 'Dosya hazırlanıyor…';
+
+  @override
+  String get digitalReplaceFile => 'Başka dosya yükle';
+
+  @override
+  String statusCurrentLabel(String status) {
+    return 'Durum: $status';
+  }
+
+  @override
+  String get readAgain => 'Tekrar Oku';
+
+  @override
+  String get finishConfirmTitle => 'Kitabı bitirdin mi?';
+
+  @override
+  String get finishConfirmMessage =>
+      'Kitap \"Bitti\" olarak işaretlenecek ve okuma ilerlemesi son sayfaya getirilecek.';
+
+  @override
+  String get readAgainConfirmTitle => 'Kitabı tekrar oku?';
+
+  @override
+  String get readAgainConfirmMessage =>
+      'Okuma ilerlemesi sıfırlanacak ve kitap \"Okunuyor\" durumuna geçecek. Yeniden bitirene kadar yıllık hedefte sayılmaz.';
 }

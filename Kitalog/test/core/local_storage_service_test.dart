@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kitalog/core/constants/storage_keys.dart';
+import 'package:kitalog/core/data/seed_data.dart';
 import 'package:kitalog/core/storage/local_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,6 +43,7 @@ void main() {
     final deps = await createTestDependencies({
       StorageKeys.books: '[[[bozuk',
       StorageKeys.seeded: true,
+      StorageKeys.seedVersion: SeedData.version,
     });
     await deps.libraryController.load();
     expect(deps.libraryController.books.value, isEmpty);

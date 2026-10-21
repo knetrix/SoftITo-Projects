@@ -6,6 +6,7 @@ import '../controllers/settings_controller.dart';
 import '../repositories/auth_repository.dart';
 import '../repositories/book_repository.dart';
 import '../repositories/book_search_repository.dart';
+import '../repositories/digital_book_repository.dart';
 import '../repositories/goal_repository.dart';
 import '../repositories/note_repository.dart';
 import '../repositories/quote_repository.dart';
@@ -21,10 +22,12 @@ class AppScope extends InheritedWidget {
     required this.authRepository,
     required this.bookRepository,
     required this.bookSearchRepository,
+    required this.digitalBookRepository,
     required this.quoteRepository,
     required this.noteRepository,
     required this.goalRepository,
     required this.settingsRepository,
+    this.animateDecorations = true,
     required super.child,
   });
 
@@ -34,10 +37,14 @@ class AppScope extends InheritedWidget {
   final AuthRepository authRepository;
   final BookRepository bookRepository;
   final BookSearchRepository bookSearchRepository;
+  final DigitalBookRepository digitalBookRepository;
   final QuoteRepository quoteRepository;
   final NoteRepository noteRepository;
   final GoalRepository goalRepository;
   final SettingsRepository settingsRepository;
+
+  /// Süs animasyonları (ör. giriş arka planı); testlerde kapatılır.
+  final bool animateDecorations;
 
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();

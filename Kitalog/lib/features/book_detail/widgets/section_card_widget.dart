@@ -24,11 +24,28 @@ class SectionCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(child: Text(title, style: context.textTheme.titleMedium)),
-                ?trailing,
-              ],
+            // Başlık ortalanır; düğme (varsa) sağda durur ve başlığın ortasını kaydırmaz.
+            SizedBox(
+              width: double.infinity,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: trailing == null
+                          ? 0
+                          : kMinInteractiveDimension,
+                    ),
+                    child: Text(
+                      title,
+                      style: context.textTheme.titleMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  if (trailing != null)
+                    Align(alignment: Alignment.centerRight, child: trailing),
+                ],
+              ),
             ),
             const SizedBox(height: AppSizes.spaceM),
             child,

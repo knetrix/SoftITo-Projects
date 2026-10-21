@@ -23,4 +23,7 @@ abstract final class AppSizes {
   static const double shelfCoverWidth = 72;
   static const double splashLogo = 120;
   static const double maxFormWidth = 480;
+
+  /// Okuyucuda satır uzunluğu rahat okunacak genişlikte tutulur.
+  static const double readerMaxWidth = 680;
 }

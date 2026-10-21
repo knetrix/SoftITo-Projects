@@ -29,10 +29,8 @@ class _LoginViewState extends State<LoginView> {
 
   void _onStateChanged() {
     if (_controller!.state.value.isSuccess && mounted) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.home,
-        (route) => false,
-      );
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
     }
   }
 
@@ -61,9 +59,9 @@ class _LoginViewState extends State<LoginView> {
               isLoading: state.isLoading,
               onSubmit: (email, password) =>
                   controller.submit(email: email, password: password),
-              onRegisterTap: () => Navigator.of(
-                context,
-              ).pushReplacementNamed(AppRoutes.register),
+              onRegisterTap: () =>
+                  Navigator.of(context)
+                      .pushReplacementNamed(AppRoutes.register),
             ),
           ],
         ),

@@ -55,6 +55,14 @@ class LocalStorageService {
     await _prefs.setBool(key, value);
   }
 
+  int readInt(String key, {int defaultValue = 0}) {
+    return _prefs.getInt(key) ?? defaultValue;
+  }
+
+  Future<void> writeInt(String key, int value) async {
+    await _prefs.setInt(key, value);
+  }
+
   Future<void> remove(String key) async {
     await _prefs.remove(key);
   }

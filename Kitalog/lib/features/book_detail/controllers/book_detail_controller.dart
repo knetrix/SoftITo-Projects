@@ -3,13 +3,18 @@ import 'package:flutter/foundation.dart';
 import '../../../core/controllers/library_controller.dart';
 import '../../../core/models/loan_model.dart';
 import '../../../core/models/reading_status.dart';
+import '../../../core/repositories/digital_book_repository.dart';
 import '../models/book_detail_actions.dart';
 import '../models/book_detail_model.dart';
 
 /// Tek bir kitabın detayını yönetir. Veri paylaşılan `LibraryController`'dan
 /// okunur; her değişiklik önce oraya yazılır, sonra state güncellenir.
 class BookDetailController {
-  BookDetailController({required this._library, required this.bookId}) {
+  BookDetailController({
+    required this._library,
+    required this.bookId,
+    this._digital,
+  }) {
     _library.books.addListener(_sync);
     _library.quotes.addListener(_sync);
     _library.notes.addListener(_sync);
@@ -19,6 +24,9 @@ class BookDetailController {
   final LibraryController _library;
   final String bookId;
 
+  /// Verilirse "Tekrar oku"da dijital kopyanın kalınan yeri de başa alınır.
+  final DigitalBookRepository? _digital;
+
   final ValueNotifier<BookDetailModel> state = ValueNotifier<BookDetailModel>(
     const BookDetailModel(),
   );
@@ -27,6 +35,7 @@ class BookDetailController {
     changePage: changePage,
     setPage: setPage,
     setStatus: setStatus,
+    readAgain: readAgain,
     setRating: setRating,
     saveReview: saveReview,
     addQuote: addQuote,
@@ -67,6 +76,12 @@ class BookDetailController {
 
   Future<void> setStatus(ReadingStatus status) =>
       _library.setStatus(bookId, status);
+
+  /// Biten kitabı baştan okumaya başlatır (sayfa sayacı ve dijital konum sıfırlanır).
+  Future<void> readAgain() async {
+    await _library.restartReading(bookId);
+    await _digital?.savePosition(bookId, 0);
+  }
 
   Future<void> setRating(int rating) => _library.setRating(bookId, rating);
 

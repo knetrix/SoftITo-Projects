@@ -57,7 +57,7 @@ void main() {
     final library = deps.libraryController;
     await library.load();
     final controller = LibraryShelfController(library: library);
-    controller.setQuery('dune');
+    controller.setQuery('dracula');
     expect(controller.state.value.books.length, 1);
     await library.deleteBook(controller.state.value.books.first.id);
     expect(controller.state.value.books, isEmpty);

@@ -9,6 +9,7 @@ class BookDetailActions {
     required this.changePage,
     required this.setPage,
     required this.setStatus,
+    required this.readAgain,
     required this.setRating,
     required this.saveReview,
     required this.addQuote,
@@ -23,6 +24,7 @@ class BookDetailActions {
   final void Function(int delta) changePage;
   final void Function(int page) setPage;
   final void Function(ReadingStatus status) setStatus;
+  final VoidCallback readAgain;
   final void Function(int rating) setRating;
   final void Function(String review) saveReview;
   final void Function(String text, int? page) addQuote;

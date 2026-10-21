@@ -1,4 +1,5 @@
 {
+  "readerTitle": "Reader",
   "@@locale": "en",
   "appName": "Kitalog",
   "commonSave": "Save",
@@ -366,5 +367,70 @@
   "settingsAvatarFailed": "Could not pick the image. Please try again.",
   "settingsLogout": "Sign out",
   "settingsLogoutTitle": "Sign out?",
-  "settingsLogoutMessage": "Your data is kept; you can sign in again."
+  "settingsLogoutMessage": "Your data is kept; you can sign in again.",
+  "readerDownloadTitle": "This book is not on your device yet",
+  "readerDownloadMessage": "Download it once and read it even without internet.",
+  "readerDownloadWebNote": "On the web the text is kept only for this session; use the mobile app for offline reading.",
+  "readerDownloadButton": "Download and read",
+  "readerDownloading": "Downloading… {percent}%",
+  "@readerDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "readerErrorNetwork": "Could not connect. A connection is needed to download.",
+  "readerErrorServer": "The source is not responding. Try again shortly.",
+  "readerErrorNotFound": "This book's text was not found at its source.",
+  "readerErrorStorage": "The text could not be saved. Check your storage.",
+  "readerErrorUnavailable": "This book has no free digital edition.",
+  "readerPageIndicator": "{current} / {total}",
+  "@readerPageIndicator": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "readerPrevious": "Previous page",
+  "readerNext": "Next page",
+  "readerTextSize": "Text size",
+  "readerTextScaleValue": "{percent}%",
+  "@readerTextScaleValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "digitalSectionTitle": "Digital Edition",
+  "digitalDownload": "Download for offline reading",
+  "digitalRead": "Read",
+  "digitalDelete": "Remove from device",
+  "fileErrorUnsupported": "Only PDF and EPUB files are supported.",
+  "fileErrorInvalid": "The file could not be opened; it may be a damaged or invalid PDF/EPUB.",
+  "fileErrorProtected": "This file is copy-protected (DRM); protected books cannot be opened.",
+  "fileErrorTooLarge": "The file is too large (maximum 150 MB).",
+  "fileErrorMissing": "The file was not found on this device. You can upload it again from the book details.",
+  "digitalImportHint": "Upload your own PDF or EPUB file to read it in the app. The file is stored only on this device.",
+  "digitalImportButton": "Upload file (PDF / EPUB)",
+  "digitalImporting": "Preparing the file…",
+  "digitalReplaceFile": "Upload another file",
+  "statusCurrentLabel": "Status: {status}",
+  "@statusCurrentLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "readAgain": "Read again",
+  "finishConfirmTitle": "Did you finish this book?",
+  "finishConfirmMessage": "The book will be marked as finished and your progress will move to the last page.",
+  "readAgainConfirmTitle": "Read this book again?",
+  "readAgainConfirmMessage": "Your progress will be reset and the book will move to \"Reading\". It won't count toward your yearly goal until you finish it again."
 }

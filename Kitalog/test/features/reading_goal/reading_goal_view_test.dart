@@ -15,8 +15,8 @@ void main() {
       const Scaffold(body: ReadingGoalView()),
       size: const Size(800, 2400),
     );
-    expect(find.text('13 / 24 kitap'), findsOneWidget);
-    expect(find.text('Hedefe 11 kitap kaldı'), findsOneWidget);
+    expect(find.text('12 / 24 kitap'), findsOneWidget);
+    expect(find.text('Hedefe 12 kitap kaldı'), findsOneWidget);
     expect(find.text('Hedef: 24 kitap'), findsOneWidget);
     expect(find.text('Toplam okunan sayfa'), findsOneWidget);
     expect(find.text('Aylık biten kitaplar'), findsOneWidget);
@@ -36,7 +36,7 @@ void main() {
     await tester.tap(find.byTooltip('Hedefi artır'));
     await tester.pumpAndSettle();
     expect(find.text('Hedef: 25 kitap'), findsOneWidget);
-    expect(find.text('13 / 25 kitap'), findsOneWidget);
+    expect(find.text('12 / 25 kitap'), findsOneWidget);
     await tester.tap(find.byTooltip('Hedefi azalt'));
     await tester.tap(find.byTooltip('Hedefi azalt'));
     await tester.pumpAndSettle();
@@ -46,7 +46,7 @@ void main() {
   testWidgets('hedefe ulaşılınca tebrik mesajı gösterilir', (tester) async {
     final deps = await createTestDependencies();
     await deps.libraryController.load();
-    await deps.libraryController.setGoalTarget(DateTime.now().year, 13);
+    await deps.libraryController.setGoalTarget(DateTime.now().year, 12);
     await pumpScreen(
       tester,
       deps,

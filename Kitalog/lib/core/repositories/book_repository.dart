@@ -24,4 +24,9 @@ class BookRepository {
   Future<bool> isSeeded() async => _storage.readBool(StorageKeys.seeded);
 
   Future<void> markSeeded() => _storage.writeBool(StorageKeys.seeded, true);
+
+  /// Yüklü örnek verinin sürümü; ilk sürümde anahtar yoktu (1 sayılır).
+  Future<int> seedVersion() async => _storage.readInt(StorageKeys.seedVersion, defaultValue: 1);
+
+  Future<void> saveSeedVersion(int version) => _storage.writeInt(StorageKeys.seedVersion, version);
 }

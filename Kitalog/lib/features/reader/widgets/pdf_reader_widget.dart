@@ -1,0 +1,74 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:pdfrx/pdfrx.dart';
+
+import 'reader_bottom_bar_widget.dart';
+
+/// Kullanıcının PDF dosyasını orijinal sayfa düzeniyle gösterir; sayfa geçişleri
+/// ve kaydırıcı görüntüleyicinin denetleyicisi üzerinden yapılır.
+class PdfReaderWidget extends StatefulWidget {
+  const PdfReaderWidget({
+    super.key,
+    required this.bytes,
+    required this.sourceName,
+    required this.initialPage,
+    required this.pageIndex,
+    required this.pageCount,
+    required this.onReady,
+    required this.onPageChanged,
+  });
+
+  final Uint8List bytes;
+  final String sourceName;
+
+  /// 0'dan başlayan sayfa sırası.
+  final int initialPage;
+  final int pageIndex;
+  final int pageCount;
+  final ValueChanged<int> onReady;
+
+  /// 1'den başlayan sayfa numarası.
+  final ValueChanged<int> onPageChanged;
+
+  @override
+  State<PdfReaderWidget> createState() => _PdfReaderWidgetState();
+}
+
+class _PdfReaderWidgetState extends State<PdfReaderWidget> {
+  final PdfViewerController _pdf = PdfViewerController();
+
+  void _jump(int index) {
+    if (!_pdf.isReady) return;
+    _pdf.goToPage(pageNumber: index.clamp(0, _pdf.pageCount - 1) + 1);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: PdfViewer.data(
+            widget.bytes,
+            sourceName: widget.sourceName,
+            controller: _pdf,
+            initialPageNumber: widget.initialPage + 1,
+            params: PdfViewerParams(
+              onViewerReady: (document, _) => widget.onReady(document.pages.length),
+              onPageChanged: (page) {
+                if (page != null) widget.onPageChanged(page);
+              },
+            ),
+          ),
+        ),
+        if (widget.pageCount > 0)
+          ReaderBottomBarWidget(
+            pageIndex: widget.pageIndex,
+            pageCount: widget.pageCount,
+            onPrevious: () => _jump(widget.pageIndex - 1),
+            onNext: () => _jump(widget.pageIndex + 1),
+            onJump: _jump,
+          ),
+      ],
+    );
+  }
+}

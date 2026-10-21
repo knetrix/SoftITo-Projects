@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/extensions/context_extensions.dart';
 import '../../../core/models/book_model.dart';
+import '../../../core/models/reading_status.dart';
 import '../../../core/widgets/reading_progress_bar.dart';
 import 'page_input_dialog.dart';
 import 'section_card_widget.dart';
 
 /// Sayfa sayacı: ilerleme çubuğu, ±1 / ±10 butonları ve doğrudan sayfa girişi.
+/// Biten kitapta yalnızca ilerleme gösterilir; değiştirmek için "Tekrar oku" kullanılır.
 class PageCounterWidget extends StatelessWidget {
   const PageCounterWidget({
     super.key,
@@ -25,16 +27,19 @@ class PageCounterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final editable = book.status != ReadingStatus.finished;
     return SectionCardWidget(
       title: l10n.pageCounterTitle,
-      trailing: IconButton(
-        tooltip: l10n.pageEditTooltip,
-        icon: const Icon(Icons.edit_outlined),
-        onPressed: () async {
-          final page = await PageInputDialog.show(context, book);
-          if (page != null) onSetPage(page);
-        },
-      ),
+      trailing: editable
+          ? IconButton(
+              tooltip: l10n.pageEditTooltip,
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: () async {
+                final page = await PageInputDialog.show(context, book);
+                if (page != null) onSetPage(page);
+              },
+            )
+          : null,
       child: Column(
         children: [
           ReadingProgressBar(
@@ -42,8 +47,10 @@ class PageCounterWidget extends StatelessWidget {
             currentPage: book.currentPage,
             pageCount: book.pageCount,
           ),
-          const SizedBox(height: AppSizes.spaceM),
-          PageStepButtonsWidget(onChangePage: onChangePage, bigStep: bigStep),
+          if (editable) ...[
+            const SizedBox(height: AppSizes.spaceM),
+            PageStepButtonsWidget(onChangePage: onChangePage, bigStep: bigStep),
+          ],
         ],
       ),
     );

@@ -5,6 +5,7 @@ import 'package:kitalog/features/auth/views/register_view.dart';
 import 'package:kitalog/features/book_detail/views/book_detail_view.dart';
 import 'package:kitalog/features/home_shell/views/home_shell_view.dart';
 import 'package:kitalog/features/library/views/library_view.dart';
+import 'package:kitalog/features/reader/views/reader_view.dart';
 import 'package:kitalog/features/reading_goal/views/reading_goal_view.dart';
 import 'package:kitalog/features/reading_status/views/reading_status_view.dart';
 import 'package:kitalog/features/settings/views/settings_view.dart';
@@ -29,8 +30,9 @@ final _screens = <String, Widget Function()>{
     pages: [LibraryView(), ReadingStatusView(), ReadingGoalView()],
   ),
   'Okuma durumu': () => const Scaffold(body: ReadingStatusView()),
-  'Kitap detayı': () => const BookDetailView(bookId: 'seed-9780340839935'),
+  'Kitap detayı': () => const BookDetailView(bookId: 'seed-9781435131828'),
   'Ayarlar': () => const SettingsView(),
+  'Okuyucu': () => const ReaderView(bookId: 'seed-9781435131828'),
 };
 
 void main() {

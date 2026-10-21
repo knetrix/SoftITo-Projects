@@ -10,6 +10,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get readerTitle => 'Reader';
+
+  @override
   String get appName => 'Kitalog';
 
   @override
@@ -650,4 +653,126 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsLogoutMessage =>
       'Your data is kept; you can sign in again.';
+
+  @override
+  String get readerDownloadTitle => 'This book is not on your device yet';
+
+  @override
+  String get readerDownloadMessage =>
+      'Download it once and read it even without internet.';
+
+  @override
+  String get readerDownloadWebNote =>
+      'On the web the text is kept only for this session; use the mobile app for offline reading.';
+
+  @override
+  String get readerDownloadButton => 'Download and read';
+
+  @override
+  String readerDownloading(int percent) {
+    return 'Downloading… $percent%';
+  }
+
+  @override
+  String get readerErrorNetwork =>
+      'Could not connect. A connection is needed to download.';
+
+  @override
+  String get readerErrorServer =>
+      'The source is not responding. Try again shortly.';
+
+  @override
+  String get readerErrorNotFound =>
+      'This book\'s text was not found at its source.';
+
+  @override
+  String get readerErrorStorage =>
+      'The text could not be saved. Check your storage.';
+
+  @override
+  String get readerErrorUnavailable => 'This book has no free digital edition.';
+
+  @override
+  String readerPageIndicator(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get readerPrevious => 'Previous page';
+
+  @override
+  String get readerNext => 'Next page';
+
+  @override
+  String get readerTextSize => 'Text size';
+
+  @override
+  String readerTextScaleValue(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get digitalSectionTitle => 'Digital Edition';
+
+  @override
+  String get digitalDownload => 'Download for offline reading';
+
+  @override
+  String get digitalRead => 'Read';
+
+  @override
+  String get digitalDelete => 'Remove from device';
+
+  @override
+  String get fileErrorUnsupported => 'Only PDF and EPUB files are supported.';
+
+  @override
+  String get fileErrorInvalid =>
+      'The file could not be opened; it may be a damaged or invalid PDF/EPUB.';
+
+  @override
+  String get fileErrorProtected =>
+      'This file is copy-protected (DRM); protected books cannot be opened.';
+
+  @override
+  String get fileErrorTooLarge => 'The file is too large (maximum 150 MB).';
+
+  @override
+  String get fileErrorMissing =>
+      'The file was not found on this device. You can upload it again from the book details.';
+
+  @override
+  String get digitalImportHint =>
+      'Upload your own PDF or EPUB file to read it in the app. The file is stored only on this device.';
+
+  @override
+  String get digitalImportButton => 'Upload file (PDF / EPUB)';
+
+  @override
+  String get digitalImporting => 'Preparing the file…';
+
+  @override
+  String get digitalReplaceFile => 'Upload another file';
+
+  @override
+  String statusCurrentLabel(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get readAgain => 'Read again';
+
+  @override
+  String get finishConfirmTitle => 'Did you finish this book?';
+
+  @override
+  String get finishConfirmMessage =>
+      'The book will be marked as finished and your progress will move to the last page.';
+
+  @override
+  String get readAgainConfirmTitle => 'Read this book again?';
+
+  @override
+  String get readAgainConfirmMessage =>
+      'Your progress will be reset and the book will move to \"Reading\". It won\'t count toward your yearly goal until you finish it again.';
 }

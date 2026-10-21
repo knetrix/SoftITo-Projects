@@ -15,17 +15,17 @@ void main() {
       const Scaffold(body: ReadingStatusView()),
       size: const Size(800, 1600),
     );
-    expect(find.text('Okunuyor (8)'), findsOneWidget);
-    expect(find.text('Okunacak (15)'), findsOneWidget);
-    expect(find.text('Bitti (13)'), findsOneWidget);
-    expect(find.text('%52'), findsOneWidget);
+    expect(find.text('Okunuyor (7)'), findsOneWidget);
+    expect(find.text('Okunacak (12)'), findsOneWidget);
+    expect(find.text('Bitti (12)'), findsOneWidget);
+    expect(find.text('%70'), findsOneWidget);
 
-    // En yüksek ilerlemeli kitap (Tutunamayanlar, %68) listenin başındadır.
-    final before = deps.libraryController.bookById('seed-9789754700114')!.currentPage;
+    // En yüksek ilerlemeli kitap (Self-Help, %70) listenin başındadır.
+    final before = deps.libraryController.bookById('seed-9780192801760')!.currentPage;
     await tester.tap(find.byTooltip('1 sayfa ileri').first);
     await tester.pumpAndSettle();
     expect(
-      deps.libraryController.bookById('seed-9789754700114')!.currentPage,
+      deps.libraryController.bookById('seed-9780192801760')!.currentPage,
       before + 1,
     );
   });
@@ -39,12 +39,12 @@ void main() {
       const Scaffold(body: ReadingStatusView()),
       size: const Size(800, 1600),
     );
-    await tester.tap(find.text('Okunacak (15)'));
+    await tester.tap(find.text('Okunacak (12)'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Okumaya Başla').first);
     await tester.pumpAndSettle();
-    expect(find.text('Okunuyor (9)'), findsOneWidget);
-    expect(find.text('Okunacak (14)'), findsOneWidget);
+    expect(find.text('Okunuyor (8)'), findsOneWidget);
+    expect(find.text('Okunacak (11)'), findsOneWidget);
   });
 
   testWidgets('bitti sekmesi puan ve bitiş tarihini gösterir, boş durum mesajı çıkar', (tester) async {
@@ -56,7 +56,7 @@ void main() {
       const Scaffold(body: ReadingStatusView()),
       size: const Size(800, 1600),
     );
-    await tester.tap(find.text('Bitti (13)'));
+    await tester.tap(find.text('Bitti (12)'));
     await tester.pumpAndSettle();
     expect(find.byIcon(Icons.star_rounded), findsWidgets);
     expect(find.textContaining('Bitiş:'), findsWidgets);

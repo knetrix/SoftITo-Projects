@@ -21,16 +21,15 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _controller ??= RegisterController(auth: AppScope.of(context).authController)
-      ..state.addListener(_onStateChanged);
+    _controller ??= RegisterController(
+      auth: AppScope.of(context).authController,
+    )..state.addListener(_onStateChanged);
   }
 
   void _onStateChanged() {
     if (_controller!.state.value.isSuccess && mounted) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.home,
-        (route) => false,
-      );
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
     }
   }
 
@@ -50,11 +49,8 @@ class _RegisterViewState extends State<RegisterView> {
         valueListenable: controller.state,
         builder: (context, state, _) => RegisterFormWidget(
           isLoading: state.isLoading,
-          onSubmit: (email, phone, password) => controller.submit(
-            email: email,
-            phone: phone,
-            password: password,
-          ),
+          onSubmit: (email, phone, password) =>
+              controller.submit(email: email, phone: phone, password: password),
           onLoginTap: () =>
               Navigator.of(context).pushReplacementNamed(AppRoutes.login),
         ),

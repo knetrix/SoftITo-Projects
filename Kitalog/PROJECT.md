@@ -47,6 +47,12 @@ Genel Kullanıcılar, Öğrenciler veya İlgili Alan Profesyonelleri.
 | `crypto`                                      | Şifrenin Düz Metin Yerine SHA-256 Hash Olarak Saklanması                                                                    |
 | Open Library API                              | `https://openlibrary.org/search.json?q=` ve `https://openlibrary.org/isbn/<ISBN>.json` (Ücretsiz, API Anahtarı Gerektirmez) |
 | Open Library Covers                           | `https://covers.openlibrary.org/b/isbn/<ISBN>-L.jpg` (Kitap Kapak Resimleri)                                                |
+| `path_provider`                               | Dijital Kitap Metinlerinin Çevrimdışı Okuma için Uygulama Belgeler Klasörüne Dosya Olarak Kaydedilmesi                      |
+| Project Gutenberg                             | `https://www.gutenberg.org/cache/epub/<ID>/pg<ID>.txt` (Telifi Bitmiş Dünya Klasiklerinin Düz Metni)                        |
+| Vikikaynak (MediaWiki API)                    | `https://tr.wikisource.org/w/api.php` (Telifi Bitmiş Türkçe Eserlerin Metni)                                                |
+| `file_picker`                                 | Kullanıcının Kendi PDF / EPUB Dosyasını Cihazdan Seçmesi                                                                    |
+| `archive`                                     | EPUB (Zip) Dosyasının Açılıp Bölümlerinin Okuyucu Metnine Çevrilmesi (Saf Dart)                                            |
+| `pdfrx`                                       | Kullanıcının PDF Dosyasının Orijinal Sayfa Düzeniyle Gösterilmesi (PDFium)                                                  |
 | `flutter_launcher_icons` (`dev_dependencies`) | Uygulama İkonunun Tüm Platformlar için Üretilmesi (Uygulamaya Dahil Olmaz, Sadece Geliştirme Aracı)                         |
 | `flutter_native_splash` (`dev_dependencies`)  | İşletim Sisteminin Gösterdiği Yerel Açılış Ekranı (Flutter Motoru Yüklenirken Beyaz Ekran Yerine Logo)                      |
 
@@ -62,9 +68,9 @@ Uygulama Açılışı (Splash / Oturum Kontrolü)
  └─ Oturum Var ───────────────┴──► Ana Kabuk (NavigationBar + Sağ Üst Ayarlar)
                                      ├─ Sekme 1: Kitaplığım (Raf Görünümü)
                                      │     ├─ FAB ► Yeni Kitap Ekle (ISBN / Arama / Manuel)
-                                     │     └─ Kitaba Dokun ► Kitap Detay & Alıntı
+                                     │     └─ Kitaba Dokun ► Kitap Detay & Alıntı ► Dijital Okuyucu
                                      ├─ Sekme 2: Okuma Durumu (Okunuyor / Okunacak / Bitti)
-                                     │     └─ Kitaba Dokun ► Kitap Detay & Alıntı
+                                     │     └─ Kitaba Dokun ► Kitap Detay & Alıntı ► Dijital Okuyucu
                                      ├─ Sekme 3: Yıllık Okuma Hedefi Paneli
                                      └─ Sağ Üst ⚙ ► Ayarlar (Profil, Tema, Dil, Hesap Bilgileri, Çıkış)
 ```
@@ -79,6 +85,7 @@ Uygulama Açılışı (Splash / Oturum Kontrolü)
 - [x] Sayfa 5 – Kitap Detay &amp; Alıntı: Kapak, Künye, Tür Etiketi, Sayfa Sayacı &amp; İlerleme Çubuğu, Durum Değiştirme, Puan (1-5) &amp; Şahsi İnceleme, Alıntılar (Sayfa No ile, Favori İşaretleme), Notlar, Ödünç Verme Bilgisi (Kime, Ne Zaman, İade Tarihi).
 - [x] Sayfa 6 – Yıllık Okuma Hedefi Paneli: Yıllık Hedef Kitap Sayısı Belirleme, İlerleme Çubuğu (Biten / Hedef), Aylık Biten Kitap Dağılımı, Toplam Okunan Sayfa, Türlere Göre Dağılım.
 - [x] Sayfa 7 – Ayarlar: Profil Resmi &amp; Kullanıcı Özeti, Tema, Dil, E-Posta / Telefon / Şifre Güncelleme, Çıkış Yap (Bkz. 6.4).
+- [x] Sayfa 8 – Dijital Okuyucu: Kitabın Telifi Bitmiş Dijital Metninin İndirilip Çevrimdışı Okunması (Türkçe Eserler Vikikaynak, Dünya Klasikleri Project Gutenberg), Sayfalı Okuma, Yazı Boyutu, Kalınan Yerin Saklanması, Okuma İlerlemesinin Sayfa Sayacına Otomatik Yansıması. Kullanıcının Eklediği (Dijital Sürümü Olmayan) Kitaplarda Kendi PDF / EPUB Dosyasını Yükleyip Okuması: EPUB Okuyucuda Metin Olarak, PDF Orijinal Sayfalarıyla Açılır; Dosya Yalnızca Cihazda Saklanır, DRM'li Dosyalar Açılmaz.
 
 ### 6.3. Veri Modeli ve Bileşen Tasarımı
 
@@ -92,6 +99,8 @@ Tüm Modeller `@immutable`, Tüm Alanlar `final`'dır ve `copyWith`, `fromJson`,
 | `ReadingStatus` | `toRead` (Okunacak), `reading` (Okunuyor), `finished` (Bitti)                                                                                                                                                                                                                                        |
 | `BookGenre`     | `novel` (Roman), `science` (Bilim), `history` (Tarih), `philosophy` (Felsefe), `personalDevelopment` (Kişisel Gelişim), `sciFiFantasy` (Bilim Kurgu &amp; Fantastik), `biography` (Biyografi), `poetry` (Şiir), `children` (Çocuk), `other` (Diğer) – Her Türün Rengi `AppColors` İçinde Tanımlıdır. |
 | `AvatarType`    | `none`, `preset` (Hazır Avatar), `custom` (Kullanıcının Yüklediği Resim)                                                                                                                                                                                                                             |
+| `DigitalSource` | `gutenberg` (Project Gutenberg), `wikisource` (Vikikaynak), `localFile` (Kullanıcının Yüklediği PDF / EPUB)                                                                                                                                                                                                                                           |
+| `DigitalFormat` | `text` (Okuyucuda Sayfalanan Metin: Gutenberg, Vikikaynak, EPUB), `pdf` (Orijinal Sayfalarıyla Gösterilen PDF)                                                                                                                                                                                        |
 
 
 **Modeller**
@@ -100,12 +109,14 @@ Tüm Modeller `@immutable`, Tüm Alanlar `final`'dır ve `copyWith`, `fromJson`,
 | Model              | Alanlar                                                                                                                                                                                                | Not                                                                                                                                                                                        |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `UserModel`        | `id`, `email`, `phone`, `passwordHash`, `avatarType`, `avatarValue` (Hazır Avatar Anahtarı veya Dosya Yolu), `createdAt`                                                                               | Şifre Asla Düz Metin Saklanmaz.                                                                                                                                                            |
-| `BookModel`        | `id`, `isbn?`, `title`, `authors` (`List<String>`), `coverUrl?`, `pageCount`, `currentPage`, `genre`, `status`, `rating?` (1-5), `review?`, `isOwned`, `loan?`, `startedAt?`, `finishedAt?`, `addedAt` | `progress` (= `currentPage / pageCount`, 0.0-1.0) Hesaplanan Getter'dır, Saklanmaz. `currentPage` 0 ile `pageCount` Arasında Sınırlanır; `pageCount`'a Ulaşınca Durum `finished` Önerilir. |
+| `BookModel`        | `id`, `isbn?`, `title`, `authors` (`List<String>`), `coverUrl?`, `pageCount`, `currentPage`, `genre`, `status`, `rating?` (1-5), `review?`, `isOwned`, `loan?`, `startedAt?`, `finishedAt?`, `addedAt`, `digitalEdition?` | `progress` (= `currentPage / pageCount`, 0.0-1.0) Hesaplanan Getter'dır, Saklanmaz. `currentPage` 0 ile `pageCount` Arasında Sınırlanır; `pageCount`'a Ulaşınca Durum `finished` Önerilir. |
 | `LoanModel`        | `borrowerName`, `lentAt`, `dueAt?`                                                                                                                                                                     | `BookModel.loan` Doluysa Kitap "Ödünçte" Sayılır.                                                                                                                                          |
 | `QuoteModel`       | `id`, `bookId`, `text`, `page?`, `isFavorite`, `createdAt`                                                                                                                                             |                                                                                                                                                                                            |
 | `NoteModel`        | `id`, `bookId`, `content`, `createdAt`, `updatedAt`                                                                                                                                                    |                                                                                                                                                                                            |
 | `ReadingGoalModel` | `year`, `targetBookCount`                                                                                                                                                                              | Biten Kitap Sayısı `BookModel.finishedAt` Yılından Hesaplanır.                                                                                                                             |
-| `AppSettingsModel` | `themeMode` (Varsayılan `dark`), `localeCode` (Varsayılan `tr`)                                                                                                                                        |                                                                                                                                                                                            |
+| `AppSettingsModel` | `themeMode` (Varsayılan `dark`), `localeCode` (Varsayılan `tr`), `readerTextScale` (Varsayılan `1.0`)                                                                                                  |                                                                                                                                                                                            |
+| `DigitalEditionModel` | `source` (`DigitalSource`), `sourceId` (Gutenberg Numarası, Vikikaynak Sayfa Başlığı veya Yüklenen Dosyanın Adı), `languageCode`, `format`                                                                                       | `BookModel.digitalEdition` Doluysa Kitap Dijital Olarak Okunabilir.                                                                                                                         |
+| `DigitalCopyModel` | `bookId`, `fileName`, `charCount`, `downloadedAt`, `lastOffset`, `format`, `byteSize`, `textVersion`                                                                                                                                     | Cihaza İndirilmiş Metin; `lastOffset` Kalınan Yerin Karakter Konumudur. Metnin Kendisi `path_provider` ile Dosyada Tutulur.                                                                  |
 
 
 **Depolama Anahtarları (`shared_preferences`)**
@@ -121,6 +132,8 @@ Tüm Modeller `@immutable`, Tüm Alanlar `final`'dır ve `copyWith`, `fromJson`,
 | `kitalog.goals`    | `List<ReadingGoalModel>` JSON   |
 | `kitalog.settings` | `AppSettingsModel` JSON         |
 | `kitalog.seeded`   | Örnek Veri Yüklendi mi (`bool`) |
+| `kitalog.seedVersion` | Yüklü Örnek Verinin Sürümü (`int`) |
+| `kitalog.digital`  | `List<DigitalCopyModel>` JSON   |
 
 
 **Katmanlı Veri Akışı**
@@ -131,7 +144,7 @@ View / Widget ──(Aksiyon)──► Controller ──► Repository ──►
       └──(ValueListenableBuilder)┴── ValueNotifier<State>
 ```
 
-- `BookRepository`, `QuoteRepository`, `NoteRepository`, `GoalRepository`, `AuthRepository`, `SettingsRepository` → `lib/core/repositories/`
+- `BookRepository`, `QuoteRepository`, `NoteRepository`, `GoalRepository`, `AuthRepository`, `SettingsRepository`, `BookSearchRepository`, `DigitalBookRepository` → `lib/core/repositories/`
 - Uygulama Geneli Paylaşılan Controller'lar (`AuthController`, `LibraryController`, `SettingsController`) `AppScope` Üzerinden Sağlanır; Ekrana Özel Controller'lar (Örn: `AddBookController`) View İçinde Oluşturulup `dispose` Edilir.
 
 **Ortak Bileşenler (`lib/core/widgets/`)**
@@ -175,9 +188,11 @@ View / Widget ──(Aksiyon)──► Controller ──► Repository ──►
 **Teknik Karşılığı (Seed Data)**
 
 - Örnek Veriler `lib/core/data/seed_data.dart` İçinde Tutulur ve `kitalog.seeded` Anahtarı `false` İken Sadece Bir Kez Yüklenir.
-- En Az 30 Gerçek Kitap: Türk ve Dünya Edebiyatından Karışık (Örn: Sabahattin Ali, Orhan Pamuk, Yaşar Kemal, Dostoyevski, Orwell, Tolkien, Yuval Noah Harari, Carl Sagan vb.), Tüm Türlerden En Az 2 Kitap.
+- En Az 30 Gerçek Kitap: Türk ve Dünya Edebiyatından Karışık, Tüm Türlerden En Az 2 Kitap. Tüm Örnek Kitaplar Telifi Bitmiş (Public Domain) Eserlerdir ve Dijital Olarak Okunabilir: Türkçe Eserler Vikikaynak'tan (Örn: Sabahattin Ali, Atatürk), Dünya Klasikleri Project Gutenberg'den (Örn: Dostoyevski, Austen, Shelley, Darwin, Marcus Aurelius). Vikikaynak'ta Tam Metni Olmayan Eserler ve Derlemeler Kullanılmaz.
+- Kaynağından İndirilmesi Çok Uzun Süren Çok Parçalı Eserlerin (Örn: Nutuk) Metni `assets/books/` Altında Uygulamayla Birlikte Paketlenir; Bu Kitaplar İnternet Olmadan da Anında İndirilip Okunur.
+- Örnek Veri Sürümü `kitalog.seedVersion` ile Tutulur; Sürüm Değiştiğinde Yalnızca Örnek Kitaplar (id'si `seed-` ile Başlayanlar) Yenilenir, Kullanıcının Eklediği Kitaplar Korunur.
 - Her Kitabın Gerçek ISBN'i ve Open Library Kapak URL'i Bulunur (`https://covers.openlibrary.org/b/isbn/<ISBN>-L.jpg`). ISBN'ler Kodlama Aşamasında Doğrulanmalıdır, Uydurma ISBN YASAKTIR.
-- Kitaplar 3 Okuma Durumuna Dağıtılır; Okunanlara Puan &amp; İnceleme, Okunuyor Olanlara Farklı İlerleme Yüzdeleri, En Az 3 Kitaba Ödünç Bilgisi, Toplam En Az 15 Gerçek Alıntı (Sayfa No ile) ve Birkaç Not Eklenir.
+- Kitaplar 3 Okuma Durumuna Dağıtılır; Okunanlara Puan &amp; İnceleme, Okunuyor Olanlara Farklı İlerleme Yüzdeleri, En Az 3 Kitaba Ödünç Bilgisi, Toplam En Az 15 Gerçek Alıntı (Sayfa No ile; Alıntılar Dijital Metinde Birebir Doğrulanır) ve Birkaç Not Eklenir.
 - Bu Yılın Okuma Hedefi Örnek Olarak 24 Kitap Tanımlanır; Biten Kitapların `finishedAt` Tarihleri Yıl İçine Yayılır.
 - Kapak Resmi Yüklenemezse (İnternet Yok / 404) `BookCoverImage` Tür Renginde Başlık Yazılı Yer Tutucu Gösterir.
 
@@ -212,6 +227,7 @@ View / Widget ──(Aksiyon)──► Controller ──► Repository ──►
 - **Aşama 2 (Temel Fonksiyonlar &amp; Arayüz):** Kayıt/Giriş &amp; Oturum Yönlendirmesi → Kitaplığım Raf Görünümü + Seed Data → Kitap Detay (Sayfa Sayacı, İlerleme, Alıntı, Not, İnceleme, Ödünç) → Okuma Durumu Sekmeleri → Yeni Kitap Ekle (Open Library + Manuel) → Yıllık Hedef Paneli → Ayarlar (Profil, Tema, Dil, Hesap Güncelleme).
 - **Aşama 3 (Test &amp; İyileştirme):** Validator, Model (`fromJson`/`toJson`) ve Controller Birim Testleri; Kayıt Formu ve Kitap Detay Widget Testleri; `flutter analyze` 0 Uyarı/0 Hata; Boş Durumlar, Hata Durumları (İnternet Yok, API Hatası), Erişilebilirlik ve Farklı Ekran Boyutları Kontrolü.
 - **Aşama 4 (Final Teslim):** Android &amp; iOS Üzerinde Son Kontroller, Uygulama İkonunun `flutter_launcher_icons` ile Tüm Platformlara Uygulanması, Yerel Açılış Ekranının `flutter_native_splash` ile Oluşturulması ve Uygulama Adının "Kitalog" Olarak Ayarlanması, README &amp; Ekran Görüntüleri, Sunum.
+- **Aşama 5 (Dijital Okuma):** Dijital Sürüm Modelleri ve Çevrimdışı Dosya Depolama (`path_provider`) → Project Gutenberg ve Vikikaynak Metin Kaynakları → Telifi Bitmiş Kitaplarla Seed'in Yeniden Kurulması → Dijital Okuyucu Ekranı (Sayfalama, Yazı Boyutu, Kalınan Yer, İlerleme Senkronu) → Kitap Detay Entegrasyonu ve Dijital Sürüm Arama; Her Adımda Testler.
 
 ### 6.7. Notlar &amp; Karşılaşılan Zorluklar
 
@@ -266,6 +282,7 @@ lib/
         book_detail/                # Detay, Alıntı, Not, İnceleme, Ödünç
         reading_goal/               # Yıllık Okuma Hedefi Paneli
         settings/                   # Profil, Tema, Dil, Hesap
+        reader/                     # Dijital Okuyucu (Çevrimdışı)
             controllers/
             models/
             views/
@@ -276,6 +293,8 @@ test/
 assets/
     avatars/                        # Hazır Profil Resimleri
     icon/                           # Uygulama İkonu (SVG Kaynak + PNG Çıktılar, Bkz. 6.5)
+    books/                          # Uygulamayla Paketlenen Dijital Metinler (Örn: Nutuk)
+    fonts/                          # Marka Yazı Tipi DM Serif Display (SIL OFL 1.1) ve Lisans Metni
 ```
 
 - `main.dart` Sadece Uygulama Başlatma ve Tema/Dil Bağlantısını İçerir; İş Mantığı Yazılmaz.

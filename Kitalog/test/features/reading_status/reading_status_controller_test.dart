@@ -4,7 +4,7 @@ import 'package:kitalog/features/reading_status/controllers/reading_status_contr
 
 import '../../helpers/test_dependencies.dart';
 
-const _duneId = 'seed-9780340839935';
+const _cpId = 'seed-9781435131828';
 
 void main() {
   test('kitapları üç duruma gruplar; okunanlar ilerlemeye göre sıralanır', () async {
@@ -28,11 +28,11 @@ void main() {
     final deps = await createTestDependencies();
     await deps.libraryController.load();
     final controller = ReadingStatusController(library: deps.libraryController);
-    final before = deps.libraryController.bookById(_duneId)!.currentPage;
-    await controller.changePage(_duneId, 1);
-    expect(deps.libraryController.bookById(_duneId)!.currentPage, before + 1);
-    await controller.changePage(_duneId, -100000);
-    expect(deps.libraryController.bookById(_duneId)!.currentPage, 0);
+    final before = deps.libraryController.bookById(_cpId)!.currentPage;
+    await controller.changePage(_cpId, 1);
+    expect(deps.libraryController.bookById(_cpId)!.currentPage, before + 1);
+    await controller.changePage(_cpId, -100000);
+    expect(deps.libraryController.bookById(_cpId)!.currentPage, 0);
     controller.dispose();
   });
 
@@ -40,13 +40,13 @@ void main() {
     final deps = await createTestDependencies();
     await deps.libraryController.load();
     final controller = ReadingStatusController(library: deps.libraryController);
-    await controller.changePage(_duneId, 100000);
-    expect(controller.state.value.finishSuggestedBookId, _duneId);
+    await controller.changePage(_cpId, 100000);
+    expect(controller.state.value.finishSuggestedBookId, _cpId);
     controller.consumeFinishSuggestion();
     expect(controller.state.value.finishSuggestedBookId, isNull);
-    await controller.markFinished(_duneId);
-    expect(controller.state.value.finished.any((b) => b.id == _duneId), isTrue);
-    expect(controller.state.value.reading.any((b) => b.id == _duneId), isFalse);
+    await controller.markFinished(_cpId);
+    expect(controller.state.value.finished.any((b) => b.id == _cpId), isTrue);
+    expect(controller.state.value.reading.any((b) => b.id == _cpId), isFalse);
     controller.dispose();
   });
 

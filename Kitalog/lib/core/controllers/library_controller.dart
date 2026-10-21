@@ -51,11 +51,47 @@ class LibraryController {
       await _notes.saveAll(seed.notes);
       await _goals.saveAll([seed.goal]);
       await _books.markSeeded();
+      await _books.saveSeedVersion(SeedData.version);
+    } else if (await _books.seedVersion() < SeedData.version) {
+      await _upgradeSeed();
     }
-    books.value = await _books.getAll();
+    books.value = await _normalizeFinished(await _books.getAll());
     quotes.value = await _quotes.getAll();
     notes.value = await _notes.getAll();
     goals.value = await _goals.getAll();
+  }
+
+  /// Biten kitabın sayacı son sayfadadır. Eski sürümde biten kitabın sayfası
+  /// geri alınabiliyordu; böyle kayıtlar açılışta düzeltilip kaydedilir.
+  Future<List<BookModel>> _normalizeFinished(List<BookModel> all) async {
+    final fixed = [
+      for (final b in all)
+        b.status == ReadingStatus.finished && b.currentPage != b.pageCount
+            ? b.copyWith(currentPage: b.pageCount)
+            : b,
+    ];
+    if (fixed.indexed.any((e) => !identical(e.$2, all[e.$1]))) {
+      await _books.saveAll(fixed);
+    }
+    return fixed;
+  }
+
+  /// Yalnızca örnek kitaplar (ve onlara ait alıntı/notlar) yenilenir;
+  /// kullanıcının eklediği kitaplar ve kendi hedefi korunur.
+  Future<void> _upgradeSeed() async {
+    final seed = SeedData.build(_clock());
+    bool ownBook(String bookId) => !SeedData.isSeedId(bookId);
+    final userBooks = (await _books.getAll()).where((b) => ownBook(b.id));
+    final userQuotes = (await _quotes.getAll()).where((q) => ownBook(q.bookId));
+    final userNotes = (await _notes.getAll()).where((n) => ownBook(n.bookId));
+    final goals = await _goals.getAll();
+    await _books.saveAll([...seed.books, ...userBooks]);
+    await _quotes.saveAll([...seed.quotes, ...userQuotes]);
+    await _notes.saveAll([...seed.notes, ...userNotes]);
+    if (!goals.any((g) => g.year == seed.goal.year)) {
+      await _goals.saveAll([...goals, seed.goal]);
+    }
+    await _books.saveSeedVersion(SeedData.version);
   }
 
   BookModel? bookById(String id) {
@@ -85,9 +121,7 @@ class LibraryController {
   }
 
   Future<void> updateBook(BookModel book) async {
-    await _saveBooks([
-      for (final b in books.value) b.id == book.id ? book : b,
-    ]);
+    await _saveBooks([for (final b in books.value) b.id == book.id ? book : b]);
   }
 
   Future<void> deleteBook(String id) async {
@@ -98,10 +132,12 @@ class LibraryController {
 
   /// Sayfayı 0 - pageCount aralığında günceller. Okunacak bir kitapta sayfa
   /// artarsa durum "okunuyor" olur. Son sayfaya ulaşıldıysa `true` döner
-  /// (arayüz "Bitti olarak işaretle" önerisini gösterir).
+  /// (arayüz "Bitti olarak işaretle" önerisini gösterir). Biten kitabın sayacı
+  /// değişmez (ör. okuyucuda geri sayfalara bakmak); baştan okumak için
+  /// [restartReading] kullanılır.
   Future<bool> setCurrentPage(String bookId, int page) async {
     final book = bookById(bookId);
-    if (book == null) return false;
+    if (book == null || book.status == ReadingStatus.finished) return false;
     var next = book.copyWith(currentPage: page);
     if (next.currentPage > 0 && book.status == ReadingStatus.toRead) {
       next = next.copyWith(
@@ -144,12 +180,29 @@ class LibraryController {
     await updateBook(next);
   }
 
+  /// Biten kitabı yeniden okumaya başlatır: ilerleme sıfırlanır, durum
+  /// "okunuyor" olur, başlangıç bugüne alınır ve bitiş tarihi silinir.
+  Future<void> restartReading(String bookId) async {
+    final book = bookById(bookId);
+    if (book == null) return;
+    await updateBook(
+      book.copyWith(
+        status: ReadingStatus.reading,
+        currentPage: 0,
+        startedAt: _clock(),
+        clearFinishedAt: true,
+      ),
+    );
+  }
+
   Future<void> setRating(String bookId, int? rating) async {
     final book = bookById(bookId);
     if (book == null) return;
     final value = rating?.clamp(1, 5);
     await updateBook(
-      value == null ? book.copyWith(clearRating: true) : book.copyWith(rating: value),
+      value == null
+          ? book.copyWith(clearRating: true)
+          : book.copyWith(rating: value),
     );
   }
 
@@ -158,7 +211,9 @@ class LibraryController {
     if (book == null) return;
     final text = review.trim();
     await updateBook(
-      text.isEmpty ? book.copyWith(clearReview: true) : book.copyWith(review: text),
+      text.isEmpty
+          ? book.copyWith(clearReview: true)
+          : book.copyWith(review: text),
     );
   }
 

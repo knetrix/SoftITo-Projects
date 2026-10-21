@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'book_genre.dart';
+import 'digital_edition_model.dart';
 import 'loan_model.dart';
 import 'reading_status.dart';
 
@@ -23,6 +24,9 @@ class BookModel {
   final DateTime? finishedAt;
   final DateTime addedAt;
 
+  /// Telifi bitmiş dijital metin varsa nerede olduğu (yoksa `null`).
+  final DigitalEditionModel? digitalEdition;
+
   const BookModel({
     required this.id,
     this.isbn,
@@ -40,6 +44,7 @@ class BookModel {
     this.startedAt,
     this.finishedAt,
     required this.addedAt,
+    this.digitalEdition,
   });
 
   /// 0.0 - 1.0 arası ilerleme. Saklanmaz, hesaplanır.
@@ -49,6 +54,8 @@ class BookModel {
   int get progressPercent => (progress * 100).round();
 
   bool get isLent => loan != null;
+
+  bool get hasDigitalEdition => digitalEdition != null;
 
   String get authorsLabel => authors.join(', ');
 
@@ -75,6 +82,8 @@ class BookModel {
     DateTime? finishedAt,
     bool clearFinishedAt = false,
     DateTime? addedAt,
+    DigitalEditionModel? digitalEdition,
+    bool clearDigitalEdition = false,
   }) {
     final nextPageCount = pageCount ?? this.pageCount;
     final nextCurrent = (currentPage ?? this.currentPage).clamp(
@@ -98,6 +107,9 @@ class BookModel {
       startedAt: clearStartedAt ? null : (startedAt ?? this.startedAt),
       finishedAt: clearFinishedAt ? null : (finishedAt ?? this.finishedAt),
       addedAt: addedAt ?? this.addedAt,
+      digitalEdition: clearDigitalEdition
+          ? null
+          : (digitalEdition ?? this.digitalEdition),
     );
   }
 
@@ -123,6 +135,7 @@ class BookModel {
       finishedAt: DateTime.tryParse(json['finishedAt'] as String? ?? ''),
       addedAt:
           DateTime.tryParse(json['addedAt'] as String? ?? '') ?? DateTime.now(),
+      digitalEdition: DigitalEditionModel.tryFromJson(json['digitalEdition']),
     );
   }
 
@@ -144,6 +157,7 @@ class BookModel {
       'startedAt': startedAt?.toIso8601String(),
       'finishedAt': finishedAt?.toIso8601String(),
       'addedAt': addedAt.toIso8601String(),
+      'digitalEdition': digitalEdition?.toJson(),
     };
   }
 }

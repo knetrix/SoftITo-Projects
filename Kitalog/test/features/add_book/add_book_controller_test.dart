@@ -106,7 +106,7 @@ void main() {
   test('aynı ISBN ikinci kez eklenemez', () async {
     final (controller, _) = await _create();
     await controller.save(
-      const BookDraft(title: 'Cosmos', pageCount: 365, isbn: '9780375508325'),
+      const BookDraft(title: 'Crime and Punishment', pageCount: 551, isbn: '9781435131828'),
     );
     expect(controller.state.value.error, AddBookError.duplicate);
     expect(controller.state.value.saved, isFalse);
