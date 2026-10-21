@@ -1,0 +1,370 @@
+{
+  "@@locale": "en",
+  "appName": "Kitalog",
+  "commonSave": "Save",
+  "commonCancel": "Cancel",
+  "commonDelete": "Delete",
+  "commonAdd": "Add",
+  "commonRetry": "Try again",
+  "commonClose": "Close",
+  "commonOk": "OK",
+  "commonUndo": "Undo",
+  "errorRequired": "This field is required.",
+  "errorEmailInvalid": "Enter a valid email address.",
+  "errorPhoneInvalid": "Phone must start with 0, have 11 digits and match 0 (5XX) XXX XX XX.",
+  "errorPasswordTooShort": "Password must be at least 8 characters.",
+  "errorPasswordUppercase": "Password must contain an uppercase letter.",
+  "errorPasswordLowercase": "Password must contain a lowercase letter.",
+  "errorPasswordDigit": "Password must contain a digit.",
+  "errorPasswordMismatch": "Passwords do not match.",
+  "genreNovel": "Novel",
+  "genreScience": "Science",
+  "genreHistory": "History",
+  "genrePhilosophy": "Philosophy",
+  "genrePersonalDevelopment": "Personal Development",
+  "genreSciFiFantasy": "Sci-Fi & Fantasy",
+  "genreBiography": "Biography",
+  "genrePoetry": "Poetry",
+  "genreChildren": "Children",
+  "genreOther": "Other",
+  "statusToRead": "To read",
+  "statusReading": "Reading",
+  "statusFinished": "Finished",
+  "themeDark": "Dark",
+  "themeLight": "Light",
+  "pageProgress": "{current} / {total} pages",
+  "@pageProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "progressPercent": "{percent}%",
+  "@progressPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "progressSemantics": "Reading progress {percent} percent",
+  "@progressSemantics": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingStarSemantics": "Rate {star} stars",
+  "@ratingStarSemantics": {
+    "placeholders": {
+      "star": {
+        "type": "int"
+      }
+    }
+  },
+  "splashError": "Data could not be loaded.",
+  "authTagline": "Your virtual library, in your pocket.",
+  "registerTitle": "Create account",
+  "loginTitle": "Sign in",
+  "fieldEmail": "Email",
+  "fieldPhone": "Phone",
+  "hintPhone": "0 (5XX) XXX XX XX",
+  "fieldPassword": "Password",
+  "fieldPasswordConfirm": "Confirm password",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "buttonRegister": "Sign up",
+  "buttonLogin": "Sign in",
+  "linkHaveAccount": "Already have an account? Sign in",
+  "linkNoAccount": "No account yet? Sign up",
+  "errorInvalidCredentials": "Incorrect email or password.",
+  "errorWrongCurrentPassword": "Current password is incorrect.",
+  "navLibrary": "Library",
+  "navReadingStatus": "Reading",
+  "navGoal": "Goal",
+  "libraryTitle": "My Library",
+  "readingStatusTitle": "Reading Status",
+  "readingGoalTitle": "Yearly Reading Goal",
+  "settingsTitle": "Settings",
+  "libraryFilterAll": "All",
+  "librarySearchHint": "Search title or author",
+  "libraryAddBook": "Add book",
+  "libraryEmptyTitle": "Your library is empty",
+  "libraryEmptyMessage": "Tap “Add book” to add your first book.",
+  "libraryNoResultsTitle": "No results",
+  "libraryNoResultsMessage": "Try changing the search or filters.",
+  "loanedBadge": "On loan",
+  "bookDetailTitle": "Book Details",
+  "bookNotFound": "Book not found.",
+  "authorUnknown": "Unknown author",
+  "bookPageCount": "{count} pages",
+  "@bookPageCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookIsbn": "ISBN: {isbn}",
+  "@bookIsbn": {
+    "placeholders": {
+      "isbn": {
+        "type": "String"
+      }
+    }
+  },
+  "bookOwned": "In my collection",
+  "bookNotOwned": "Not in my collection",
+  "pageCounterTitle": "Reading Progress",
+  "pageEditTooltip": "Enter page number",
+  "pageEditTitle": "Current page",
+  "pageEditLabel": "Page (0 - {max})",
+  "@pageEditLabel": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "pageDecrement": "Back 1 page",
+  "pageIncrement": "Forward 1 page",
+  "pageDecrementBig": "Back {count} pages",
+  "@pageDecrementBig": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pageIncrementBig": "Forward {count} pages",
+  "@pageIncrementBig": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "finishSuggestion": "You reached the last page. Did you finish the book?",
+  "markFinished": "Mark as finished",
+  "statusSectionTitle": "Reading Status",
+  "startedAtLabel": "Started: {date}",
+  "@startedAtLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "finishedAtLabel": "Finished: {date}",
+  "@finishedAtLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "ratingSectionTitle": "Rating & Review",
+  "reviewEdit": "Edit review",
+  "reviewDialogTitle": "Personal Review",
+  "reviewHint": "Write your review",
+  "reviewEmpty": "You have not written a review yet.",
+  "quotesSectionTitle": "Quotes",
+  "quotesEmpty": "No quotes added yet.",
+  "quoteAdd": "Add quote",
+  "quoteText": "Quote text",
+  "quotePage": "Page number (optional)",
+  "quotePageLabel": "p. {page}",
+  "@quotePageLabel": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteFavorite": "Add to favorites",
+  "quoteUnfavorite": "Remove from favorites",
+  "quoteDelete": "Delete quote",
+  "notesSectionTitle": "Notes",
+  "notesEmpty": "No notes added yet.",
+  "noteAdd": "Add note",
+  "noteContent": "Note",
+  "noteDelete": "Delete note",
+  "loanSectionTitle": "Loan Info",
+  "loanNone": "This book is not on loan.",
+  "loanLend": "Lend book",
+  "loanBorrower": "Lent to whom?",
+  "loanDueDate": "Pick a return date (optional)",
+  "loanClearDate": "Clear date",
+  "loanLentTo": "Lent to {name}",
+  "@loanLentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "loanLentAt": "Lent on: {date}",
+  "@loanLentAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "loanDueAt": "Return by: {date}",
+  "@loanDueAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "loanOverdue": "Overdue",
+  "loanReturn": "Mark as returned",
+  "deleteBook": "Delete book",
+  "deleteBookTitle": "Delete this book?",
+  "deleteBookMessage": "“{title}” and its quotes and notes will be permanently deleted.",
+  "@deleteBookMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "readingTabLabel": "{status} ({count})",
+  "@readingTabLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "readingEmptyReadingTitle": "You are not reading anything",
+  "readingEmptyReadingMessage": "Pick a book from your to-read list and start reading.",
+  "readingEmptyToReadTitle": "Your to-read list is empty",
+  "readingEmptyToReadMessage": "Mark a book in your library as “To read”.",
+  "readingEmptyFinishedTitle": "No finished books yet",
+  "readingEmptyFinishedMessage": "Books you finish will appear here.",
+  "startReading": "Start reading",
+  "errorPageCountInvalid": "Page count must be a number of 1 or more.",
+  "errorUrlInvalid": "Enter a valid http/https address.",
+  "errorIsbnInvalid": "Enter a valid ISBN (10 or 13 digits).",
+  "addBookTitle": "Add New Book",
+  "addBookModeSearch": "ISBN / Search",
+  "addBookModeManual": "Manual",
+  "addBookSearchLabel": "ISBN, title or author",
+  "addBookSearchHint": "e.g. 9780375508325 or Cosmos",
+  "addBookSearchButton": "Search",
+  "addBookSearchEmptyTitle": "Search books on Open Library",
+  "addBookSearchEmptyMessage": "Enter an ISBN or a title/author. If nothing is found you can add it manually.",
+  "addBookErrorEmptyQuery": "Enter an ISBN, title or author to search.",
+  "addBookErrorInvalidIsbn": "This ISBN is not valid. Check the digits.",
+  "addBookErrorNotFound": "No results. You can add the book manually.",
+  "addBookErrorNetwork": "Could not connect to the internet.",
+  "addBookErrorServer": "Open Library is not responding right now.",
+  "addBookErrorDuplicate": "A book with this ISBN already exists.",
+  "addBookGoManual": "Add manually",
+  "addBookSave": "Add to library",
+  "addBookSaved": "Book added to your library.",
+  "fieldBookTitle": "Title",
+  "fieldBookAuthors": "Author(s)",
+  "fieldBookAuthorsHelper": "Separate multiple authors with commas.",
+  "fieldBookPages": "Page count",
+  "fieldBookGenre": "Genre",
+  "fieldBookStatus": "Reading status",
+  "fieldBookIsbn": "ISBN (optional)",
+  "fieldBookCoverUrl": "Cover URL (optional)",
+  "fieldBookOwned": "I own this book",
+  "goalYearLabel": "{year} Reading Goal",
+  "@goalYearLabel": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "goalProgress": "{finished} / {target} books",
+  "@goalProgress": {
+    "placeholders": {
+      "finished": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "goalRemaining": "{count} books to go",
+  "@goalRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goalCompleted": "You reached your yearly goal, congratulations!",
+  "goalTarget": "Goal: {target} books",
+  "@goalTarget": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "goalDecrease": "Decrease goal",
+  "goalIncrease": "Increase goal",
+  "goalTotalPages": "Total pages read",
+  "goalMonthlyTitle": "Books finished per month",
+  "goalMonthSemantics": "{month}: {count} books",
+  "@goalMonthSemantics": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goalGenreTitle": "Breakdown by genre",
+  "goalGenreEmpty": "No finished books this year yet.",
+  "profileAvatar": "Profile picture",
+  "profileChangeAvatar": "Change profile picture",
+  "profileMemberSince": "Member since {date}",
+  "@profileMemberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "avatarPresetTitle": "Choose a preset avatar",
+  "avatarFromGallery": "Upload from gallery",
+  "avatarFromCamera": "Take a photo",
+  "avatarRemove": "Remove profile picture",
+  "settingsThemeTitle": "Theme",
+  "settingsLanguageTitle": "Language",
+  "languageTurkish": "Türkçe",
+  "languageEnglish": "English",
+  "settingsUpdateEmail": "Update email address",
+  "settingsUpdatePhone": "Update phone number",
+  "settingsUpdatePassword": "Update password",
+  "fieldCurrentPassword": "Current password",
+  "fieldNewPassword": "New password",
+  "settingsEmailSaved": "Email updated.",
+  "settingsPhoneSaved": "Phone updated.",
+  "settingsPasswordSaved": "Password updated.",
+  "settingsAvatarSaved": "Profile picture updated.",
+  "settingsAvatarFailed": "Could not pick the image. Please try again.",
+  "settingsLogout": "Sign out",
+  "settingsLogoutTitle": "Sign out?",
+  "settingsLogoutMessage": "Your data is kept; you can sign in again."
+}

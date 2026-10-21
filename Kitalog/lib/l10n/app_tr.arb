@@ -1,0 +1,370 @@
+{
+  "@@locale": "tr",
+  "appName": "Kitalog",
+  "commonSave": "Kaydet",
+  "commonCancel": "Vazgeç",
+  "commonDelete": "Sil",
+  "commonAdd": "Ekle",
+  "commonRetry": "Tekrar dene",
+  "commonClose": "Kapat",
+  "commonOk": "Tamam",
+  "commonUndo": "Geri al",
+  "errorRequired": "Bu alan boş bırakılamaz.",
+  "errorEmailInvalid": "Geçerli bir e-posta adresi girin.",
+  "errorPhoneInvalid": "Telefon 0 ile başlamalı, 11 haneli olmalı ve 0 (5XX) XXX XX XX biçiminde girilmelidir.",
+  "errorPasswordTooShort": "Şifre en az 8 karakter olmalı.",
+  "errorPasswordUppercase": "Şifre en az bir büyük harf içermeli.",
+  "errorPasswordLowercase": "Şifre en az bir küçük harf içermeli.",
+  "errorPasswordDigit": "Şifre en az bir rakam içermeli.",
+  "errorPasswordMismatch": "Şifreler eşleşmiyor.",
+  "genreNovel": "Roman",
+  "genreScience": "Bilim",
+  "genreHistory": "Tarih",
+  "genrePhilosophy": "Felsefe",
+  "genrePersonalDevelopment": "Kişisel Gelişim",
+  "genreSciFiFantasy": "Bilim Kurgu & Fantastik",
+  "genreBiography": "Biyografi",
+  "genrePoetry": "Şiir",
+  "genreChildren": "Çocuk",
+  "genreOther": "Diğer",
+  "statusToRead": "Okunacak",
+  "statusReading": "Okunuyor",
+  "statusFinished": "Bitti",
+  "themeDark": "Karanlık",
+  "themeLight": "Aydınlık",
+  "pageProgress": "{current} / {total} sayfa",
+  "@pageProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "progressPercent": "%{percent}",
+  "@progressPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "progressSemantics": "Okuma ilerlemesi yüzde {percent}",
+  "@progressSemantics": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingStarSemantics": "{star} yıldız ver",
+  "@ratingStarSemantics": {
+    "placeholders": {
+      "star": {
+        "type": "int"
+      }
+    }
+  },
+  "splashError": "Veriler yüklenemedi.",
+  "authTagline": "Sanal kütüphanen, cebinde.",
+  "registerTitle": "Kayıt Ol",
+  "loginTitle": "Giriş Yap",
+  "fieldEmail": "E-posta",
+  "fieldPhone": "Telefon",
+  "hintPhone": "0 (5XX) XXX XX XX",
+  "fieldPassword": "Şifre",
+  "fieldPasswordConfirm": "Şifre Tekrar",
+  "showPassword": "Şifreyi göster",
+  "hidePassword": "Şifreyi gizle",
+  "buttonRegister": "Kayıt Ol",
+  "buttonLogin": "Giriş Yap",
+  "linkHaveAccount": "Zaten hesabın var mı? Giriş yap",
+  "linkNoAccount": "Hesabın yok mu? Kayıt ol",
+  "errorInvalidCredentials": "E-posta veya şifre hatalı.",
+  "errorWrongCurrentPassword": "Mevcut şifre hatalı.",
+  "navLibrary": "Kitaplığım",
+  "navReadingStatus": "Okuma Durumu",
+  "navGoal": "Hedef",
+  "libraryTitle": "Kitaplığım",
+  "readingStatusTitle": "Okuma Durumu",
+  "readingGoalTitle": "Yıllık Okuma Hedefi",
+  "settingsTitle": "Ayarlar",
+  "libraryFilterAll": "Tümü",
+  "librarySearchHint": "Başlık veya yazar ara",
+  "libraryAddBook": "Kitap Ekle",
+  "libraryEmptyTitle": "Kitaplığın henüz boş",
+  "libraryEmptyMessage": "İlk kitabını eklemek için “Kitap Ekle” düğmesine dokun.",
+  "libraryNoResultsTitle": "Sonuç bulunamadı",
+  "libraryNoResultsMessage": "Arama veya filtreleri değiştirmeyi dene.",
+  "loanedBadge": "Ödünçte",
+  "bookDetailTitle": "Kitap Detayı",
+  "bookNotFound": "Kitap bulunamadı.",
+  "authorUnknown": "Yazar bilinmiyor",
+  "bookPageCount": "{count} sayfa",
+  "@bookPageCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookIsbn": "ISBN: {isbn}",
+  "@bookIsbn": {
+    "placeholders": {
+      "isbn": {
+        "type": "String"
+      }
+    }
+  },
+  "bookOwned": "Kitaplığımda",
+  "bookNotOwned": "Kitaplığımda değil",
+  "pageCounterTitle": "Okuma İlerlemesi",
+  "pageEditTooltip": "Sayfa numarasını gir",
+  "pageEditTitle": "Mevcut sayfa",
+  "pageEditLabel": "Sayfa (0 - {max})",
+  "@pageEditLabel": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "pageDecrement": "1 sayfa geri",
+  "pageIncrement": "1 sayfa ileri",
+  "pageDecrementBig": "{count} sayfa geri",
+  "@pageDecrementBig": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pageIncrementBig": "{count} sayfa ileri",
+  "@pageIncrementBig": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "finishSuggestion": "Son sayfaya ulaştın. Kitabı bitirdin mi?",
+  "markFinished": "Bitti olarak işaretle",
+  "statusSectionTitle": "Okuma Durumu",
+  "startedAtLabel": "Başlangıç: {date}",
+  "@startedAtLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "finishedAtLabel": "Bitiş: {date}",
+  "@finishedAtLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "ratingSectionTitle": "Puan ve İnceleme",
+  "reviewEdit": "İncelemeyi düzenle",
+  "reviewDialogTitle": "Şahsi İnceleme",
+  "reviewHint": "İncelemeni yaz",
+  "reviewEmpty": "Henüz inceleme yazmadın.",
+  "quotesSectionTitle": "Alıntılar",
+  "quotesEmpty": "Henüz alıntı eklenmedi.",
+  "quoteAdd": "Alıntı Ekle",
+  "quoteText": "Alıntı metni",
+  "quotePage": "Sayfa no (isteğe bağlı)",
+  "quotePageLabel": "s. {page}",
+  "@quotePageLabel": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteFavorite": "Favorilere ekle",
+  "quoteUnfavorite": "Favorilerden çıkar",
+  "quoteDelete": "Alıntıyı sil",
+  "notesSectionTitle": "Notlar",
+  "notesEmpty": "Henüz not eklenmedi.",
+  "noteAdd": "Not Ekle",
+  "noteContent": "Not",
+  "noteDelete": "Notu sil",
+  "loanSectionTitle": "Ödünç Bilgisi",
+  "loanNone": "Bu kitap ödünç verilmedi.",
+  "loanLend": "Ödünç Ver",
+  "loanBorrower": "Kime ödünç verildi?",
+  "loanDueDate": "İade tarihi seç (isteğe bağlı)",
+  "loanClearDate": "Tarihi temizle",
+  "loanLentTo": "{name} kişisine ödünç verildi",
+  "@loanLentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "loanLentAt": "Veriliş tarihi: {date}",
+  "@loanLentAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "loanDueAt": "İade tarihi: {date}",
+  "@loanDueAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "loanOverdue": "İade tarihi geçti",
+  "loanReturn": "İade alındı",
+  "deleteBook": "Kitabı sil",
+  "deleteBookTitle": "Kitap silinsin mi?",
+  "deleteBookMessage": "“{title}” ve ona ait alıntı ile notlar kalıcı olarak silinecek.",
+  "@deleteBookMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "readingTabLabel": "{status} ({count})",
+  "@readingTabLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "readingEmptyReadingTitle": "Şu an okuduğun kitap yok",
+  "readingEmptyReadingMessage": "Okunacak listenden bir kitap seçip okumaya başla.",
+  "readingEmptyToReadTitle": "Okunacak listen boş",
+  "readingEmptyToReadMessage": "Kitaplığından bir kitabı “Okunacak” olarak işaretle.",
+  "readingEmptyFinishedTitle": "Henüz bitirdiğin kitap yok",
+  "readingEmptyFinishedMessage": "Bitirdiğin kitaplar burada görünecek.",
+  "startReading": "Okumaya Başla",
+  "errorPageCountInvalid": "Sayfa sayısı 1 veya daha büyük bir sayı olmalı.",
+  "errorUrlInvalid": "Geçerli bir http/https adresi girin.",
+  "errorIsbnInvalid": "Geçerli bir ISBN girin (10 veya 13 hane).",
+  "addBookTitle": "Yeni Kitap Ekle",
+  "addBookModeSearch": "ISBN / Arama",
+  "addBookModeManual": "Manuel",
+  "addBookSearchLabel": "ISBN, başlık veya yazar",
+  "addBookSearchHint": "Örn. 9780375508325 veya Cosmos",
+  "addBookSearchButton": "Ara",
+  "addBookSearchEmptyTitle": "Open Library'de kitap ara",
+  "addBookSearchEmptyMessage": "ISBN numarası ya da başlık/yazar yazıp ara. Bulamazsan manuel ekleyebilirsin.",
+  "addBookErrorEmptyQuery": "Aramak için bir ISBN, başlık veya yazar yaz.",
+  "addBookErrorInvalidIsbn": "Bu ISBN geçerli değil. Rakamları kontrol et.",
+  "addBookErrorNotFound": "Sonuç bulunamadı. Kitabı manuel ekleyebilirsin.",
+  "addBookErrorNetwork": "İnternet bağlantısı kurulamadı.",
+  "addBookErrorServer": "Open Library şu an yanıt vermiyor.",
+  "addBookErrorDuplicate": "Bu ISBN ile kayıtlı bir kitap zaten var.",
+  "addBookGoManual": "Manuel Ekle",
+  "addBookSave": "Kitaplığa Ekle",
+  "addBookSaved": "Kitap kitaplığa eklendi.",
+  "fieldBookTitle": "Kitap adı",
+  "fieldBookAuthors": "Yazar(lar)",
+  "fieldBookAuthorsHelper": "Birden fazla yazarı virgülle ayır.",
+  "fieldBookPages": "Sayfa sayısı",
+  "fieldBookGenre": "Tür",
+  "fieldBookStatus": "Okuma durumu",
+  "fieldBookIsbn": "ISBN (isteğe bağlı)",
+  "fieldBookCoverUrl": "Kapak URL (isteğe bağlı)",
+  "fieldBookOwned": "Bu kitap bende var",
+  "goalYearLabel": "{year} Okuma Hedefi",
+  "@goalYearLabel": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "goalProgress": "{finished} / {target} kitap",
+  "@goalProgress": {
+    "placeholders": {
+      "finished": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "goalRemaining": "Hedefe {count} kitap kaldı",
+  "@goalRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goalCompleted": "Yıllık hedefine ulaştın, tebrikler!",
+  "goalTarget": "Hedef: {target} kitap",
+  "@goalTarget": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "goalDecrease": "Hedefi azalt",
+  "goalIncrease": "Hedefi artır",
+  "goalTotalPages": "Toplam okunan sayfa",
+  "goalMonthlyTitle": "Aylık biten kitaplar",
+  "goalMonthSemantics": "{month}: {count} kitap",
+  "@goalMonthSemantics": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goalGenreTitle": "Türlere göre dağılım",
+  "goalGenreEmpty": "Bu yıl henüz biten kitap yok.",
+  "profileAvatar": "Profil resmi",
+  "profileChangeAvatar": "Profil resmini değiştir",
+  "profileMemberSince": "Üyelik: {date}",
+  "@profileMemberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "avatarPresetTitle": "Hazır avatar seç",
+  "avatarFromGallery": "Galeriden yükle",
+  "avatarFromCamera": "Kamerayla çek",
+  "avatarRemove": "Profil resmini kaldır",
+  "settingsThemeTitle": "Tema",
+  "settingsLanguageTitle": "Dil",
+  "languageTurkish": "Türkçe",
+  "languageEnglish": "English",
+  "settingsUpdateEmail": "E-posta adresini güncelle",
+  "settingsUpdatePhone": "Telefon numarasını güncelle",
+  "settingsUpdatePassword": "Şifreyi güncelle",
+  "fieldCurrentPassword": "Mevcut şifre",
+  "fieldNewPassword": "Yeni şifre",
+  "settingsEmailSaved": "E-posta güncellendi.",
+  "settingsPhoneSaved": "Telefon güncellendi.",
+  "settingsPasswordSaved": "Şifre güncellendi.",
+  "settingsAvatarSaved": "Profil resmi güncellendi.",
+  "settingsAvatarFailed": "Resim seçilemedi. Lütfen tekrar dene.",
+  "settingsLogout": "Çıkış Yap",
+  "settingsLogoutTitle": "Çıkış yapılsın mı?",
+  "settingsLogoutMessage": "Verilerin silinmez; tekrar giriş yapabilirsin."
+}
