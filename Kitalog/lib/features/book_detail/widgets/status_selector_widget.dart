@@ -5,7 +5,8 @@ import '../../../core/extensions/context_extensions.dart';
 import '../../../core/extensions/genre_extensions.dart';
 import '../../../core/models/book_model.dart';
 import '../../../core/models/reading_status.dart';
-import 'confirm_dialog.dart';
+import '../../../core/widgets/confirm_dialog.dart';
+import '../../../core/widgets/finish_book_dialog.dart';
 import 'section_card_widget.dart';
 
 /// Okuma durumu: mevcut durum, tarihler ve yalnızca anlamlı bir sonraki adım.
@@ -92,13 +93,7 @@ class _StatusActions extends StatelessWidget {
   final VoidCallback onReadAgain;
 
   Future<void> _finish(BuildContext context) async {
-    final l10n = context.l10n;
-    final ok = await ConfirmDialog.show(
-      context,
-      title: l10n.finishConfirmTitle,
-      message: l10n.finishConfirmMessage,
-      confirmLabel: l10n.markFinished,
-    );
+    final ok = await FinishBookDialog.show(context);
     if (ok) onChanged(ReadingStatus.finished);
   }
 
@@ -106,6 +101,7 @@ class _StatusActions extends StatelessWidget {
     final l10n = context.l10n;
     final ok = await ConfirmDialog.show(
       context,
+      icon: Icons.replay,
       title: l10n.readAgainConfirmTitle,
       message: l10n.readAgainConfirmMessage,
       confirmLabel: l10n.readAgain,

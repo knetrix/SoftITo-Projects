@@ -69,7 +69,7 @@ class _ReadingGoalViewState extends State<ReadingGoalView> {
                 monthly: goal.monthlyFinished,
                 maxValue: goal.maxMonthly,
               ),
-              GenreBreakdownWidget(counts: goal.genreCounts),
+              GenreBreakdownWidget(counts: goal.genreCounts, customCounts: goal.customGenreCounts, customGenres: goal.customGenres),
             ],
           ),
         );

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/extensions/context_extensions.dart';
+import '../../../core/extensions/genre_extensions.dart';
 import '../../../core/models/book_model.dart';
 import '../../../core/widgets/book_cover_image.dart';
-import 'loan_badge_widget.dart';
+import 'book_badges_widget.dart';
 
-/// Rafta tek bir kitap: kapak, (ödünçteyse) rozet, başlık ve yazar.
+/// Rafta tek bir kitap: kapak, biçim rozetleri (Fiziksel / Ödünçte / Dijital), başlık ve yazar.
 class BookShelfItemWidget extends StatelessWidget {
   const BookShelfItemWidget({super.key, required this.book, required this.onTap});
 
@@ -54,14 +55,14 @@ class _ShelfCover extends StatelessWidget {
         BookCoverImage(
           title: book.title,
           genre: book.genre,
+          custom: context.customGenreOf(book),
           coverUrl: book.coverUrl,
         ),
-        if (book.isLent)
-          const Positioned(
-            top: AppSizes.spaceS,
-            right: AppSizes.spaceS,
-            child: LoanBadgeWidget(),
-          ),
+        Positioned(
+          top: AppSizes.spaceS,
+          right: AppSizes.spaceS,
+          child: BookBadgesWidget(book: book),
+        ),
       ],
     );
   }

@@ -47,6 +47,8 @@ void main() {
       expect(controller.state.value.finishSuggested, isTrue);
       controller.consumeFinishSuggestion();
       expect(controller.state.value.finishSuggested, isFalse);
+      await controller.changePage(1);
+      expect(controller.state.value.finishSuggested, isFalse, reason: 'zaten son sayfadayken yinelenmez');
       await controller.setStatus(ReadingStatus.finished);
       expect(controller.state.value.book!.status, ReadingStatus.finished);
       expect(controller.state.value.book!.finishedAt, isNotNull);

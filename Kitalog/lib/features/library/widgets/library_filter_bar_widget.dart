@@ -1,27 +1,26 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/extensions/context_extensions.dart';
-import '../../../core/extensions/genre_extensions.dart';
-import '../../../core/models/book_genre.dart';
-import '../../../core/models/reading_status.dart';
+import '../models/library_filter_actions.dart';
+import '../models/library_shelf_model.dart';
+import 'library_filter_options.dart';
+import 'library_filter_sheet.dart';
 
-/// Arama kutusu + tür ve okuma durumu filtre çipleri.
+/// Arama kutusu + sağında filtre düğmesi (seçili filtre sayısı rozetiyle).
+/// Filtre seçiliyse altında tek dokunuşla kaldırılabilen çipler gösterilir.
 class LibraryFilterBarWidget extends StatefulWidget {
   const LibraryFilterBarWidget({
     super.key,
-    required this.genre,
-    required this.status,
+    required this.state,
     required this.onQueryChanged,
-    required this.onGenreChanged,
-    required this.onStatusChanged,
+    required this.actions,
   });
 
-  final BookGenre? genre;
-  final ReadingStatus? status;
+  final ValueListenable<LibraryShelfModel> state;
   final ValueChanged<String> onQueryChanged;
-  final ValueChanged<BookGenre?> onGenreChanged;
-  final ValueChanged<ReadingStatus?> onStatusChanged;
+  final LibraryFilterActions actions;
 
   @override
   State<LibraryFilterBarWidget> createState() => _LibraryFilterBarWidgetState();
@@ -38,107 +37,102 @@ class _LibraryFilterBarWidgetState extends State<LibraryFilterBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final state = widget.state.value;
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSizes.spaceL,
-            AppSizes.spaceS,
-            AppSizes.spaceL,
-            AppSizes.spaceS,
-          ),
-          child: TextField(
-            controller: _search,
-            onChanged: widget.onQueryChanged,
-            textInputAction: TextInputAction.search,
-            decoration: InputDecoration(
-              hintText: l10n.librarySearchHint,
-              prefixIcon: const Icon(Icons.search),
-            ),
+          padding: const EdgeInsets.fromLTRB(AppSizes.spaceL, AppSizes.spaceS, AppSizes.spaceL, AppSizes.spaceS),
+          child: Row(
+            spacing: AppSizes.spaceS,
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _search,
+                  onChanged: widget.onQueryChanged,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    hintText: context.l10n.librarySearchHint,
+                    prefixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
+              _FilterButton(
+                activeCount: state.activeFilterCount,
+                onPressed: () => LibraryFilterSheet.show(context, state: widget.state, actions: widget.actions),
+              ),
+            ],
           ),
         ),
-        _StatusChips(selected: widget.status, onChanged: widget.onStatusChanged),
-        _GenreChips(selected: widget.genre, onChanged: widget.onGenreChanged),
+        if (state.activeFilterCount > 0) _ActiveFilters(state: state, actions: widget.actions),
       ],
     );
   }
 }
 
-class _ChipRow extends StatelessWidget {
-  const _ChipRow({required this.children});
+class _FilterButton extends StatelessWidget {
+  const _FilterButton({required this.activeCount, required this.onPressed});
 
-  final List<Widget> children;
+  final int activeCount;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 56,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSizes.spaceL,
-          vertical: AppSizes.spaceXs,
+    final l10n = context.l10n;
+    // Varsayılan kırmızı rozet hata gibi algılanır; uygulamanın vurgu rengi kullanılır.
+    return Badge.count(
+      count: activeCount,
+      isLabelVisible: activeCount > 0,
+      backgroundColor: context.colors.primary,
+      textColor: context.colors.onPrimary,
+      child: IconButton.filledTonal(
+        tooltip: activeCount > 0 ? l10n.libraryFiltersActive(activeCount) : l10n.libraryFilters,
+        onPressed: onPressed,
+        // Arama kutusuyla aynı yükseklik ve köşe yarıçapı.
+        style: IconButton.styleFrom(
+          minimumSize: const Size.square(AppSizes.searchFieldHeight),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusM)),
         ),
-        itemCount: children.length,
-        separatorBuilder: (_, _) => const SizedBox(width: AppSizes.spaceS),
-        itemBuilder: (_, index) => Center(child: children[index]),
+        icon: const Icon(Icons.tune),
       ),
     );
   }
 }
 
-class _StatusChips extends StatelessWidget {
-  const _StatusChips({required this.selected, required this.onChanged});
+/// Seçili filtreler: her biri silme düğmesiyle kaldırılır, sonda "Temizle".
+class _ActiveFilters extends StatelessWidget {
+  const _ActiveFilters({required this.state, required this.actions});
 
-  final ReadingStatus? selected;
-  final ValueChanged<ReadingStatus?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    return _ChipRow(
-      children: [
-        ChoiceChip(
-          label: Text(l10n.libraryFilterAll),
-          selected: selected == null,
-          onSelected: (_) => onChanged(null),
-        ),
-        for (final status in ReadingStatus.values)
-          ChoiceChip(
-            label: Text(status.label(l10n)),
-            selected: selected == status,
-            onSelected: (_) => onChanged(status),
-          ),
-      ],
-    );
-  }
-}
-
-class _GenreChips extends StatelessWidget {
-  const _GenreChips({required this.selected, required this.onChanged});
-
-  final BookGenre? selected;
-  final ValueChanged<BookGenre?> onChanged;
+  final LibraryShelfModel state;
+  final LibraryFilterActions actions;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return _ChipRow(
-      children: [
-        ChoiceChip(
-          label: Text(l10n.libraryFilterAll),
-          selected: selected == null,
-          onSelected: (_) => onChanged(null),
-        ),
-        for (final genre in BookGenre.values)
-          ChoiceChip(
-            avatar: Icon(Icons.circle, size: AppSizes.iconS, color: genre.color),
-            label: Text(genre.label(l10n)),
-            selected: selected == genre,
-            onSelected: (_) => onChanged(genre),
-          ),
-      ],
+    final selected = [
+      for (final group in libraryFilterGroups(context, state, actions))
+        ...group.options.where((o) => o.selected),
+    ];
+    return SizedBox(
+      height: 48,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: AppSizes.spaceL),
+        children: [
+          for (final option in selected)
+            Padding(
+              padding: const EdgeInsets.only(right: AppSizes.spaceS),
+              child: Center(
+                child: InputChip(
+                  avatar: LibraryFilterLeading(option: option),
+                  label: Text(option.label),
+                  onDeleted: option.onToggle,
+                  deleteButtonTooltipMessage: l10n.libraryFilterRemove,
+                ),
+              ),
+            ),
+          Center(child: TextButton(onPressed: actions.clear, child: Text(l10n.libraryFilterClear))),
+        ],
+      ),
     );
   }
 }

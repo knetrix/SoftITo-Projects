@@ -7,6 +7,9 @@ import '../../../core/utils/text_paginator.dart';
 
 enum ReaderStatus { loading, notDownloaded, downloading, ready, failure }
 
+/// Okuyucuda seçilen metnin alıntı olarak kaydedilme sonucu (view SnackBar gösterir).
+enum QuoteSaveResult { saved, duplicate }
+
 @immutable
 class ReaderModel {
   final ReaderStatus status;
@@ -19,6 +22,9 @@ class ReaderModel {
 
   /// Son sayfaya gelindiğinde "Bitti olarak işaretle" önerisini tetikler.
   final bool finishSuggested;
+
+  /// Son alıntı kaydının sonucu; view gösterdikten sonra temizlenir.
+  final QuoteSaveResult? quoteResult;
 
   /// `pdf` ise metin sayfaları yerine PDF görüntüleyici kullanılır.
   final DigitalFormat format;
@@ -34,6 +40,7 @@ class ReaderModel {
     this.pageIndex = 0,
     this.error,
     this.finishSuggested = false,
+    this.quoteResult,
     this.format = DigitalFormat.text,
     this.pdfBytes,
     this.pdfPageCount = 0,
@@ -52,6 +59,8 @@ class ReaderModel {
     DigitalBookFailure? error,
     bool clearError = false,
     bool? finishSuggested,
+    QuoteSaveResult? quoteResult,
+    bool clearQuoteResult = false,
     DigitalFormat? format,
     Uint8List? pdfBytes,
     int? pdfPageCount,
@@ -63,6 +72,7 @@ class ReaderModel {
       pageIndex: pageIndex ?? this.pageIndex,
       error: clearError ? null : (error ?? this.error),
       finishSuggested: finishSuggested ?? this.finishSuggested,
+      quoteResult: clearQuoteResult ? null : (quoteResult ?? this.quoteResult),
       format: format ?? this.format,
       pdfBytes: pdfBytes ?? this.pdfBytes,
       pdfPageCount: pdfPageCount ?? this.pdfPageCount,

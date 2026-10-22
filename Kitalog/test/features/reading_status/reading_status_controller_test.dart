@@ -24,28 +24,13 @@ void main() {
     controller.dispose();
   });
 
-  test('changePage ilerlemeyi günceller ve sınırlar', () async {
+  test('kitap başka ekrandan (ör. Kitap Detay) bitirilince "Bitti" listesine geçer', () async {
     final deps = await createTestDependencies();
     await deps.libraryController.load();
     final controller = ReadingStatusController(library: deps.libraryController);
-    final before = deps.libraryController.bookById(_cpId)!.currentPage;
-    await controller.changePage(_cpId, 1);
-    expect(deps.libraryController.bookById(_cpId)!.currentPage, before + 1);
-    await controller.changePage(_cpId, -100000);
-    expect(deps.libraryController.bookById(_cpId)!.currentPage, 0);
-    controller.dispose();
-  });
-
-  test('son sayfa bitirme önerisini tetikler, markFinished bitirir', () async {
-    final deps = await createTestDependencies();
-    await deps.libraryController.load();
-    final controller = ReadingStatusController(library: deps.libraryController);
-    await controller.changePage(_cpId, 100000);
-    expect(controller.state.value.finishSuggestedBookId, _cpId);
-    controller.consumeFinishSuggestion();
-    expect(controller.state.value.finishSuggestedBookId, isNull);
-    await controller.markFinished(_cpId);
-    expect(controller.state.value.finished.any((b) => b.id == _cpId), isTrue);
+    expect(controller.state.value.reading.any((b) => b.id == _cpId), isTrue);
+    await deps.libraryController.setStatus(_cpId, ReadingStatus.finished);
+    expect(controller.state.value.finished.first.id, _cpId, reason: 'en son biten başta');
     expect(controller.state.value.reading.any((b) => b.id == _cpId), isFalse);
     controller.dispose();
   });

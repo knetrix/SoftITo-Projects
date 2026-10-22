@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'app.dart';
 import 'core/constants/app_assets.dart';
 import 'core/di/app_dependencies.dart';
+import 'core/repositories/translation/native_translation_engine.dart';
 import 'core/storage/local_storage_service.dart';
 
 Future<void> main() async {
@@ -15,7 +16,13 @@ Future<void> main() async {
     yield LicenseEntryWithLineBreaks(const ['DM Serif Display'], text);
   });
   final storage = await LocalStorageService.create();
-  final dependencies = AppDependencies(storage);
+  // Çeviri motoru yerel tarafa sorularak seçilir (iOS simülatöründe çeviri gizlenir).
+  final dependencies = AppDependencies(
+    storage,
+    translationEngine: await NativeTranslationEngine.create(),
+  );
   await dependencies.settingsController.load();
+  // Kitaplar splash'te yüklenince iade ve okuma hatırlatmaları kurulur (izin açılışta istenmez).
+  await dependencies.notificationController.start();
   runApp(dependencies.scope(child: const KitalogApp()));
 }

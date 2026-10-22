@@ -5,7 +5,7 @@ import '../../../core/models/book_model.dart';
 import '../../../core/models/reading_status.dart';
 import '../models/reading_status_model.dart';
 
-/// Kitapları okuma durumuna göre gruplar; hızlı sayfa sayacını yönetir.
+/// Kitapları okuma durumuna göre gruplar; okunacak kitabı okumaya başlatır.
 class ReadingStatusController {
   ReadingStatusController({required this._library}) {
     _library.books.addListener(_regroup);
@@ -34,28 +34,8 @@ class ReadingStatusController {
     );
   }
 
-  Future<void> changePage(String bookId, int delta) async {
-    final book = _library.bookById(bookId);
-    if (book == null) return;
-    final reachedEnd = await _library.setCurrentPage(
-      bookId,
-      book.currentPage + delta,
-    );
-    if (reachedEnd) {
-      state.value = state.value.copyWith(finishSuggestedBookId: bookId);
-    }
-  }
-
   Future<void> startReading(String bookId) {
     return _library.setStatus(bookId, ReadingStatus.reading);
-  }
-
-  Future<void> markFinished(String bookId) {
-    return _library.setStatus(bookId, ReadingStatus.finished);
-  }
-
-  void consumeFinishSuggestion() {
-    state.value = state.value.copyWith(clearFinishSuggestion: true);
   }
 
   void dispose() {

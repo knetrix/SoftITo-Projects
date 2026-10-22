@@ -410,6 +410,72 @@ abstract class AppLocalizations {
   /// **'Hesabın yok mu? Kayıt ol'**
   String get linkNoAccount;
 
+  /// No description provided for @linkForgotPassword.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifremi unuttum'**
+  String get linkForgotPassword;
+
+  /// No description provided for @forgotTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifreni Sıfırla'**
+  String get forgotTitle;
+
+  /// No description provided for @forgotVerifyInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kayıt olurken kullandığın e-posta adresini ve telefon numarasını gir.'**
+  String get forgotVerifyInfo;
+
+  /// No description provided for @forgotVerifyButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam'**
+  String get forgotVerifyButton;
+
+  /// No description provided for @forgotBackToLogin.
+  ///
+  /// In tr, this message translates to:
+  /// **'Girişe dön'**
+  String get forgotBackToLogin;
+
+  /// No description provided for @forgotNewPasswordInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'{email} hesabı doğrulandı. Yeni şifreni belirle.'**
+  String forgotNewPasswordInfo(String email);
+
+  /// No description provided for @forgotResetButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifreyi Güncelle'**
+  String get forgotResetButton;
+
+  /// No description provided for @forgotBack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri'**
+  String get forgotBack;
+
+  /// No description provided for @forgotSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şifren güncellendi. Yeni şifrenle giriş yapabilirsin.'**
+  String get forgotSuccess;
+
+  /// No description provided for @errorRecoveryMismatch.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta veya telefon kayıtlı bilgilerle eşleşmedi.'**
+  String get errorRecoveryMismatch;
+
+  /// No description provided for @errorTooManyAttempts.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çok fazla hatalı deneme yaptın. {seconds} saniye sonra tekrar dene.'**
+  String errorTooManyAttempts(int seconds);
+
   /// No description provided for @errorInvalidCredentials.
   ///
   /// In tr, this message translates to:
@@ -440,6 +506,24 @@ abstract class AppLocalizations {
   /// **'Hedef'**
   String get navGoal;
 
+  /// No description provided for @navLoans.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç'**
+  String get navLoans;
+
+  /// No description provided for @navLoansOverdue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç: {count} gecikmiş iade'**
+  String navLoansOverdue(int count);
+
+  /// No description provided for @loansTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç Takibi'**
+  String get loansTitle;
+
   /// No description provided for @libraryTitle.
   ///
   /// In tr, this message translates to:
@@ -464,11 +548,101 @@ abstract class AppLocalizations {
   /// **'Ayarlar'**
   String get settingsTitle;
 
-  /// No description provided for @libraryFilterAll.
+  /// No description provided for @settingsNotificationsTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Tümü'**
-  String get libraryFilterAll;
+  /// **'Bildirimler'**
+  String get settingsNotificationsTitle;
+
+  /// No description provided for @settingsLoanReminders.
+  ///
+  /// In tr, this message translates to:
+  /// **'İade hatırlatmaları'**
+  String get settingsLoanReminders;
+
+  /// No description provided for @settingsLoanRemindersHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç verdiğin kitabın iade gününden bir gün önce ve iade günü saat 10:00\'da bildirim gönderir.'**
+  String get settingsLoanRemindersHint;
+
+  /// No description provided for @settingsLoanRemindersDenied.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim izni kapalı. Hatırlatmaları görmek için telefonun ayarlarından Kitalog bildirimlerini aç.'**
+  String get settingsLoanRemindersDenied;
+
+  /// No description provided for @settingsReadingReminders.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük okuma hatırlatması'**
+  String get settingsReadingReminders;
+
+  /// No description provided for @settingsReadingRemindersHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her gün seçtiğin saatte okumaya davet eder; o gün okuduysan bildirim gelmez. Art arda okuduğun günlerde serini hatırlatır.'**
+  String get settingsReadingRemindersHint;
+
+  /// No description provided for @settingsStalledReminders.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yarım kalan kitaplar'**
+  String get settingsStalledReminders;
+
+  /// No description provided for @settingsStalledRemindersHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'“Okunuyor” durumundaki bir kitapta {days} gün ilerleme olmazsa seçtiğin saatte bir kez hatırlatır.'**
+  String settingsStalledRemindersHint(int days);
+
+  /// No description provided for @settingsReadingReminderTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okuma hatırlatması saati'**
+  String get settingsReadingReminderTime;
+
+  /// No description provided for @libraryFilters.
+  ///
+  /// In tr, this message translates to:
+  /// **'Filtreler'**
+  String get libraryFilters;
+
+  /// No description provided for @libraryFiltersActive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Filtreler ({count} seçili)'**
+  String libraryFiltersActive(int count);
+
+  /// No description provided for @libraryFilterFormat.
+  ///
+  /// In tr, this message translates to:
+  /// **'Biçim'**
+  String get libraryFilterFormat;
+
+  /// No description provided for @libraryFilterGenre.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tür'**
+  String get libraryFilterGenre;
+
+  /// No description provided for @libraryFilterClear.
+  ///
+  /// In tr, this message translates to:
+  /// **'Temizle'**
+  String get libraryFilterClear;
+
+  /// No description provided for @libraryFilterRemove.
+  ///
+  /// In tr, this message translates to:
+  /// **'Filtreyi kaldır'**
+  String get libraryFilterRemove;
+
+  /// No description provided for @libraryShowResults.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, =0{Eşleşen kitap yok} other{{count} kitabı göster}}'**
+  String libraryShowResults(int count);
 
   /// No description provided for @librarySearchHint.
   ///
@@ -505,6 +679,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Arama veya filtreleri değiştirmeyi dene.'**
   String get libraryNoResultsMessage;
+
+  /// No description provided for @physicalBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiziksel'**
+  String get physicalBadge;
+
+  /// No description provided for @digitalBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dijital'**
+  String get digitalBadge;
 
   /// No description provided for @loanedBadge.
   ///
@@ -545,13 +731,13 @@ abstract class AppLocalizations {
   /// No description provided for @bookOwned.
   ///
   /// In tr, this message translates to:
-  /// **'Kitaplığımda'**
+  /// **'Fiziksel kopyası bende'**
   String get bookOwned;
 
   /// No description provided for @bookNotOwned.
   ///
   /// In tr, this message translates to:
-  /// **'Kitaplığımda değil'**
+  /// **'Fiziksel kopyası yok'**
   String get bookNotOwned;
 
   /// No description provided for @pageCounterTitle.
@@ -602,11 +788,11 @@ abstract class AppLocalizations {
   /// **'{count} sayfa ileri'**
   String pageIncrementBig(int count);
 
-  /// No description provided for @finishSuggestion.
+  /// No description provided for @finishReachedMessage.
   ///
   /// In tr, this message translates to:
-  /// **'Son sayfaya ulaştın. Kitabı bitirdin mi?'**
-  String get finishSuggestion;
+  /// **'Son sayfaya ulaştın. Kitap \"Bitti\" olarak işaretlenecek ve bu yılın okuma hedefine sayılacak.'**
+  String get finishReachedMessage;
 
   /// No description provided for @markFinished.
   ///
@@ -811,6 +997,234 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'İade alındı'**
   String get loanReturn;
+
+  /// No description provided for @loansTabActive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünçte'**
+  String get loansTabActive;
+
+  /// No description provided for @loansTabHistory.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçmiş'**
+  String get loansTabHistory;
+
+  /// No description provided for @loansSummaryActive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünçte'**
+  String get loansSummaryActive;
+
+  /// No description provided for @loansSummaryOverdue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gecikmiş'**
+  String get loansSummaryOverdue;
+
+  /// No description provided for @loansSummaryDueSoon.
+  ///
+  /// In tr, this message translates to:
+  /// **'İadesi yaklaşan'**
+  String get loansSummaryDueSoon;
+
+  /// No description provided for @loansDaysOut.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, =0{bugün verildi} other{{count} gündür ödünçte}}'**
+  String loansDaysOut(int count);
+
+  /// No description provided for @loansDueNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'İade tarihi yok'**
+  String get loansDueNone;
+
+  /// No description provided for @loansDueToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün iade edilmeli'**
+  String get loansDueToday;
+
+  /// No description provided for @loansDueIn.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, =1{Yarın iade edilmeli} other{İadeye {count} gün kaldı}}'**
+  String loansDueIn(int count);
+
+  /// No description provided for @loansOverdueBy.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} gün gecikti'**
+  String loansOverdueBy(int count);
+
+  /// No description provided for @loansEdit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzenle'**
+  String get loansEdit;
+
+  /// No description provided for @loansEditTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç Bilgisini Düzenle'**
+  String get loansEditTitle;
+
+  /// No description provided for @loansReturnConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İade alındı mı?'**
+  String get loansReturnConfirmTitle;
+
+  /// No description provided for @loansReturnConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'“{title}”, {name} kişisinden geri alındı olarak işaretlenecek ve ödünç geçmişine eklenecek.'**
+  String loansReturnConfirmMessage(String title, String name);
+
+  /// No description provided for @loansPickBookTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç verilecek kitabı seç'**
+  String get loansPickBookTitle;
+
+  /// No description provided for @loansNoLendableTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç verilebilecek kitap yok'**
+  String get loansNoLendableTitle;
+
+  /// No description provided for @loansNoLendableMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiziksel kopyası sende olan ve şu an ödünçte olmayan kitaplar burada listelenir.'**
+  String get loansNoLendableMessage;
+
+  /// No description provided for @loansEmptyActiveTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünçte kitap yok'**
+  String get loansEmptyActiveTitle;
+
+  /// No description provided for @loansEmptyActiveMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiziksel bir kitabını ödünç verdiğinde kime verdiğini ve iade tarihini burada takip edebilirsin.'**
+  String get loansEmptyActiveMessage;
+
+  /// No description provided for @loansEmptyHistoryTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç geçmişi boş'**
+  String get loansEmptyHistoryTitle;
+
+  /// No description provided for @loansEmptyHistoryMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'İadesini aldığın kitaplar burada listelenir.'**
+  String get loansEmptyHistoryMessage;
+
+  /// No description provided for @loansHistoryPeriod.
+  ///
+  /// In tr, this message translates to:
+  /// **'{lent} – {returned}'**
+  String loansHistoryPeriod(String lent, String returned);
+
+  /// No description provided for @loansHistoryDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, =0{aynı gün} other{{count} gün}}'**
+  String loansHistoryDuration(int count);
+
+  /// No description provided for @loansReturnedLate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geç iade edildi'**
+  String get loansReturnedLate;
+
+  /// No description provided for @loanReminderChannelName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç hatırlatmaları'**
+  String get loanReminderChannelName;
+
+  /// No description provided for @loanReminderChannelDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödünç verdiğin kitapların iade günü yaklaşınca hatırlatır.'**
+  String get loanReminderChannelDescription;
+
+  /// No description provided for @loanReminderTomorrowTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yarın iade günü'**
+  String get loanReminderTomorrowTitle;
+
+  /// No description provided for @loanReminderTodayTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün iade günü'**
+  String get loanReminderTodayTitle;
+
+  /// No description provided for @loanReminderBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'{name}, “{title}” kitabını geri getirmeli.'**
+  String loanReminderBody(String title, String name);
+
+  /// No description provided for @readingReminderChannelName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okuma hatırlatmaları'**
+  String get readingReminderChannelName;
+
+  /// No description provided for @readingReminderChannelDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her gün seçtiğin saatte okumaya davet eder ve yarım kalan kitapları hatırlatır.'**
+  String get readingReminderChannelDescription;
+
+  /// No description provided for @readingReminderTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okuma zamanı'**
+  String get readingReminderTitle;
+
+  /// No description provided for @readingReminderBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'“{title}” kitabında {page}. sayfadasın. 10 dakika okumaya ne dersin?'**
+  String readingReminderBody(String title, int page);
+
+  /// No description provided for @readingReminderBodyStart.
+  ///
+  /// In tr, this message translates to:
+  /// **'“{title}” seni bekliyor. 10 dakika okumaya ne dersin?'**
+  String readingReminderBodyStart(String title);
+
+  /// No description provided for @readingReminderBodyNoBook.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün birkaç sayfa okumaya ne dersin? Kitaplığında seni bekleyen kitaplar var.'**
+  String get readingReminderBodyNoBook;
+
+  /// No description provided for @readingReminderStreakTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'{days} gündür okuyorsun, seriyi bozma!'**
+  String readingReminderStreakTitle(int days);
+
+  /// No description provided for @readingReminderStalledTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yarım kalan kitap'**
+  String get readingReminderStalledTitle;
+
+  /// No description provided for @readingReminderStalledBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'“{title}” kitabında {days} gündür ilerleme yok. Kaldığın yerden devam etmeye ne dersin?'**
+  String readingReminderStalledBody(String title, int days);
 
   /// No description provided for @deleteBook.
   ///
@@ -1022,6 +1436,54 @@ abstract class AppLocalizations {
   /// **'Sayfa sayısı'**
   String get fieldBookPages;
 
+  /// No description provided for @genreAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni kategori ekle'**
+  String get genreAdd;
+
+  /// No description provided for @genreNewTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni kategori'**
+  String get genreNewTitle;
+
+  /// No description provided for @genreNewName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategori adı'**
+  String get genreNewName;
+
+  /// No description provided for @genreNewColor.
+  ///
+  /// In tr, this message translates to:
+  /// **'Renk'**
+  String get genreNewColor;
+
+  /// No description provided for @genreColorOption.
+  ///
+  /// In tr, this message translates to:
+  /// **'Renk {number}'**
+  String genreColorOption(int number);
+
+  /// No description provided for @genreNewSave.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekle'**
+  String get genreNewSave;
+
+  /// No description provided for @errorGenreNameTooLong.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kategori adı en fazla 30 karakter olabilir.'**
+  String get errorGenreNameTooLong;
+
+  /// No description provided for @errorGenreNameTaken.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kategori zaten var; listeden seçebilirsin.'**
+  String get errorGenreNameTaken;
+
   /// No description provided for @fieldBookGenre.
   ///
   /// In tr, this message translates to:
@@ -1040,6 +1502,42 @@ abstract class AppLocalizations {
   /// **'ISBN (isteğe bağlı)'**
   String get fieldBookIsbn;
 
+  /// No description provided for @fieldBookCover.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapak'**
+  String get fieldBookCover;
+
+  /// No description provided for @coverFromGallery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Galeriden seç'**
+  String get coverFromGallery;
+
+  /// No description provided for @coverFromCamera.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fotoğraf çek'**
+  String get coverFromCamera;
+
+  /// No description provided for @coverRemove.
+  ///
+  /// In tr, this message translates to:
+  /// **'Resmi kaldır'**
+  String get coverRemove;
+
+  /// No description provided for @coverFromDeviceSelected.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cihazdan seçilen resim kapak olarak kullanılacak.'**
+  String get coverFromDeviceSelected;
+
+  /// No description provided for @coverPickFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Resim seçilemedi. Lütfen tekrar dene.'**
+  String get coverPickFailed;
+
   /// No description provided for @fieldBookCoverUrl.
   ///
   /// In tr, this message translates to:
@@ -1049,7 +1547,7 @@ abstract class AppLocalizations {
   /// No description provided for @fieldBookOwned.
   ///
   /// In tr, this message translates to:
-  /// **'Bu kitap bende var'**
+  /// **'Bu kitap bende fiziksel olarak var'**
   String get fieldBookOwned;
 
   /// No description provided for @goalYearLabel.
@@ -1345,6 +1843,120 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Sonraki sayfa'**
   String get readerNext;
+
+  /// No description provided for @readerQuoteSave.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alıntı olarak kaydet'**
+  String get readerQuoteSave;
+
+  /// No description provided for @readerQuoteSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alıntı kaydedildi; kitap ayrıntılarındaki Alıntılar bölümüne eklendi.'**
+  String get readerQuoteSaved;
+
+  /// No description provided for @readerQuoteDuplicate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu alıntı zaten kayıtlı.'**
+  String get readerQuoteDuplicate;
+
+  /// No description provided for @readerTranslate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çeviri'**
+  String get readerTranslate;
+
+  /// No description provided for @readerTranslateSelection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çevir'**
+  String get readerTranslateSelection;
+
+  /// No description provided for @readerTranslationOriginal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Orijinal'**
+  String get readerTranslationOriginal;
+
+  /// No description provided for @readerTranslationTurkish.
+  ///
+  /// In tr, this message translates to:
+  /// **'Türkçe çeviri'**
+  String get readerTranslationTurkish;
+
+  /// No description provided for @readerTranslationEnglish.
+  ///
+  /// In tr, this message translates to:
+  /// **'İngilizce çeviri'**
+  String get readerTranslationEnglish;
+
+  /// No description provided for @readerTranslationBoth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Orijinal ve çeviri alt alta'**
+  String get readerTranslationBoth;
+
+  /// No description provided for @readerTranslationTranslating.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa çevriliyor…'**
+  String get readerTranslationTranslating;
+
+  /// No description provided for @readerTranslationDownloading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çeviri dil paketi indiriliyor…'**
+  String get readerTranslationDownloading;
+
+  /// No description provided for @readerTranslationModelTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çeviri dil paketi indirilsin mi?'**
+  String get readerTranslationModelTitle;
+
+  /// No description provided for @readerTranslationModelMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çeviri cihazında yapılır. Bunun için İngilizce ve Türkçe dil paketlerinin bir kez indirilmesi gerekir (yaklaşık 30 MB). Sonra çeviri internet olmadan da çalışır.'**
+  String get readerTranslationModelMessage;
+
+  /// No description provided for @readerTranslationModelDownload.
+  ///
+  /// In tr, this message translates to:
+  /// **'İndir'**
+  String get readerTranslationModelDownload;
+
+  /// No description provided for @readerTranslationErrorModel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dil paketi indirilemedi. İnternet bağlantını kontrol edip tekrar dene.'**
+  String get readerTranslationErrorModel;
+
+  /// No description provided for @readerTranslationErrorTranslate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metin çevrilemedi.'**
+  String get readerTranslationErrorTranslate;
+
+  /// No description provided for @readerTranslationNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cihazda yapılan otomatik çeviridir; hatalar içerebilir.'**
+  String get readerTranslationNote;
+
+  /// No description provided for @readerTranslationCopy.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kopyala'**
+  String get readerTranslationCopy;
+
+  /// No description provided for @readerTranslationCopied.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çeviri kopyalandı.'**
+  String get readerTranslationCopied;
 
   /// No description provided for @readerTextSize.
   ///

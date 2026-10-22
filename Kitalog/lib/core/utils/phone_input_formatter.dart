@@ -29,9 +29,11 @@ class PhoneInputFormatter extends TextInputFormatter {
   ) {
     var digits = newValue.text.replaceAll(RegExp(r'\D'), '');
     final oldDigits = oldValue.text.replaceAll(RegExp(r'\D'), '');
-    // Ayraç karakteri silinirse (rakam sayısı değişmedi) son rakamı sil.
+    // Ayraç karakteri silinirse (rakamlar aynen kaldı) son rakamı sil. Rakamların
+    // yalnızca sayısı değil kendisi de karşılaştırılır; aksi halde dolu alana
+    // farklı bir numara yazmak / yapıştırmak (otomatik doldurma dahil) son haneyi düşürürdü.
     if (newValue.text.length < oldValue.text.length &&
-        digits.length == oldDigits.length &&
+        digits == oldDigits &&
         digits.isNotEmpty) {
       digits = digits.substring(0, digits.length - 1);
     }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/extensions/context_extensions.dart';
 import '../../../core/models/loan_model.dart';
-import 'loan_dialog.dart';
+import '../../../core/widgets/loan_dialog.dart';
 import 'section_card_widget.dart';
 
 /// Ödünç bilgisi: kime, ne zaman, iade tarihi; ödünç verme / iade alma.

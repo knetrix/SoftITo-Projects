@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kitalog/core/data/seed_data.dart';
 import 'package:kitalog/core/utils/text_paginator.dart';
 
 void main() {
@@ -29,21 +30,72 @@ void main() {
     expect(pages.single.text, '');
   });
 
-  test('konum ↔ sayfa ve ilerleme dönüşümleri', () {
+  test('konum → sayfa dönüşümü', () {
     final pages = TextPaginator.paginate(text, targetChars: 600);
     expect(TextPaginator.pageIndexForOffset(pages, 0), 0);
     expect(TextPaginator.pageIndexForOffset(pages, pages[2].start + 5), 2);
-    expect(TextPaginator.pageIndexForOffset(pages, text.length * 10), pages.length - 1);
-    expect(TextPaginator.progressAfterPage(pages, pages.length - 1, text.length), 1.0);
-    final mid = TextPaginator.progressAfterPage(pages, 1, text.length);
-    expect(mid, closeTo(pages[2].start / text.length, 1e-9));
-    expect(TextPaginator.progressAfterPage(const [], 0, 10), 0);
+    expect(
+      TextPaginator.pageIndexForOffset(pages, text.length * 10),
+      pages.length - 1,
+    );
   });
 
-  test('ilerleme basılı sayfa sayısına çevrilir ve sınırlanır', () {
-    expect(TextPaginator.printedPageFor(0.5, 300), 150);
-    expect(TextPaginator.printedPageFor(1.5, 300), 300);
-    expect(TextPaginator.printedPageFor(-1, 300), 0);
-    expect(TextPaginator.printedPageFor(0.5, 0), 0);
+  group('paginateInto', () {
+    test('tam istenen sayıda sayfa üretir ve tüm metni sırayla kapsar', () {
+      for (final count in [1, 2, 7, 20, 55, 300]) {
+        final pages = TextPaginator.paginateInto(text, count);
+        expect(pages.length, count, reason: '\$count sayfa');
+        for (var i = 1; i < pages.length; i++) {
+          expect(pages[i].start, greaterThan(pages[i - 1].start));
+        }
+        expect(
+          pages
+              .map((p) => p.text)
+              .where((t) => t.isNotEmpty)
+              .join(' ')
+              .replaceAll(RegExp(r'\s+'), ' '),
+          text.replaceAll(RegExp(r'\s+'), ' '),
+        );
+      }
+    });
+
+    test('sayfalar mümkünse paragraf başından başlar ve dengeli dağılır', () {
+      final pages = TextPaginator.paginateInto(text, 10);
+      final average = text.length / 10;
+      for (final page in pages) {
+        expect(page.text.startsWith('P'), isTrue);
+        expect(page.text.length, lessThan(average * 1.7));
+      }
+    });
+
+    test('paragrafsız ve sayfa sayısından kısa metinde de sayı korunur', () {
+      final long = List.filled(500, 'abc').join(' ');
+      final pages = TextPaginator.paginateInto(long, 37);
+      expect(pages.length, 37);
+      expect(
+        pages.every((p) => !p.text.startsWith(' ') && p.text.isNotEmpty),
+        isTrue,
+      );
+      expect(TextPaginator.paginateInto('kısa', 12).length, 12);
+      expect(TextPaginator.paginateInto('', 5).length, 5);
+    });
+
+    test('sayfa sayısı yoksa varsayılan sayfalamaya düşer', () {
+      expect(
+        TextPaginator.paginateInto(text, 0).length,
+        TextPaginator.paginate(text).length,
+      );
+    });
+
+    test('tüm örnek kitaplarda okuyucu sayfası = kitabın sayfa sayısı', () {
+      final book = List.generate(4000, (i) => 'P$i $paragraph.').join('\n\n');
+      for (final b in SeedData.build(DateTime(2026, 10, 21)).books) {
+        expect(
+          TextPaginator.paginateInto(book, b.pageCount).length,
+          b.pageCount,
+          reason: b.title,
+        );
+      }
+    });
   });
 }

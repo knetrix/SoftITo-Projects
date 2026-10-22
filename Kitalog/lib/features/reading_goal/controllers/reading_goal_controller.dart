@@ -15,6 +15,7 @@ class ReadingGoalController {
   }) : _clock = clock ?? DateTime.now {
     _library.books.addListener(_recalculate);
     _library.goals.addListener(_recalculate);
+    _library.customGenres.addListener(_recalculate);
     _recalculate();
   }
 
@@ -38,10 +39,17 @@ class ReadingGoalController {
 
     final monthly = List<int>.filled(12, 0);
     final genres = <BookGenre, int>{};
+    final customs = <String, int>{};
     var pages = 0;
     for (final book in finished) {
       monthly[book.finishedAt!.month - 1]++;
-      genres[book.genre] = (genres[book.genre] ?? 0) + 1;
+      // Kategorisi bulunamayan kitap yerleşik türüne sayılır.
+      final custom = _library.customGenreById(book.customGenreId);
+      if (custom != null) {
+        customs[custom.id] = (customs[custom.id] ?? 0) + 1;
+      } else {
+        genres[book.genre] = (genres[book.genre] ?? 0) + 1;
+      }
       pages += book.pageCount;
     }
     // Hâlihazırda okunmakta olan kitapların o ana kadarki sayfaları da eklenir.
@@ -56,6 +64,8 @@ class ReadingGoalController {
       totalPagesRead: pages,
       monthlyFinished: monthly,
       genreCounts: genres,
+      customGenreCounts: customs,
+      customGenres: _library.customGenres.value,
     );
   }
 
@@ -67,6 +77,7 @@ class ReadingGoalController {
   void dispose() {
     _library.books.removeListener(_recalculate);
     _library.goals.removeListener(_recalculate);
+    _library.customGenres.removeListener(_recalculate);
     state.dispose();
   }
 }

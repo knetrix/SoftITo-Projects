@@ -14,5 +14,7 @@ extension ValidationErrorX on ValidationError {
     ValidationError.pageCountInvalid => l10n.errorPageCountInvalid,
     ValidationError.urlInvalid => l10n.errorUrlInvalid,
     ValidationError.isbnInvalid => l10n.errorIsbnInvalid,
+    ValidationError.genreNameTooLong => l10n.errorGenreNameTooLong,
+    ValidationError.genreNameTaken => l10n.errorGenreNameTaken,
   };
 }

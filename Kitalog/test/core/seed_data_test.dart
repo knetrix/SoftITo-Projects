@@ -62,6 +62,16 @@ void main() {
     final ids = seed.books.map((b) => b.id).toSet();
     expect(seed.quotes.every((q) => ids.contains(q.bookId)), isTrue);
     expect(seed.notes.every((n) => ids.contains(n.bookId)), isTrue);
+    // Örnek ödünç geçmişi: fiziksel kopyası olan, şu an ödünçte olmayan kitaplarda; biri geç iade.
+    final byId = {for (final b in seed.books) b.id: b};
+    expect(seed.loanHistory.length, greaterThanOrEqualTo(3));
+    expect(seed.loanHistory.map((r) => r.id).toSet().length, seed.loanHistory.length);
+    for (final r in seed.loanHistory) {
+      expect(byId[r.bookId]?.isOwned, isTrue, reason: r.bookId);
+      expect(byId[r.bookId]!.isLent, isFalse, reason: r.bookId);
+      expect(r.returnedAt.isAfter(r.lentAt), isTrue);
+    }
+    expect(seed.loanHistory.where((r) => r.wasLate), isNotEmpty);
   });
 
   test('biten kitap tarihleri gelecekte değil (Ocak ayında da)', () {

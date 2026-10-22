@@ -56,11 +56,13 @@ class BookDetailContentWidget extends StatelessWidget {
           onAdd: actions.addNote,
           onDelete: actions.deleteNote,
         ),
-        LoanSectionWidget(
-          loan: book.loan,
-          onLend: actions.lend,
-          onReturn: actions.returnBook,
-        ),
+        // Ödünç yalnızca fiziksel kopya için: kitap fiziksel olarak yoksa bölüm gösterilmez.
+        if (book.isOwned)
+          LoanSectionWidget(
+            loan: book.loan,
+            onLend: actions.lend,
+            onReturn: actions.returnBook,
+          ),
       ],
       ),
     );

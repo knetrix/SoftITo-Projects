@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kitalog/core/di/app_dependencies.dart';
+import 'package:kitalog/core/constants/app_colors.dart';
+import 'package:kitalog/core/models/book_model.dart';
 import 'package:kitalog/core/models/reading_status.dart';
+import 'package:kitalog/core/widgets/genre_chip.dart';
 import 'package:kitalog/features/book_detail/views/book_detail_view.dart';
 
 import '../../helpers/pump_app.dart';
@@ -46,24 +49,61 @@ void main() {
     expect(find.text('278 / 551 sayfa'), findsOneWidget);
   });
 
-  testWidgets('son sayfaya ulaşınca "Bitti olarak işaretle" önerisi çıkar', (
-    tester,
-  ) async {
-    final deps = await _open(tester);
-    await deps.libraryController.setCurrentPage(_cpId, 550);
-    await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('1 sayfa ileri'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(
-      find.text('Son sayfaya ulaştın. Kitabı bitirdin mi?'),
-      findsOneWidget,
-    );
-    await tester.tap(
-      find.widgetWithText(SnackBarAction, 'Bitti olarak işaretle'),
-    );
-    await tester.pumpAndSettle();
-    expect(deps.libraryController.bookById(_cpId)!.status.name, 'finished');
+  group('son sayfaya ulaşınca "Kitabı bitirdin mi?" onayı kendiliğinden açılır', () {
+    Finder dialogConfirm() =>
+        find.descendant(of: find.byType(AlertDialog), matching: find.widgetWithText(FilledButton, 'Bitti olarak işaretle'));
+
+    testWidgets('onaylanınca kitap biter ve pencere bir daha açılmaz', (tester) async {
+      final deps = await _open(tester);
+      await deps.libraryController.setCurrentPage(_cpId, 550);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('1 sayfa ileri'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SnackBar), findsNothing, reason: 'eski SnackBar önerisi yok');
+      expect(find.text('Kitabı bitirdin mi?'), findsOneWidget);
+      expect(
+        find.text('Son sayfaya ulaştın. Kitap "Bitti" olarak işaretlenecek ve bu yılın okuma hedefine sayılacak.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(dialogConfirm());
+      await tester.pumpAndSettle();
+      final book = deps.libraryController.bookById(_cpId)!;
+      expect(book.status.name, 'finished');
+      expect(book.finishedAt, isNotNull);
+      expect(find.byType(AlertDialog), findsNothing, reason: 'kuyrukta bekleyen ikinci öneri yok');
+    });
+
+    testWidgets('vazgeçilirse kitap okunuyor kalır; son sayfada tekrar "+" basmak pencereyi yinelemez', (tester) async {
+      final deps = await _open(tester);
+      await deps.libraryController.setCurrentPage(_cpId, 550);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('1 sayfa ileri'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.text('Vazgeç')));
+      await tester.pumpAndSettle();
+      expect(deps.libraryController.bookById(_cpId)!.status.name, 'reading');
+
+      await tester.tap(find.byTooltip('1 sayfa ileri'));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsNothing);
+
+      // Geri gidip yeniden son sayfaya gelince öneri yine açılır.
+      await tester.tap(find.byTooltip('1 sayfa geri'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('1 sayfa ileri'));
+      await tester.pumpAndSettle();
+      expect(find.text('Kitabı bitirdin mi?'), findsOneWidget);
+    });
+
+    testWidgets('"Bitti olarak işaretle" düğmesi aynı pencereyi açar', (tester) async {
+      await _open(tester);
+      await tester.tap(find.widgetWithText(FilledButton, 'Bitti olarak işaretle'));
+      await tester.pumpAndSettle();
+      expect(find.text('Kitabı bitirdin mi?'), findsOneWidget);
+      expect(find.text('Kitap "Bitti" olarak işaretlenecek ve okuma ilerlemesi son sayfaya getirilecek.'), findsOneWidget);
+      expect(dialogConfirm(), findsOneWidget);
+    });
   });
 
   group('okuma durumu yalnızca anlamlı sonraki adımı gösterir', () {
@@ -206,5 +246,30 @@ void main() {
   ) async {
     await _open(tester, id: 'yok');
     expect(find.text('Kitap bulunamadı.'), findsOneWidget);
+  });
+
+  testWidgets('kullanıcı kategorili kitapta etiket kategorinin adı ve rengiyle görünür', (tester) async {
+    final deps = await createTestDependencies();
+    await deps.libraryController.load();
+    final mizah = await deps.libraryController.addCustomGenre('Mizah', colorIndex: 2);
+    await deps.libraryController.addBook(
+      BookModel(id: 'k1', title: 'Gülmece', customGenreId: mizah.id, addedAt: DateTime(2026)),
+    );
+    await pumpScreen(tester, deps, const BookDetailView(bookId: 'k1'), size: const Size(800, 3000));
+    final chip = find.ancestor(of: find.text('Mizah'), matching: find.byType(GenreChip));
+    expect(chip, findsOneWidget);
+    final box = tester.widget<DecoratedBox>(find.descendant(of: chip, matching: find.byType(DecoratedBox)).first);
+    expect((box.decoration as BoxDecoration).color, AppColors.customGenrePalette[2]);
+    expect(find.text('Diğer'), findsNothing);
+  });
+
+  testWidgets('ödünç bölümü yalnızca fiziksel kopyası olan kitapta görünür', (tester) async {
+    final deps = await createTestDependencies();
+    await deps.libraryController.load();
+    final digitalOnly = deps.libraryController.books.value.firstWhere((b) => !b.isOwned);
+    await pumpScreen(tester, deps, BookDetailView(bookId: digitalOnly.id), size: const Size(800, 3000));
+    expect(find.text('Ödünç Bilgisi'), findsNothing);
+    expect(find.text('Ödünç Ver'), findsNothing);
+    expect(find.text('Fiziksel kopyası yok'), findsOneWidget);
   });
 }

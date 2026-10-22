@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/generated/app_localizations.dart';
 import '../constants/app_colors.dart';
+import '../di/app_scope.dart';
+import '../models/book_model.dart';
 import '../models/book_genre.dart';
+import '../models/custom_genre_model.dart';
 import '../models/reading_status.dart';
 
 extension BookGenreX on BookGenre {
@@ -31,6 +34,22 @@ extension BookGenreX on BookGenre {
     BookGenre.children => l10n.genreChildren,
     BookGenre.other => l10n.genreOther,
   };
+
+  /// Kitabın kullanıcı kategorisi varsa onun rengi, yoksa türün rengi.
+  Color colorWith(CustomGenreModel? custom) => custom?.color ?? color;
+
+  /// Kitabın kullanıcı kategorisi varsa onun adı, yoksa türün etiketi.
+  String labelWith(CustomGenreModel? custom, AppLocalizations l10n) => custom?.name ?? label(l10n);
+}
+
+extension CustomGenreX on CustomGenreModel {
+  Color get color => AppColors.customGenrePalette[colorIndex % AppColors.customGenrePalette.length];
+}
+
+extension BookGenreContextX on BuildContext {
+  /// Kitabın kullanıcı kategorisi (yoksa veya silindiyse `null`).
+  CustomGenreModel? customGenreOf(BookModel book) =>
+      AppScope.of(this).libraryController.customGenreById(book.customGenreId);
 }
 
 extension ReadingStatusX on ReadingStatus {

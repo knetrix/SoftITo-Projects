@@ -54,9 +54,33 @@ void main() {
     updated = library.bookById(book.id)!;
     expect(updated.currentPage, updated.pageCount);
     expect(reachedEnd, isTrue);
+    expect(await library.setCurrentPage(book.id, 99999), isFalse, reason: 'zaten son sayfada: öneri yinelenmez');
+    expect(await library.setCurrentPage(book.id, updated.pageCount - 1), isFalse);
+    expect(await library.setCurrentPage(book.id, updated.pageCount), isTrue, reason: 'yeniden son sayfaya gelindi');
 
     await library.setCurrentPage(book.id, -4);
     expect(library.bookById(book.id)!.currentPage, 0);
+  });
+
+  test('sayfa sayısı eşitlenirken ilerleme yüzdesi korunur; biten kitap son sayfada kalır', () async {
+    final deps = await createTestDependencies();
+    final library = deps.libraryController;
+    await library.load();
+    final reading = library.books.value.firstWhere((b) => b.status == ReadingStatus.reading);
+    await library.setCurrentPage(reading.id, reading.pageCount ~/ 2);
+    await library.alignPageCount(reading.id, 100);
+    var updated = library.bookById(reading.id)!;
+    expect(updated.pageCount, 100);
+    expect(updated.currentPage, closeTo(50, 1));
+
+    final finished = library.books.value.firstWhere((b) => b.status == ReadingStatus.finished);
+    await library.alignPageCount(finished.id, 42);
+    updated = library.bookById(finished.id)!;
+    expect(updated.pageCount, 42);
+    expect(updated.currentPage, 42);
+
+    await library.alignPageCount(finished.id, 0);
+    expect(library.bookById(finished.id)!.pageCount, 42, reason: '0 yok sayılır');
   });
 
   test('bitti durumu sayfayı tamamlar ve bitiş tarihini yazar', () async {
@@ -89,6 +113,57 @@ void main() {
     expect(library.bookById(id)!.rating, 5);
     await library.setReview(id, '   ');
     expect(library.bookById(id)!.review, isNull);
+  });
+
+  test('iade alınan ödünç geçmişe kaydedilir, kalıcıdır; kitap silinince geçmişi de silinir', () async {
+    final deps = await createTestDependencies();
+    final library = deps.libraryController;
+    await library.load();
+    final seeded = library.loanHistory.value.length;
+    expect(seeded, greaterThan(0), reason: 'örnek ödünç geçmişi');
+    final book = library.lentBooks.first;
+    await library.returnBook(book.id);
+    expect(library.loanHistory.value.length, seeded + 1);
+    final record = library.loanHistory.value.first;
+    expect(record.bookId, book.id);
+    expect(record.borrowerName, book.loan!.borrowerName);
+    expect(record.lentAt, book.loan!.lentAt);
+
+    // Ödünçte olmayan kitabı "iade almak" geçmişe kayıt düşmez.
+    await library.returnBook(book.id);
+    expect(library.loanHistory.value.length, seeded + 1);
+
+    final reloaded = await deps.loanHistoryRepository.getAll();
+    expect(reloaded.map((r) => r.id), library.loanHistory.value.map((r) => r.id));
+
+    await library.deleteBook(book.id);
+    expect(library.loanHistory.value.any((r) => r.bookId == book.id), isFalse);
+    expect((await deps.loanHistoryRepository.getAll()).any((r) => r.bookId == book.id), isFalse);
+  });
+
+  test('fiziksel kopyası olmayan kitaptaki eski ödünç kaydı iade alınınca geçmişe yazılmaz', () async {
+    final deps = await createTestDependencies();
+    final library = deps.libraryController;
+    await library.load();
+    final digitalOnly = library.books.value.firstWhere((b) => !b.isOwned);
+    await library.updateBook(digitalOnly.copyWith(loan: LoanModel(borrowerName: 'Ali', lentAt: DateTime(2026))));
+    final before = library.loanHistory.value.length;
+    await library.returnBook(digitalOnly.id);
+    expect(library.bookById(digitalOnly.id)!.loan, isNull);
+    expect(library.loanHistory.value.length, before);
+  });
+
+  test('fiziksel kopyası olmayan kitap ödünç verilemez; eski ödünç kaydı yok sayılır', () async {
+    final deps = await createTestDependencies();
+    final library = deps.libraryController;
+    await library.load();
+    final digitalOnly = library.books.value.firstWhere((b) => !b.isOwned);
+    await library.lendBook(digitalOnly.id, LoanModel(borrowerName: 'Ali', lentAt: DateTime(2026)));
+    expect(library.bookById(digitalOnly.id)!.loan, isNull);
+
+    final legacy = digitalOnly.copyWith(loan: LoanModel(borrowerName: 'Ali', lentAt: DateTime(2026)));
+    expect(legacy.isLent, isFalse);
+    expect(legacy.copyWith(isOwned: true).isLent, isTrue);
   });
 
   test('alıntı ve not ekleme/silme, kitap silinince bağlı kayıtlar silinir', () async {

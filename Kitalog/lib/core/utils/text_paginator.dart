@@ -9,10 +9,19 @@ class TextPage {
   final String text;
 }
 
-/// Metni paragraf sınırlarında sayfalara böler ve okuma konumunu
-/// sayfa/yüzde/basılı sayfa arasında dönüştürür (saf fonksiyonlar).
+/// Metni paragraf sınırlarında sayfalara böler ve karakter konumunu sayfa
+/// sırasına dönüştürür (saf fonksiyonlar).
 abstract final class TextPaginator {
   static const int defaultPageChars = 1500;
+
+  /// Bir sayfaya düşen en az karakter. Metin kitabın sayfa sayısına bölünemeyecek
+  /// kadar kısaysa (ör. kitabın bir bölümünü içeren dosya) kelimeler bölünmesin
+  /// diye [paginateInto] yerine [paginate] kullanılır.
+  static const int minPageChars = 300;
+
+  /// Metin [pageCount] sayfaya kelime bölmeden dağıtılabilir mi?
+  static bool fitsPageCount(String text, int pageCount) =>
+      pageCount > 0 && text.length >= pageCount * minPageChars;
 
   static List<TextPage> paginate(String text, {int targetChars = defaultPageChars}) {
     final pages = <TextPage>[];
@@ -30,6 +39,52 @@ abstract final class TextPaginator {
       pos = _skipWhitespace(text, end);
     }
     return pages.isEmpty ? const [TextPage(start: 0, text: '')] : pages;
+  }
+
+  /// Metni tam olarak [pageCount] sayfaya böler; böylece okuyucudaki sayfa
+  /// numarası kitabın basılı sayfa sayacıyla birebir eşleşir. Her sınır eşit
+  /// aralıklı ideal konumun çevresindeki en yakın paragraf / satır / cümle /
+  /// boşlukta seçilir. [pageCount] 0 veya altıysa [paginate]'e düşer.
+  static List<TextPage> paginateInto(String text, int pageCount) {
+    if (pageCount <= 0) return paginate(text);
+    final length = text.length;
+    final first = _skipWhitespace(text, 0);
+    final average = (length - first) / pageCount;
+    final window = (average * 0.3).round();
+    final starts = <int>[first];
+    for (var i = 1; i < pageCount; i++) {
+      final ideal = first + (average * i).round();
+      final cut = _skipWhitespace(text, _nearestBreak(text, ideal, window));
+      starts.add(cut.clamp((starts.last + 1).clamp(0, length), length));
+    }
+    return [
+      for (var i = 0; i < pageCount; i++)
+        TextPage(
+          start: starts[i],
+          text: text.substring(starts[i], i + 1 < pageCount ? starts[i + 1] : length).trim(),
+        ),
+    ];
+  }
+
+  /// [ideal] konumuna en yakın ayırıcının bitişi; önce paragraf, sonra satır,
+  /// cümle ve boşluk denenir. [window] içinde hiçbiri yoksa [ideal] döner.
+  static int _nearestBreak(String text, int ideal, int window) {
+    final lo = (ideal - window).clamp(0, text.length);
+    final hi = (ideal + window).clamp(0, text.length);
+    final slice = text.substring(lo, hi);
+    final center = ideal - lo;
+    for (final separator in ['\n\n', '\n', '. ', ' ']) {
+      final before = slice.lastIndexOf(separator, (center - separator.length).clamp(0, slice.length));
+      final after = slice.indexOf(separator, center.clamp(0, slice.length));
+      final candidates = [
+        if (before >= 0) before + separator.length,
+        if (after >= 0) after + separator.length,
+      ];
+      if (candidates.isEmpty) continue;
+      candidates.sort((a, b) => (a - center).abs().compareTo((b - center).abs()));
+      return lo + candidates.first;
+    }
+    return ideal.clamp(0, text.length);
   }
 
   /// Hedef uzunluğun çevresinde önce paragraf, sonra satır, cümle ve boşluk arar.
@@ -62,18 +117,5 @@ abstract final class TextPaginator {
       }
     }
     return index;
-  }
-
-  /// Sayfa okunduğunda ulaşılan ilerleme (0.0 - 1.0); son sayfada 1.0.
-  static double progressAfterPage(List<TextPage> pages, int index, int totalChars) {
-    if (pages.isEmpty || totalChars <= 0) return 0;
-    if (index >= pages.length - 1) return 1;
-    return (pages[index + 1].start / totalChars).clamp(0.0, 1.0);
-  }
-
-  /// İlerlemeyi kitabın basılı sayfa sayısına çevirir.
-  static int printedPageFor(double progress, int pageCount) {
-    if (pageCount <= 0) return 0;
-    return (progress.clamp(0.0, 1.0) * pageCount).round().clamp(0, pageCount);
   }
 }

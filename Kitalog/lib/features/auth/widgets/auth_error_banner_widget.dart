@@ -14,6 +14,8 @@ class AuthErrorBannerWidget extends StatelessWidget {
     final message = switch (error) {
       AuthError.invalidCredentials => context.l10n.errorInvalidCredentials,
       AuthError.wrongCurrentPassword => context.l10n.errorWrongCurrentPassword,
+      AuthError.recoveryMismatch => context.l10n.errorRecoveryMismatch,
+      AuthError.tooManyAttempts => context.l10n.errorTooManyAttempts(AuthController.recoveryLockout.inSeconds),
     };
     return Semantics(
       liveRegion: true,

@@ -4,6 +4,7 @@ import '../../../core/di/app_scope.dart';
 import '../../../core/extensions/context_extensions.dart';
 import '../../../core/routing/app_routes.dart';
 import '../controllers/library_shelf_controller.dart';
+import '../models/library_filter_actions.dart';
 import '../models/library_shelf_model.dart';
 import '../widgets/book_shelf_grid_widget.dart';
 import '../widgets/library_empty_widget.dart';
@@ -19,6 +20,11 @@ class LibraryView extends StatefulWidget {
 
 class _LibraryViewState extends State<LibraryView> {
   LibraryShelfController? _controller;
+  late final LibraryFilterActions _actions = LibraryFilterActions(
+    toggleFormat: _controller!.toggleFormat,
+    toggleGenre: _controller!.toggleGenre,
+    clear: _controller!.clearFilters,
+  );
 
   @override
   void didChangeDependencies() {
@@ -48,11 +54,9 @@ class _LibraryViewState extends State<LibraryView> {
         builder: (context, state, _) => Column(
           children: [
             LibraryFilterBarWidget(
-              genre: state.genre,
-              status: state.status,
+              state: controller.state,
               onQueryChanged: controller.setQuery,
-              onGenreChanged: controller.setGenre,
-              onStatusChanged: controller.setStatus,
+              actions: _actions,
             ),
             Expanded(
               child: state.books.isEmpty

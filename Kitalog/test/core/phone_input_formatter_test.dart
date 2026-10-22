@@ -24,4 +24,10 @@ void main() {
   test('ayraç silinirse son rakamı siler', () {
     expect(_apply('0 (532) ', '0 (532)').text, '0 (53');
   });
+
+  test('dolu alana farklı bir numara yazılınca / yapıştırılınca son hane düşmez', () {
+    // Rakam süzgecinden geçmiş tam numara, önceki biçimli metinden kısa ama rakamları farklı.
+    expect(_apply('0 (532) 999 99 99', '05321234567').text, '0 (532) 123 45 67');
+    expect(_apply('0 (532) 999 99 99', '0 (533) 111 22 33').text, '0 (533) 111 22 33');
+  });
 }

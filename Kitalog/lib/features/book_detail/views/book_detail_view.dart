@@ -4,6 +4,7 @@ import '../../../core/di/app_scope.dart';
 import '../../../core/extensions/context_extensions.dart';
 import '../../../core/models/reading_status.dart';
 import '../../../core/widgets/empty_state_view.dart';
+import '../../../core/widgets/finish_book_dialog.dart';
 import '../../../core/routing/app_routes.dart';
 import '../controllers/book_detail_controller.dart';
 import '../controllers/book_file_picker.dart';
@@ -28,6 +29,7 @@ class _BookDetailViewState extends State<BookDetailView> {
   BookDetailController? _controller;
   DigitalEditionController? _digital;
   bool _closing = false;
+  bool _finishDialogOpen = false;
 
   @override
   void didChangeDependencies() {
@@ -42,6 +44,7 @@ class _BookDetailViewState extends State<BookDetailView> {
     _digital = DigitalEditionController(
       library: scope.libraryController,
       digital: scope.digitalBookRepository,
+      translation: scope.translationRepository,
       picker: widget.filePicker ?? const PlatformBookFilePicker(),
       bookId: widget.bookId,
     )..load();
@@ -60,17 +63,14 @@ class _BookDetailViewState extends State<BookDetailView> {
     }
   }
 
-  void _showFinishSuggestion() {
-    final l10n = context.l10n;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.finishSuggestion),
-        action: SnackBarAction(
-          label: l10n.markFinished,
-          onPressed: () => _controller!.setStatus(ReadingStatus.finished),
-        ),
-      ),
-    );
+  /// Son sayfaya ulaşılınca "Bitti olarak işaretle" düğmesinin açtığı onay
+  /// kendiliğinden açılır; aynı anda yalnızca bir pencere gösterilir.
+  Future<void> _showFinishSuggestion() async {
+    if (_finishDialogOpen) return;
+    _finishDialogOpen = true;
+    final ok = await FinishBookDialog.show(context, reachedEnd: true);
+    _finishDialogOpen = false;
+    if (ok && mounted) await _controller!.setStatus(ReadingStatus.finished);
   }
 
   Future<void> _confirmDelete(String title) async {

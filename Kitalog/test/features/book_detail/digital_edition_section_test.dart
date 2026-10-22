@@ -4,6 +4,7 @@ import 'package:kitalog/core/di/app_dependencies.dart';
 import 'package:kitalog/core/models/book_model.dart';
 import 'package:kitalog/features/book_detail/controllers/book_file_picker.dart';
 import 'package:kitalog/features/book_detail/views/book_detail_view.dart';
+import 'package:kitalog/features/book_detail/widgets/quote_tile_widget.dart';
 import 'package:kitalog/features/reader/widgets/reader_page_widget.dart';
 
 import '../../helpers/fake_digital_sources.dart';
@@ -55,6 +56,31 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('İndir (çevrimdışı okuma)'), findsOneWidget);
     expect(await deps.digitalBookRepository.copyOf(_cpId), isNull);
+  });
+
+  testWidgets('okuyucuda seçilen metin alıntı olarak kaydedilir ve Alıntılar bölümünde görünür', (tester) async {
+    final deps = await _open(tester, _cpId);
+    final before = deps.libraryController.quotesOf(_cpId).length;
+    await tester.tap(find.text('İndir (çevrimdışı okuma)'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Oku'));
+    await tester.pumpAndSettle();
+
+    final page = find.descendant(of: find.byType(ReaderPageWidget), matching: find.byType(Text));
+    await tester.longPressAt(tester.getTopLeft(page) + const Offset(20, 8));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Alıntı olarak kaydet'));
+    await tester.pumpAndSettle();
+    final quotes = deps.libraryController.quotesOf(_cpId);
+    expect(quotes.length, before + 1);
+    final saved = quotes.first;
+    expect(saved.page, deps.libraryController.bookById(_cpId)!.currentPage, reason: 'okuyucudaki sayfa numarasıyla');
+    tester.state<NavigatorState>(find.byType(Navigator)).pop();
+    await tester.pumpAndSettle();
+
+    final tile = find.ancestor(of: find.text('“${saved.text}”'), matching: find.byType(QuoteTileWidget));
+    expect(tile, findsOneWidget, reason: 'Alıntılar bölümüne otomatik eklenir');
+    expect(find.descendant(of: tile, matching: find.text('s. ${saved.page}')), findsOneWidget);
   });
 
   testWidgets('kullanıcının kitabında arama yok; EPUB yüklenip okunur', (tester) async {

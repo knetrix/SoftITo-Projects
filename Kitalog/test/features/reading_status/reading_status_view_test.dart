@@ -20,14 +20,17 @@ void main() {
     expect(find.text('Bitti (12)'), findsOneWidget);
     expect(find.text('%70'), findsOneWidget);
 
-    // En yüksek ilerlemeli kitap (Self-Help, %70) listenin başındadır.
-    final before = deps.libraryController.bookById('seed-9780192801760')!.currentPage;
-    await tester.tap(find.byTooltip('1 sayfa ileri').first);
-    await tester.pumpAndSettle();
-    expect(
-      deps.libraryController.bookById('seed-9780192801760')!.currentPage,
-      before + 1,
-    );
+    // Sekme sırası soldan sağa: Okunacak, Okunuyor, Bitti; açılışta Okunuyor seçili.
+    final toReadX = tester.getCenter(find.text('Okunacak (12)')).dx;
+    final readingX = tester.getCenter(find.text('Okunuyor (7)')).dx;
+    final finishedX = tester.getCenter(find.text('Bitti (12)')).dx;
+    expect(toReadX < readingX && readingX < finishedX, isTrue);
+    expect(DefaultTabController.of(tester.element(find.byType(TabBar))).index, 1);
+
+    // Okunuyor kartında hızlı sayaç yok; sayfa Kitap Detay'dan değiştirilir.
+    expect(find.byTooltip('1 sayfa ileri'), findsNothing);
+    expect(find.byTooltip('1 sayfa geri'), findsNothing);
+    expect(find.text('%70'), findsOneWidget);
   });
 
   testWidgets('okunacak sekmesinde "Okumaya Başla" kitabı okunuyora taşır', (tester) async {

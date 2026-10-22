@@ -38,7 +38,8 @@ void main() {
     expect(back.toJson(), json);
     expect(back.loan?.borrowerName, 'Ayşe');
     expect(back.genre, BookGenre.novel);
-    expect(back.isLent, isTrue);
+    expect(back.isLent, isFalse, reason: 'fiziksel kopyası olmayan kitap ödünçte sayılmaz (kayıt korunur)');
+    expect(back.copyWith(isOwned: true).isLent, isTrue);
   });
 
   test('BookModel progress hesaplanır ve sınırlanır', () {

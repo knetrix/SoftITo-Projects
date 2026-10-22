@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import '../../../core/di/app_scope.dart';
 import '../../../core/extensions/context_extensions.dart';
 import '../../../core/models/digital_format.dart';
+import '../../../core/widgets/confirm_dialog.dart';
+import '../../../core/widgets/finish_book_dialog.dart';
 import '../controllers/reader_controller.dart';
+import '../controllers/reader_translation_controller.dart';
 import '../models/reader_model.dart';
+import '../widgets/reader_app_bar_widget.dart';
 import '../widgets/reader_body_widget.dart';
 import '../widgets/reader_settings_sheet.dart';
+import '../widgets/reader_translation_sheet.dart';
 
 /// Dijital okuyucu. Sayfa geçişleri tek yoldan yönetilir: düğmeler ve kaydırıcı
 /// `PageController`'ı hareket ettirir, `onPageChanged` controller'ı günceller.
@@ -21,7 +26,11 @@ class ReaderView extends StatefulWidget {
 
 class _ReaderViewState extends State<ReaderView> {
   ReaderController? _controller;
+  ReaderTranslationController? _translation;
   PageController? _pages;
+  bool _finishDialogOpen = false;
+  bool _modelDialogOpen = false;
+  bool _selectionSheetOpen = false;
 
   @override
   void didChangeDependencies() {
@@ -33,7 +42,67 @@ class _ReaderViewState extends State<ReaderView> {
       digital: scope.digitalBookRepository,
       bookId: widget.bookId,
     )..state.addListener(_onStateChanged);
+    _translation = ReaderTranslationController(
+      library: scope.libraryController,
+      digital: scope.digitalBookRepository,
+      translation: scope.translationRepository,
+      reader: _controller!.state,
+      bookId: widget.bookId,
+    )..state.addListener(_onTranslationChanged);
+    _translation!.init();
     _controller!.open();
+  }
+
+  void _onTranslationChanged() {
+    if (_translation!.state.value.modelPromptPending && mounted) _promptModelDownload();
+  }
+
+  /// İlk çeviriden önce dil paketinin (bir kez) indirilmesi için onay alınır.
+  /// Reddedilirse açık olan seçim çevirisi penceresi de kapanır.
+  Future<void> _promptModelDownload() async {
+    if (_modelDialogOpen) return;
+    _modelDialogOpen = true;
+    final l10n = context.l10n;
+    final ok = await ConfirmDialog.show(
+      context,
+      title: l10n.readerTranslationModelTitle,
+      message: l10n.readerTranslationModelMessage,
+      confirmLabel: l10n.readerTranslationModelDownload,
+      icon: Icons.translate,
+    );
+    _modelDialogOpen = false;
+    if (!mounted) return;
+    if (!ok && _selectionSheetOpen) Navigator.of(context).pop();
+    await _translation!.confirmModelDownload(ok);
+  }
+
+  /// Seçilen metnin çevirisi alttan açılan pencerede gösterilir.
+  void _translateSelection(String text, int pageNumber, {bool reflow = false}) {
+    final translation = _translation!;
+    translation.translateSelection(text, pageNumber, reflow: reflow);
+    if (_selectionSheetOpen || translation.state.value.selection == null) return;
+    _selectionSheetOpen = true;
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => ValueListenableBuilder(
+        valueListenable: translation.state,
+        builder: (_, value, _) => ReaderTranslationSheet(
+          selection: value.selection,
+          onRetry: translation.retrySelection,
+          onSaveQuote: () {
+            final selection = value.selection;
+            Navigator.of(sheetContext).pop();
+            if (selection == null) return;
+            _controller!.saveQuote(selection.text, selection.pageNumber, reflow: selection.reflow);
+          },
+        ),
+      ),
+    ).whenComplete(() {
+      _selectionSheetOpen = false;
+      _translation?.clearSelection();
+    });
   }
 
   void _onStateChanged() {
@@ -43,14 +112,32 @@ class _ReaderViewState extends State<ReaderView> {
     }
     if (state.finishSuggested && mounted) {
       _controller!.consumeFinishSuggestion();
-      final l10n = context.l10n;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.finishSuggestion),
-          action: SnackBarAction(label: l10n.markFinished, onPressed: _controller!.markFinished),
-        ),
-      );
+      _confirmFinish();
     }
+    final quoteResult = state.quoteResult;
+    if (quoteResult != null && mounted) {
+      _controller!.consumeQuoteResult();
+      final l10n = context.l10n;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(switch (quoteResult) {
+              QuoteSaveResult.saved => l10n.readerQuoteSaved,
+              QuoteSaveResult.duplicate => l10n.readerQuoteDuplicate,
+            }),
+          ),
+        );
+    }
+  }
+
+  /// Son sayfaya ulaşılınca "Kitabı bitirdin mi?" onayı açılır (Kitap Detay ile aynı pencere).
+  Future<void> _confirmFinish() async {
+    if (_finishDialogOpen) return;
+    _finishDialogOpen = true;
+    final ok = await FinishBookDialog.show(context, reachedEnd: true);
+    _finishDialogOpen = false;
+    if (ok && mounted) await _controller!.markFinished();
   }
 
   void _jump(int index) {
@@ -76,6 +163,8 @@ class _ReaderViewState extends State<ReaderView> {
 
   @override
   void dispose() {
+    _translation?.state.removeListener(_onTranslationChanged);
+    _translation?.dispose();
     _controller?.state.removeListener(_onStateChanged);
     _controller?.dispose();
     _pages?.dispose();
@@ -86,21 +175,17 @@ class _ReaderViewState extends State<ReaderView> {
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
     final controller = _controller!;
+    final translation = _translation!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(controller.book?.title ?? context.l10n.readerTitle),
-        // PDF kendi sayfa düzeniyle (yakınlaştırarak) okunur; yazı boyutu yalnızca metinde.
-        actions: [
-          if (controller.book?.digitalEdition?.format != DigitalFormat.pdf)
-            IconButton(
-              tooltip: context.l10n.readerTextSize,
-              icon: const Icon(Icons.format_size),
-              onPressed: _openSettings,
-            ),
-        ],
+      appBar: ReaderAppBarWidget(
+        title: controller.book?.title ?? context.l10n.readerTitle,
+        isPdf: controller.book?.digitalEdition?.format == DigitalFormat.pdf,
+        translation: translation.state,
+        onTranslationView: translation.setView,
+        onTextSize: _openSettings,
       ),
       body: ListenableBuilder(
-        listenable: Listenable.merge([controller.state, scope.settingsController.state]),
+        listenable: Listenable.merge([controller.state, scope.settingsController.state, translation.state]),
         builder: (context, _) => ReaderBodyWidget(
           state: controller.state.value,
           textScale: scope.settingsController.state.value.readerTextScale,
@@ -111,6 +196,10 @@ class _ReaderViewState extends State<ReaderView> {
           onJump: _jump,
           onPdfReady: controller.pdfReady,
           onPdfPageChanged: controller.pdfPageChanged,
+          onSaveQuote: controller.saveQuote,
+          translation: translation.state.value,
+          onTranslate: translation.state.value.isAvailable ? _translateSelection : null,
+          onTranslationRetry: translation.retry,
         ),
       ),
     );

@@ -10,7 +10,7 @@ import '../controllers/reading_status_controller.dart';
 import '../models/reading_status_model.dart';
 import '../widgets/status_book_list_widget.dart';
 
-/// Sekme 2: Okunuyor / Okunacak / Bitti. AppBar ana kabuktadır.
+/// Sekme 2: Okunacak / Okunuyor / Bitti. AppBar ana kabuktadır.
 class ReadingStatusView extends StatefulWidget {
   const ReadingStatusView({super.key});
 
@@ -26,28 +26,11 @@ class _ReadingStatusViewState extends State<ReadingStatusView> {
     super.didChangeDependencies();
     _controller ??= ReadingStatusController(
       library: AppScope.of(context).libraryController,
-    )..state.addListener(_onStateChanged);
-  }
-
-  void _onStateChanged() {
-    final bookId = _controller!.state.value.finishSuggestedBookId;
-    if (bookId == null || !mounted) return;
-    _controller!.consumeFinishSuggestion();
-    final l10n = context.l10n;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.finishSuggestion),
-        action: SnackBarAction(
-          label: l10n.markFinished,
-          onPressed: () => _controller!.markFinished(bookId),
-        ),
-      ),
     );
   }
 
   @override
   void dispose() {
-    _controller?.state.removeListener(_onStateChanged);
     _controller?.dispose();
     super.dispose();
   }
@@ -61,6 +44,8 @@ class _ReadingStatusViewState extends State<ReadingStatusView> {
     final controller = _controller!;
     return DefaultTabController(
       length: ReadingStatus.values.length,
+      // Okunuyor (ortadaki sekme) açılışta seçili gelir.
+      initialIndex: _tabOrder.indexOf(ReadingStatus.reading),
       child: ValueListenableBuilder<ReadingStatusModel>(
         valueListenable: controller.state,
         builder: (context, state, _) => Column(
@@ -84,8 +69,6 @@ class _ReadingStatusViewState extends State<ReadingStatusView> {
                       status: status,
                       books: state.booksFor(status),
                       onBookTap: _openDetail,
-                      onChangePage: (book, delta) =>
-                          controller.changePage(book.id, delta),
                       onStartReading: (book) => controller.startReading(book.id),
                     ),
                 ],
@@ -97,9 +80,10 @@ class _ReadingStatusViewState extends State<ReadingStatusView> {
     );
   }
 
+  /// Okuma sırasıyla soldan sağa: Okunacak, Okunuyor, Bitti.
   static const List<ReadingStatus> _tabOrder = [
-    ReadingStatus.reading,
     ReadingStatus.toRead,
+    ReadingStatus.reading,
     ReadingStatus.finished,
   ];
 }

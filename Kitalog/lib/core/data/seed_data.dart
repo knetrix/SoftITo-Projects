@@ -3,6 +3,7 @@ import '../models/book_model.dart';
 import '../models/digital_edition_model.dart';
 import '../models/digital_source.dart';
 import '../models/loan_model.dart';
+import '../models/loan_record_model.dart';
 import '../models/note_model.dart';
 import '../models/quote_model.dart';
 import '../models/reading_goal_model.dart';
@@ -14,12 +15,16 @@ class SeedBundle {
     required this.quotes,
     required this.notes,
     required this.goal,
+    this.loanHistory = const [],
   });
 
   final List<BookModel> books;
   final List<QuoteModel> quotes;
   final List<NoteModel> notes;
   final ReadingGoalModel goal;
+
+  /// İadesi alınmış örnek ödünç kayıtları (Ödünç Takibi > Geçmiş).
+  final List<LoanRecordModel> loanHistory;
 }
 
 /// İlk açılışta (veya seed sürümü değiştiğinde) yüklenen örnek veriler.
@@ -80,11 +85,25 @@ abstract final class SeedData {
         ),
     ];
 
+    DateTime daysAgo(int days) => now.subtract(Duration(days: days));
+    final loanHistory = <LoanRecordModel>[
+      for (var i = 0; i < _returnedLoans.length; i++)
+        LoanRecordModel(
+          id: '${idPrefix}loan-$i',
+          bookId: '$idPrefix${_returnedLoans[i].isbn}',
+          borrowerName: _returnedLoans[i].borrower,
+          lentAt: daysAgo(_returnedLoans[i].lentDaysAgo),
+          dueAt: _returnedLoans[i].dueDaysAgo == null ? null : daysAgo(_returnedLoans[i].dueDaysAgo!),
+          returnedAt: daysAgo(_returnedLoans[i].returnedDaysAgo),
+        ),
+    ];
+
     return SeedBundle(
       books: books,
       quotes: quotes,
       notes: notes,
       goal: ReadingGoalModel(year: year, targetBookCount: 24),
+      loanHistory: loanHistory,
     );
   }
 
@@ -187,6 +206,14 @@ abstract final class SeedData {
     _QuoteSpec('9786058105973', 'Simdiye kadar tesadüf ettiğim insanlardan bir tanesi benim üzerimde belki en büyük tesiri yapmıştır.', 1, favorite: true),
   ];
 
+  /// Fiziksel kopyası olan ve şu an ödünçte olmayan kitaplardan; biri geç iade edilmiş.
+  static const List<_ReturnedLoanSpec> _returnedLoans = [
+    _ReturnedLoanSpec('9781435136168', 'Selin', 120, 95, dueDaysAgo: 100),
+    _ReturnedLoanSpec('9781435131828', 'Burak', 80, 62, dueDaysAgo: 60),
+    _ReturnedLoanSpec('9780857088468', 'Elif', 40, 30),
+    _ReturnedLoanSpec('9781561385157', 'Murat', 200, 190, dueDaysAgo: 186),
+  ];
+
   static const List<_NoteSpec> _notes = [
     _NoteSpec('9781435131828', 'Raskolnikov\'un "olağanüstü insan" teorisi ile vicdanı arasındaki çatışma çok iyi işlenmiş. Porfiri ile konuşmaları ikinci kez okumak istiyorum.'),
     _NoteSpec('9786051211879', 'Vesikalar bölümü uzun; önce ana metni bitirip vesikalara sonra dönmeyi düşünüyorum.'),
@@ -231,6 +258,17 @@ class _BookSpec {
   final String? lendTo;
   final int lentDaysAgo;
   final int dueInDays;
+}
+
+/// İadesi alınmış örnek ödünç: kime, kaç gün önce verildi / iade günüydü / geri alındı.
+class _ReturnedLoanSpec {
+  const _ReturnedLoanSpec(this.isbn, this.borrower, this.lentDaysAgo, this.returnedDaysAgo, {this.dueDaysAgo});
+
+  final String isbn;
+  final String borrower;
+  final int lentDaysAgo;
+  final int returnedDaysAgo;
+  final int? dueDaysAgo;
 }
 
 class _QuoteSpec {

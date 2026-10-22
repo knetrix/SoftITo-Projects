@@ -11,7 +11,11 @@ import 'text_cleaner.dart';
 abstract final class EpubTextExtractor {
   static final RegExp _attr = RegExp(r'''([\w:\-]+)\s*=\s*("([^"]*)"|'([^']*)')''');
 
-  static String extract(Uint8List bytes) {
+  static String extract(Uint8List bytes) => read(bytes).text;
+
+  /// Metin ve dosyada tanımlıysa basılı baskının sayfa sayısı (EPUB 3 `nav`
+  /// `page-list` veya EPUB 2 NCX `pageList`); tanımlı değilse `null`.
+  static ({String text, int? pageCount}) read(Uint8List bytes) {
     final Archive archive;
     try {
       archive = ZipDecoder().decodeBytes(bytes);
@@ -40,7 +44,27 @@ abstract final class EpubTextExtractor {
     }
     final text = buffer.toString().trim();
     if (text.isEmpty) throw const DigitalBookException(DigitalBookFailure.invalidFile);
-    return text;
+    return (text: text, pageCount: _printedPageCount(archive));
+  }
+
+  static final RegExp _pageListNav = RegExp(
+    r'''<nav\b[^>]*epub:type\s*=\s*["'][^"']*page-list[^"']*["'][^>]*>(.*?)</nav>''',
+    dotAll: true,
+    caseSensitive: false,
+  );
+
+  /// Basılı sayfa listesindeki sayfa sayısı; liste yoksa `null`.
+  static int? _printedPageCount(Archive archive) {
+    for (final file in archive.files) {
+      final name = file.name.toLowerCase();
+      if (!file.isFile || !RegExp(r'\.(x?html?|ncx)$').hasMatch(name)) continue;
+      final content = utf8.decode(file.content, allowMalformed: true);
+      final count = name.endsWith('.ncx')
+          ? RegExp(r'<pageTarget\b').allMatches(content).length
+          : RegExp(r'<a\b').allMatches(_pageListNav.firstMatch(content)?.group(1) ?? '').length;
+      if (count > 0) return count;
+    }
+    return null;
   }
 
   /// Spine sırasındaki XHTML bölümlerinin yolları; spine yoksa manifest sırası.

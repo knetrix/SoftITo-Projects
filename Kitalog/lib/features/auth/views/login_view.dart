@@ -34,6 +34,14 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+  /// Şifre sıfırlanınca ekran e-postayla döner: form doldurulur ve bilgi verilir.
+  Future<void> _openForgotPassword() async {
+    final email = await Navigator.of(context).pushNamed<String>(AppRoutes.forgotPassword);
+    if (email == null || !mounted) return;
+    _controller!.passwordWasReset(email);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.forgotSuccess)));
+  }
+
   @override
   void dispose() {
     _controller?.state.removeListener(_onStateChanged);
@@ -55,13 +63,15 @@ class _LoginViewState extends State<LoginView> {
               const SizedBox(height: AppSizes.spaceL),
             ],
             LoginFormWidget(
-              key: const ValueKey('login-form'),
+              key: ValueKey('login-form-${state.prefillEmail ?? ''}'),
+              initialEmail: state.prefillEmail,
               isLoading: state.isLoading,
               onSubmit: (email, password) =>
                   controller.submit(email: email, password: password),
               onRegisterTap: () =>
                   Navigator.of(context)
                       .pushReplacementNamed(AppRoutes.register),
+              onForgotPasswordTap: _openForgotPassword,
             ),
           ],
         ),

@@ -7,9 +7,9 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>Profil resmi olarak seçmek için galerindeki bir fotoğrafa erişmesi gerekiyor.</string>
+		<string>Profil resmi veya kitap kapağı olarak seçmek için galerindeki bir fotoğrafa erişmesi gerekiyor.</string>
 		<key>NSCameraUsageDescription</key>
-		<string>Profil resmi olarak kullanmak üzere fotoğraf çekmek için kameraya erişmesi gerekiyor.</string>
+		<string>Profil resmi veya kitap kapağı olarak kullanmak üzere fotoğraf çekmek için kameraya erişmesi gerekiyor.</string>
 		<key>CFBundleDisplayName</key>
 		<string>Kitalog</string>
 		<key>CFBundleExecutable</key>

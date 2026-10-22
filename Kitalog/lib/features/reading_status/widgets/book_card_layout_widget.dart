@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/extensions/context_extensions.dart';
+import '../../../core/extensions/genre_extensions.dart';
 import '../../../core/models/book_model.dart';
 import '../../../core/widgets/book_cover_image.dart';
 
@@ -36,6 +37,7 @@ class BookCardLayoutWidget extends StatelessWidget {
                   child: BookCoverImage(
                     title: book.title,
                     genre: book.genre,
+                    custom: context.customGenreOf(book),
                     coverUrl: book.coverUrl,
                   ),
                 ),

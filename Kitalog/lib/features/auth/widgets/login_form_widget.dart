@@ -14,11 +14,15 @@ class LoginFormWidget extends StatefulWidget {
     required this.isLoading,
     required this.onSubmit,
     required this.onRegisterTap,
+    required this.onForgotPasswordTap,
+    this.initialEmail,
   });
 
   final bool isLoading;
   final void Function(String email, String password) onSubmit;
   final VoidCallback onRegisterTap;
+  final VoidCallback onForgotPasswordTap;
+  final String? initialEmail;
 
   @override
   State<LoginFormWidget> createState() => _LoginFormWidgetState();
@@ -26,7 +30,7 @@ class LoginFormWidget extends StatefulWidget {
 
 class _LoginFormWidgetState extends State<LoginFormWidget> {
   final _formKey = GlobalKey<FormState>();
-  final _email = TextEditingController();
+  late final _email = TextEditingController(text: widget.initialEmail ?? '');
   final _password = TextEditingController();
 
   @override
@@ -51,13 +55,24 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
           spacing: AppSizes.spaceL,
           children: [
             EmailFormField(controller: _email, enabled: !widget.isLoading),
-            PasswordFormField(
-              controller: _password,
-              label: l10n.fieldPassword,
-              textInputAction: TextInputAction.done,
-              enabled: !widget.isLoading,
-              onFieldSubmitted: (_) => _submit(),
-              validator: (v) => Validators.required(v)?.message(l10n),
+            // "Şifremi unuttum" şifre alanına yapışık durur (form aralığı araya girmez).
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                PasswordFormField(
+                  controller: _password,
+                  label: l10n.fieldPassword,
+                  textInputAction: TextInputAction.done,
+                  enabled: !widget.isLoading,
+                  onFieldSubmitted: (_) => _submit(),
+                  validator: (v) => Validators.required(v)?.message(l10n),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                  onPressed: widget.isLoading ? null : widget.onForgotPasswordTap,
+                  child: Text(l10n.linkForgotPassword),
+                ),
+              ],
             ),
             AuthFormActionsWidget(
               isLoading: widget.isLoading,

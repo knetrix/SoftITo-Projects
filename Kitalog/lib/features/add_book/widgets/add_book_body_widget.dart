@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/models/book_search_result.dart';
+import '../../../core/models/custom_genre_model.dart';
+import '../controllers/cover_picker.dart';
 import '../models/add_book_model.dart';
 import 'add_book_mode_selector_widget.dart';
 import 'manual_book_form_widget.dart';
@@ -17,6 +20,9 @@ class AddBookBodyWidget extends StatelessWidget {
     required this.onRetry,
     required this.onSelect,
     required this.onSave,
+    required this.coverPicker,
+    required this.customGenres,
+    required this.onCreateGenre,
   });
 
   final AddBookModel state;
@@ -25,6 +31,9 @@ class AddBookBodyWidget extends StatelessWidget {
   final VoidCallback onRetry;
   final ValueChanged<BookSearchResult> onSelect;
   final ValueChanged<BookDraft> onSave;
+  final CoverPicker coverPicker;
+  final ValueListenable<List<CustomGenreModel>> customGenres;
+  final Future<CustomGenreModel> Function(NewGenreInput input) onCreateGenre;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +56,9 @@ class AddBookBodyWidget extends StatelessWidget {
                     key: ValueKey(state.prefillVersion),
                     initial: state.prefill,
                     onSubmit: onSave,
+                    coverPicker: coverPicker,
+                    customGenres: customGenres,
+                    onCreateGenre: onCreateGenre,
                   ),
                 ),
         ),

@@ -177,6 +177,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get linkNoAccount => 'No account yet? Sign up';
 
   @override
+  String get linkForgotPassword => 'Forgot password?';
+
+  @override
+  String get forgotTitle => 'Reset Password';
+
+  @override
+  String get forgotVerifyInfo =>
+      'Enter the email address and phone number you used when signing up.';
+
+  @override
+  String get forgotVerifyButton => 'Continue';
+
+  @override
+  String get forgotBackToLogin => 'Back to sign in';
+
+  @override
+  String forgotNewPasswordInfo(String email) {
+    return 'Account $email verified. Choose a new password.';
+  }
+
+  @override
+  String get forgotResetButton => 'Update Password';
+
+  @override
+  String get forgotBack => 'Back';
+
+  @override
+  String get forgotSuccess =>
+      'Your password was updated. You can sign in with your new password.';
+
+  @override
+  String get errorRecoveryMismatch =>
+      'The email or phone number doesn\'t match our records.';
+
+  @override
+  String errorTooManyAttempts(int seconds) {
+    return 'Too many failed attempts. Try again in $seconds seconds.';
+  }
+
+  @override
   String get errorInvalidCredentials => 'Incorrect email or password.';
 
   @override
@@ -192,6 +232,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navGoal => 'Goal';
 
   @override
+  String get navLoans => 'Loans';
+
+  @override
+  String navLoansOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count overdue returns',
+      one: '1 overdue return',
+    );
+    return 'Loans: $_temp0';
+  }
+
+  @override
+  String get loansTitle => 'Loan Tracker';
+
+  @override
   String get libraryTitle => 'My Library';
 
   @override
@@ -204,7 +261,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
-  String get libraryFilterAll => 'All';
+  String get settingsNotificationsTitle => 'Notifications';
+
+  @override
+  String get settingsLoanReminders => 'Return reminders';
+
+  @override
+  String get settingsLoanRemindersHint =>
+      'Sends a notification at 10:00 the day before and on the day a lent book is due back.';
+
+  @override
+  String get settingsLoanRemindersDenied =>
+      'Notifications are turned off. To see reminders, allow Kitalog notifications in your phone settings.';
+
+  @override
+  String get settingsReadingReminders => 'Daily reading reminder';
+
+  @override
+  String get settingsReadingRemindersHint =>
+      'Invites you to read every day at the time you choose; skipped on days you have already read. Reminds you of your streak when you read several days in a row.';
+
+  @override
+  String get settingsStalledReminders => 'Unfinished books';
+
+  @override
+  String settingsStalledRemindersHint(int days) {
+    return 'Reminds you once, at the time you choose, when a book you are reading has had no progress for $days days.';
+  }
+
+  @override
+  String get settingsReadingReminderTime => 'Reading reminder time';
+
+  @override
+  String get libraryFilters => 'Filters';
+
+  @override
+  String libraryFiltersActive(int count) {
+    return 'Filters ($count selected)';
+  }
+
+  @override
+  String get libraryFilterFormat => 'Format';
+
+  @override
+  String get libraryFilterGenre => 'Genre';
+
+  @override
+  String get libraryFilterClear => 'Clear';
+
+  @override
+  String get libraryFilterRemove => 'Remove filter';
+
+  @override
+  String libraryShowResults(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Show $count books',
+      one: 'Show 1 book',
+      zero: 'No matching books',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get librarySearchHint => 'Search title or author';
@@ -223,6 +341,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get libraryNoResultsMessage => 'Try changing the search or filters.';
+
+  @override
+  String get physicalBadge => 'Physical';
+
+  @override
+  String get digitalBadge => 'Digital';
 
   @override
   String get loanedBadge => 'On loan';
@@ -247,10 +371,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get bookOwned => 'In my collection';
+  String get bookOwned => 'I have a physical copy';
 
   @override
-  String get bookNotOwned => 'Not in my collection';
+  String get bookNotOwned => 'No physical copy';
 
   @override
   String get pageCounterTitle => 'Reading Progress';
@@ -283,8 +407,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get finishSuggestion =>
-      'You reached the last page. Did you finish the book?';
+  String get finishReachedMessage =>
+      'You reached the last page. The book will be marked as \"Finished\" and count toward this year\'s reading goal.';
 
   @override
   String get markFinished => 'Mark as finished';
@@ -399,6 +523,173 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loanReturn => 'Mark as returned';
+
+  @override
+  String get loansTabActive => 'On loan';
+
+  @override
+  String get loansTabHistory => 'History';
+
+  @override
+  String get loansSummaryActive => 'On loan';
+
+  @override
+  String get loansSummaryOverdue => 'Overdue';
+
+  @override
+  String get loansSummaryDueSoon => 'Due soon';
+
+  @override
+  String loansDaysOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'on loan for $count days',
+      one: 'on loan for 1 day',
+      zero: 'lent today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get loansDueNone => 'No return date';
+
+  @override
+  String get loansDueToday => 'Due back today';
+
+  @override
+  String loansDueIn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Due back in $count days',
+      one: 'Due back tomorrow',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String loansOverdueBy(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days overdue',
+      one: '1 day overdue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get loansEdit => 'Edit';
+
+  @override
+  String get loansEditTitle => 'Edit Loan Info';
+
+  @override
+  String get loansReturnConfirmTitle => 'Mark as returned?';
+
+  @override
+  String loansReturnConfirmMessage(String title, String name) {
+    return '“$title” will be marked as returned by $name and added to your loan history.';
+  }
+
+  @override
+  String get loansPickBookTitle => 'Choose a book to lend';
+
+  @override
+  String get loansNoLendableTitle => 'No books to lend';
+
+  @override
+  String get loansNoLendableMessage =>
+      'Books you own a physical copy of and that are not on loan are listed here.';
+
+  @override
+  String get loansEmptyActiveTitle => 'No books on loan';
+
+  @override
+  String get loansEmptyActiveMessage =>
+      'When you lend one of your physical books, you can track who has it and when it is due back here.';
+
+  @override
+  String get loansEmptyHistoryTitle => 'Loan history is empty';
+
+  @override
+  String get loansEmptyHistoryMessage => 'Books you get back are listed here.';
+
+  @override
+  String loansHistoryPeriod(String lent, String returned) {
+    return '$lent – $returned';
+  }
+
+  @override
+  String loansHistoryDuration(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+      zero: 'same day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get loansReturnedLate => 'Returned late';
+
+  @override
+  String get loanReminderChannelName => 'Loan reminders';
+
+  @override
+  String get loanReminderChannelDescription =>
+      'Reminds you when books you lent are due back.';
+
+  @override
+  String get loanReminderTomorrowTitle => 'Due back tomorrow';
+
+  @override
+  String get loanReminderTodayTitle => 'Due back today';
+
+  @override
+  String loanReminderBody(String title, String name) {
+    return '$name should return “$title”.';
+  }
+
+  @override
+  String get readingReminderChannelName => 'Reading reminders';
+
+  @override
+  String get readingReminderChannelDescription =>
+      'Invites you to read every day at the time you choose and reminds you of unfinished books.';
+
+  @override
+  String get readingReminderTitle => 'Time to read';
+
+  @override
+  String readingReminderBody(String title, int page) {
+    return 'You\'re on page $page of “$title”. How about 10 minutes of reading?';
+  }
+
+  @override
+  String readingReminderBodyStart(String title) {
+    return '“$title” is waiting for you. How about 10 minutes of reading?';
+  }
+
+  @override
+  String get readingReminderBodyNoBook =>
+      'How about reading a few pages today? There are books waiting in your library.';
+
+  @override
+  String readingReminderStreakTitle(int days) {
+    return '$days-day reading streak, keep it going!';
+  }
+
+  @override
+  String get readingReminderStalledTitle => 'Unfinished book';
+
+  @override
+  String readingReminderStalledBody(String title, int days) {
+    return 'No progress on “$title” for $days days. How about picking up where you left off?';
+  }
 
   @override
   String get deleteBook => 'Delete book';
@@ -518,6 +809,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldBookPages => 'Page count';
 
   @override
+  String get genreAdd => 'Add new category';
+
+  @override
+  String get genreNewTitle => 'New category';
+
+  @override
+  String get genreNewName => 'Category name';
+
+  @override
+  String get genreNewColor => 'Color';
+
+  @override
+  String genreColorOption(int number) {
+    return 'Color $number';
+  }
+
+  @override
+  String get genreNewSave => 'Add';
+
+  @override
+  String get errorGenreNameTooLong =>
+      'Category name can be at most 30 characters.';
+
+  @override
+  String get errorGenreNameTaken =>
+      'This category already exists; pick it from the list.';
+
+  @override
   String get fieldBookGenre => 'Genre';
 
   @override
@@ -527,10 +846,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldBookIsbn => 'ISBN (optional)';
 
   @override
+  String get fieldBookCover => 'Cover';
+
+  @override
+  String get coverFromGallery => 'Choose from gallery';
+
+  @override
+  String get coverFromCamera => 'Take photo';
+
+  @override
+  String get coverRemove => 'Remove image';
+
+  @override
+  String get coverFromDeviceSelected =>
+      'The image from your device will be used as the cover.';
+
+  @override
+  String get coverPickFailed => 'Couldn\'t pick the image. Please try again.';
+
+  @override
   String get fieldBookCoverUrl => 'Cover URL (optional)';
 
   @override
-  String get fieldBookOwned => 'I own this book';
+  String get fieldBookOwned => 'I have a physical copy of this book';
 
   @override
   String goalYearLabel(int year) {
@@ -702,6 +1040,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get readerNext => 'Next page';
+
+  @override
+  String get readerQuoteSave => 'Save as quote';
+
+  @override
+  String get readerQuoteSaved => 'Quote saved to the book\'s Quotes section.';
+
+  @override
+  String get readerQuoteDuplicate => 'This quote is already saved.';
+
+  @override
+  String get readerTranslate => 'Translation';
+
+  @override
+  String get readerTranslateSelection => 'Translate';
+
+  @override
+  String get readerTranslationOriginal => 'Original';
+
+  @override
+  String get readerTranslationTurkish => 'Turkish translation';
+
+  @override
+  String get readerTranslationEnglish => 'English translation';
+
+  @override
+  String get readerTranslationBoth => 'Original with translation';
+
+  @override
+  String get readerTranslationTranslating => 'Translating page…';
+
+  @override
+  String get readerTranslationDownloading =>
+      'Downloading translation language pack…';
+
+  @override
+  String get readerTranslationModelTitle =>
+      'Download the translation language pack?';
+
+  @override
+  String get readerTranslationModelMessage =>
+      'Translation runs on your device. The English and Turkish language packs need to be downloaded once (about 30 MB). After that, translation works offline too.';
+
+  @override
+  String get readerTranslationModelDownload => 'Download';
+
+  @override
+  String get readerTranslationErrorModel =>
+      'The language pack couldn\'t be downloaded. Check your internet connection and try again.';
+
+  @override
+  String get readerTranslationErrorTranslate =>
+      'The text couldn\'t be translated.';
+
+  @override
+  String get readerTranslationNote =>
+      'On-device machine translation; it may contain mistakes.';
+
+  @override
+  String get readerTranslationCopy => 'Copy';
+
+  @override
+  String get readerTranslationCopied => 'Translation copied.';
 
   @override
   String get readerTextSize => 'Text size';

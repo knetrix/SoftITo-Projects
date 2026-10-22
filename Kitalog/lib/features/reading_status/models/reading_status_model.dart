@@ -9,14 +9,10 @@ class ReadingStatusModel {
   final List<BookModel> toRead;
   final List<BookModel> finished;
 
-  /// Hızlı sayacla son sayfaya ulaşılan kitap (bitirme önerisi için).
-  final String? finishSuggestedBookId;
-
   const ReadingStatusModel({
     this.reading = const [],
     this.toRead = const [],
     this.finished = const [],
-    this.finishSuggestedBookId,
   });
 
   List<BookModel> booksFor(ReadingStatus status) => switch (status) {
@@ -29,16 +25,11 @@ class ReadingStatusModel {
     List<BookModel>? reading,
     List<BookModel>? toRead,
     List<BookModel>? finished,
-    String? finishSuggestedBookId,
-    bool clearFinishSuggestion = false,
   }) {
     return ReadingStatusModel(
       reading: reading ?? this.reading,
       toRead: toRead ?? this.toRead,
       finished: finished ?? this.finished,
-      finishSuggestedBookId: clearFinishSuggestion
-          ? null
-          : (finishSuggestedBookId ?? this.finishSuggestedBookId),
     );
   }
 

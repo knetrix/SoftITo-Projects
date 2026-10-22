@@ -32,6 +32,24 @@
 | Ek Düzeltme – Giriş / Kayıt Ekranında Klavye Açılınca Oluşan Taşma | Tamamlandı |
 | Ek Düzeltme – Kayıt Ekranında Doğrulama Hatalarıyla "Giriş yap" Bağlantısının Görünmemesi | Tamamlandı |
 | Ek Düzeltme – Giriş / Kayıt Ekranında Kitabın Yarım Görünmesi ve Genel Taşma Kontrolü | Tamamlandı |
+| Ek Düzeltme – Okuma İlerlemesi ile Dijital Okuyucunun Sayfa Sayısının Eşitlenmesi | Tamamlandı |
+| Ek Geliştirme – Dosya Yüklenince Sayfa Sayısının Dosyaya Göre Senkronize Edilmesi | Tamamlandı |
+| Ek Düzeltme – Okunacak ve Biten Kitapların Okuyucuda İlk Sayfadan Açılması | Tamamlandı |
+| Ek Geliştirme – Okuyucuda Seçilen Metni Alıntı Olarak Kaydetme | Tamamlandı |
+| Ek Geliştirme – Manuel Kitap Eklemede Cihazdan Kapak Resmi | Tamamlandı |
+| Ek Geliştirme – Manuel Kitap Eklemede Hızlı Kategori Ekleme | Tamamlandı |
+| Ek Düzeltme – Ödünç Sisteminin Fiziksel Kopyaya Bağlanması ve Biçim Rozetleri | Tamamlandı |
+| Ek Geliştirme – Kitaplığım Filtrelerinin Düğmeyle Açılan Panele Taşınması ve Çoklu Seçim | Tamamlandı |
+| Ek Düzeltme – Son Sayfaya Ulaşınca "Kitabı Bitirdin mi?" Onayının Otomatik Açılması | Tamamlandı |
+| Ek Düzeltme – Kitaplığım Filtrelerinden Okuma Durumunun Çıkarılması | Tamamlandı |
+| Ek Düzeltme – Okuma Durumu Sekme Sırası ve Kartlardaki Hızlı Sayacın Kaldırılması | Tamamlandı |
+| Ek Geliştirme – Giriş Ekranına "Şifremi Unuttum" (Geçici, Yerel) | Tamamlandı |
+| Ek Geliştirme – Dijital Okuyucuda Çeviri (İngilizce ↔ Türkçe) | Tamamlandı |
+| Ek Geliştirme – Ödünç Takibi Sekmesi ve Kitaplığım'dan "Ödünçte" Filtresinin Kaldırılması | Tamamlandı |
+| Ek Geliştirme – Ödünç İade Hatırlatması (Yerel Bildirim) | Tamamlandı |
+| Ek Geliştirme – Hatırlatmaya Dokununca Kitap Detay ve Ayarlar'da Hatırlatma Anahtarı | Tamamlandı |
+| Ek Düzeltme – Çeviri Altyapısının iOS Simülatöründe de Çalışması | Tamamlandı |
+| Ek Geliştirme – Bildirim Sisteminin Geliştirilmesi (Günlük Okuma Hatırlatması) | Tamamlandı |
 
 ---
 
@@ -1142,28 +1160,1154 @@
   - **Form alanları küçültülmedi.** Yalnızca kartın kenar boşlukları azaltıldı; dokunma hedefleri ve okunabilirlik korundu.
 - Açık konular / sonraki adım: Yok.
 
+## [2026-10-22] Ek Düzeltme – Okuma İlerlemesi ile Dijital Okuyucunun Sayfa Sayısının Eşitlenmesi
+
+- Yapılanlar:
+  - **Sorun:** Kitap Detay'daki "Okuma İlerlemesi" kitabın basılı sayfa sayısını gösteriyordu (Frankenstein: 207). Dijital okuyucu ise metni sabit 1.500 karakterlik sayfalara bölüyordu; Frankenstein okuyucuda yaklaşık 300 sayfa çıkıyordu.
+    - Okuyucudaki "Sayfa 12" sayaçta 8 gibi farklı bir sayıya denk geliyordu; iki ekran birbirini tutmuyordu.
+    - Sorun tüm örnek kitaplarda vardı (ör. The Time Machine 218 sayfa, okuyucuda ~135; The Voyage of the Beagle 208 sayfa, okuyucuda ~820).
+  - **Çözüm – metin (Gutenberg, Vikikaynak, EPUB):**
+    - Okuyucu metni artık tam olarak kitabın sayfa sayısı kadar sayfaya bölüyor (`TextPaginator.paginateInto`).
+    - Sayfa sınırları eşit aralıklı konumların çevresinde, en yakın paragraf / satır / cümle / boşlukta seçiliyor. Kelimeler bölünmüyor, sayfa boyları dengeli kalıyor.
+  - **Sayaç ile okuyucu birebir eşleşiyor:**
+    - Okuyucuda N. sayfaya geçmek sayacı doğrudan N yapıyor. Eskiden yüzde üzerinden hesaplandığı için bir sayfa geriden geliyordu.
+    - Okuyucu, sayaçtaki sayfada açılıyor. Kitap Detay'da sayaç elle değiştirilirse okuyucu da o sayfadan açılıyor.
+    - Biten kitapta sayaç son sayfada durduğu için okuyucu, kalınan yerden açılmaya devam ediyor.
+  - **Çözüm – PDF:** PDF'in sayfaları dosyaya bağlı, değiştirilemez. Bu yüzden PDF ilk açıldığında kitabın sayfa sayısı PDF'in sayfa sayısına eşitleniyor; ilerleme yüzdesi korunuyor (ör. 100/200 → 25/50).
+  - **Kalıcı kontrol (ileride eklenecek kitaplar):**
+    - Kural tek yerde, okuyucu her açıldığında uygulanıyor; örnek kitap, Open Library'den eklenen veya elle eklenen her kitap için geçerli.
+    - Sayfa sayısı bilinmeyen kitapta (0) ve metni bu sayıya bölünemeyecek kadar kısa dosyada (sayfa başına 300 karakterden az, ör. kitabın yalnızca bir bölümünü içeren EPUB) kelimeler bölünmesin diye normal sayfalama kullanılıyor. Kitabın sayfa sayısı okuyucunun sayfa sayısına eşitleniyor (`LibraryController.alignPageCount`).
+    - Kitabın sayfa sayısı sonradan değişirse okuyucu bir sonraki açılışta yeni sayıya göre yeniden sayfalıyor; saklanan sayfa listesi yok, eskiyip uyumsuz kalamıyor.
+  - **Mevcut kitaplar:** 29 Gutenberg metni ve paketlenmiş Nutuk gerçek haliyle indirilip denendi. 30 kitabın hepsinde okuyucu sayfası = sayaçtaki sayfa sayısı (Frankenstein 207/207, Moby Dick 664/664, Nutuk 589/589).
+    - Sayfa başına 670 ile 5.960 karakter arası düşüyor; hiçbiri 300 karakter sınırına yaklaşmıyor, yani hiçbir örnek kitabın sayfa sayısı değişmedi.
+    - Kürk Mantolu Madonna (Vikikaynak) indirilmedi; aynı kurala tabi ve testlerle kapsanıyor.
+    - Kullanıcının cihazında kayıtlı veri için geçiş gerekmiyor: değişiklik, kitap okuyucuda açıldığı anda geçerli oluyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [text_paginator.dart](lib/core/utils/text_paginator.dart) – Metni tam istenen sayıda sayfaya bölen `paginateInto`, sayfa başına en az karakter sınırı (`minPageChars`, `fitsPageCount`) eklendi; artık kullanılmayan yüzde → basılı sayfa dönüşümleri kaldırıldı.
+    - [reader_controller.dart](lib/features/reader/controllers/reader_controller.dart) – Metin kitabın sayfa sayısına göre sayfalanıyor, okuyucudaki sayfa numarası sayaca doğrudan yazılıyor, açılış sayfası sayaçtan alınıyor, PDF'te kitabın sayfa sayısı eşitleniyor.
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – Kitabın sayfa sayısını dijital sürüme eşitleyen ve ilerleme yüzdesini koruyan `alignPageCount` eklendi.
+    - [text_paginator_test.dart](test/core/text_paginator_test.dart) – Tam sayfa sayısı, metnin eksiksiz ve sırayla kapsanması, paragraf başından bölme, kısa metin ve tüm örnek kitapların sayfa sayıları test ediliyor.
+    - [reader_controller_test.dart](test/features/reader/reader_controller_test.dart) – Okuyucu sayfa sayısının kitapla eşitliği, sayaçtaki sayfada açılma, sayacın birebir güncellenmesi, PDF / kısa EPUB / sayfa sayısı bilinmeyen kitapta eşitleme test ediliyor; test metni 551 sayfaya yetecek uzunluğa çıkarıldı.
+    - [library_storage_test.dart](test/core/library_storage_test.dart) – Sayfa sayısı eşitlenirken ilerlemenin korunduğu ve biten kitabın son sayfada kaldığı test ediliyor.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 8'e "okuyucunun sayfa sayısı kitabın sayfa sayısına eşittir" kuralı eklendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `test/_real_text_probe_test.dart` (silindi) – Sayfalamayı gerçek Gutenberg metinleri ve Nutuk üzerinde denemek için geçici olarak yazılan testti.
+- Doğrulama: `flutter pub get` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 375 test geçti; `build` metotlarına dokunulmadı (≤ 40 satır).
+- Alınan kararlar ve nedenleri:
+  - **Basılı sayfa sayısı değiştirilmedi, okuyucu ona uyduruldu.**
+    - Sayfa sayıları ISBN'deki baskıya göre Open Library'de doğrulanmıştı; alıntıların sayfa numaraları da bu baskıya göre.
+    - Okuyucuyu bu sayıya uydurmak hem doğru veriyi koruyor hem de alıntı sayfalarının okuyucuda aynı sayfaya düşmesini sağlıyor.
+  - **PDF'te tersi yapıldı.** PDF'in sayfaları dosyanın kendisi; bölünüp birleştirilemez. Kullanıcı o dosyayı okuduğu için doğru sayı PDF'inki.
+  - **Sayfa uzunluğu kitaba göre değişiyor** (Alice ~880, The Voyage of the Beagle ~5.900 karakter). Bu, basılı baskının yoğunluğunu yansıtıyor. Uzun sayfalar kendi içinde kaydırılabildiği için taşma olmuyor.
+  - **Sayfalar yazı boyutuna göre yeniden hesaplanmıyor.** Hesaplansaydı sayfa sayısı yazı boyutuyla değişir ve sayaçla eşleşme yeniden bozulurdu.
+- Açık konular / sonraki adım: Değişiklik simülatörde ayrıca açılıp ekran görüntüsüyle kontrol edilmedi; controller testleri ve gerçek metinlerle yapılan deneme ile doğrulandı.
+
+## [2026-10-22] Ek Geliştirme – Dosya Yüklenince Sayfa Sayısının Dosyaya Göre Senkronize Edilmesi
+
+- Yapılanlar:
+  - **İstek:** Kullanıcı kitabı elle (ör. 500 sayfa) ekleyip sonra PDF / EPUB dosyasını yüklediğinde, Okuma İlerlemesi'ndeki sayfa sayısı dosyanın sayfa sayısına göre güncellenmeli.
+  - **Önceki durum:**
+    - PDF'te sayı ancak dosya okuyucuda ilk kez açıldığında eşitleniyordu; yüklemeden hemen sonra Kitap Detay'da hâlâ 500 görünüyordu.
+    - EPUB'da metin, kullanıcının girdiği 500 sayfaya bölünüyordu; dosyanın kendi sayfa sayısı dikkate alınmıyordu.
+  - **Çözüm:** Dosya yüklendiği (veya "Başka dosya yükle" ile değiştirildiği) anda kitabın sayfa sayısı dosyanınkine eşitleniyor. Okuma İlerlemesi hemen güncelleniyor.
+    - İlerleme yüzdesi korunuyor (ör. 250/500 → %50 → 60/120). Biten kitap son sayfada kalıyor.
+  - **PDF:** Sayfa sayısı yükleme anında PDFium (`pdfrx`, onaylı paket) ile dosyadan okunuyor ve dijital kopyaya da yazılıyor.
+    - Dosya bu aşamada okunamazsa sayfa sayısına dokunulmuyor. Okuyucu ilk açılışta eşitliyor (önceki ek düzeltmedeki kural).
+  - **EPUB:** EPUB'un sabit sayfası olmadığı için iki kaynak var:
+    - Dosyada basılı baskının sayfa listesi varsa (EPUB 3 `nav epub:type="page-list"` veya EPUB 2 NCX `pageList`) o sayı kullanılıyor. Okuyucu metni tam bu sayıya bölüyor; okuyucudaki sayfa numarası basılı kitapla aynı oluyor.
+    - Liste yoksa ya da liste metne kelime bölmeden uymuyorsa okuyucunun sayfa sayısı (1.500 karakterlik sayfalar) kullanılıyor. Okuyucu açıldığında sayı birebir aynı kalıyor.
+  - **Etkilenmeyenler:** Örnek kitaplar (dosya yüklenmiyor) ve Gutenberg / Vikikaynak'tan indirilen kitaplar. Onların doğrulanmış basılı sayfa sayıları korunuyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [pdf_page_counter.dart](lib/core/utils/pdf_page_counter.dart) – PDF'in sayfa sayısını görüntüleyici açmadan, yükleme anında PDFium ile okur; açılamazsa 0 döner.
+  - **Güncellenen:**
+    - [epub_text_extractor.dart](lib/core/utils/epub_text_extractor.dart) – Metnin yanında dosyadaki basılı sayfa listesinin sayısını da döndüren `read` eklendi (`extract` aynen çalışıyor).
+    - [digital_book_repository.dart](lib/core/repositories/digital_book_repository.dart) – `importFile` dosyanın sayfa sayısını da döndürüyor. PDF sayfa sayacı dışarıdan veriliyor; testte sahte sayaç kullanılabiliyor.
+    - [digital_edition_controller.dart](lib/features/book_detail/controllers/digital_edition_controller.dart) – Dosya yüklenince kitabın sayfa sayısı `alignPageCount` ile dosyanınkine eşitleniyor.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) – Uygulamada PDF sayfa sayacı olarak `PdfPageCounter.count` bağlandı.
+    - [test_dependencies.dart](test/helpers/test_dependencies.dart) – PDFium testlerde çalışmadığı için sahte PDF sayfa sayacı verilebiliyor (varsayılan 0).
+    - [test_books.dart](test/helpers/test_books.dart) – Test EPUB'una isteğe bağlı EPUB 3 nav ve EPUB 2 NCX sayfa listesi eklenebiliyor.
+    - [epub_text_extractor_test.dart](test/core/epub_text_extractor_test.dart) – Nav ve NCX sayfa listesinin okunduğu, liste yoksa `null` döndüğü test ediliyor.
+    - [digital_edition_controller_test.dart](test/features/book_detail/digital_edition_controller_test.dart) – 500 sayfalık kitaba 120 sayfalık PDF (ilerleme korunarak 250 → 60), okunamayan PDF, sayfa listeli / listesiz EPUB (okuyucuyla aynı sayı) ve dosya değiştirme test ediliyor.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 8'e "dosya yüklenince kitabın sayfa sayısı dosyanınkine eşitlenir" kuralı eklendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `test/_pdf_probe_test.dart` (silindi) – PDF sayfa sayacını gerçek PDF ile denemek için geçici olarak yazılan testti; test ortamında PDFium yüklenemediği için çalışmadı.
+    - `tool/pdf_probe.dart` (silindi) – Aynı denemeyi `dart run` ile yapan geçici betikti; 7 sayfalık gerçek bir PDF'te 7 sonucunu verdi.
+- Doğrulama: `flutter pub get` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 381 test geçti; `build` metotlarına dokunulmadı (≤ 40 satır). `PdfDocument.openData` ile sayfa sayımı 7 sayfalık gerçek bir PDF'te doğrulandı.
+- Alınan kararlar ve nedenleri:
+  - **Kullanıcının girdiği sayı dosyaya göre değiştiriliyor.** Kullanıcı artık o dosyayı okuyor; doğru sayfa sayısı dosyanınki. Elle girilen sayı çoğu zaman tahmin ya da başka bir baskının sayısı.
+  - **Sayaç sıfırlanmıyor, yüzde korunuyor.** Kitabın yarısını okumuş kullanıcı dosya yükleyince yine yarısında kalıyor.
+  - **EPUB'da önce basılı sayfa listesi.** Liste yayıncının basılı baskıya göre koyduğu gerçek sayfa numaralarıdır; varsa en doğru kaynak bu.
+  - **PDF sayfa sayısı okunamazsa yükleme başarısız sayılmıyor.** Dosya yine kaydediliyor; sayı okuyucu ilk açıldığında eşitleniyor.
+- Açık konular / sonraki adım: Yükleme akışı simülatörde gerçek dosyayla ayrıca denenmedi. Sistemin dosya seçme penceresi testlerde sahte seçiciyle değiştiriliyor.
+
+## [2026-10-22] Ek Düzeltme – Okunacak ve Biten Kitapların Okuyucuda İlk Sayfadan Açılması
+
+- Yapılanlar:
+  - **İstek:** Kitap Detay'da kitap hiç okunmadıysa (Okunacak) veya bitirildiyse, dijital sürüm açıldığında okuyucu ilk sayfadan başlamalı.
+  - **Önceki durum:**
+    - Biten kitap okuyucuda kalınan yerden açılıyordu. Biten kitapta okuyucuda geri sayfalara bakılıp çıkılırsa sonraki açılış o sayfadan oluyordu.
+    - Okunacak kitap sayaca göre açılıyordu. Durum sonradan "Okunacak"a çekildiyse sayaç sıfırlanmadığı için okuyucu ortadan açılıyordu.
+  - **Çözüm:** Açılış sayfası kuralı sadeleştirildi:
+    - **Okunuyor:** Sayaçtaki sayfadan açılır (sayaçta N ise okuyucu N. sayfada).
+    - **Okunacak ve Bitti:** Kalınan yer ya da sayaçtaki sayı ne olursa olsun her zaman 1. sayfadan açılır.
+  - Kural metin (Gutenberg, Vikikaynak, EPUB) ve PDF için aynı. PDF'te sayfa sayısı henüz bilinmiyorsa da yalnızca okunan kitap kalınan yerden açılıyor.
+  - Okunacak kitapta sayfa çevrilince kitap önceki gibi "Okunuyor"a geçiyor. Biten kitapta sayfa çevirmek sayacı ve durumu değiştirmiyor (baştan okumak için "Tekrar oku").
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [reader_controller.dart](lib/features/reader/controllers/reader_controller.dart) – Açılış sayfası yalnızca okunan kitapta sayaçtan alınıyor; okunacak ve biten kitapta metinde de PDF'te de ilk sayfa.
+    - [reader_controller_test.dart](test/features/reader/reader_controller_test.dart) – Kalınan yeri olan biten kitabın, sayaçta sayfası olan okunacak kitabın ve biten / okunacak PDF'in ilk sayfadan açıldığı test ediliyor. Testler eski kodda başarısız olacak şekilde yazıldı.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 8'e açılış sayfası kuralı eklendi (6.7'ye dokunulmadı).
+- Doğrulama: `flutter pub get` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 383 test geçti; `build` metotlarına dokunulmadı (≤ 40 satır).
+- Alınan kararlar ve nedenleri:
+  - **Kural kitabın durumuna bağlandı.** Durum, kullanıcının kitapla ilişkisini en açık gösteren bilgi: Okunacak "henüz başlamadım", Bitti "tamamladım" demek. İkisinde de kaldığı bir yer yok.
+  - **Biten kitabın sayacı değiştirilmedi.** Sayaç son sayfada kalmaya devam ediyor; Yıllık Hedef ve istatistikler etkilenmiyor. Yalnızca okuyucunun açılış sayfası değişti.
+  - **Okunacak'a çekilen kitabın sayacı sıfırlanmadı.** Bu, durum değiştirme davranışını etkileyen ayrı bir karar olurdu; istek yalnızca okuyucunun açılışıyla ilgiliydi.
+- Açık konular / sonraki adım: Simülatörde ayrıca denenmedi; controller testleriyle doğrulandı.
+
+## [2026-10-22] Ek Geliştirme – Okuyucuda Seçilen Metni Alıntı Olarak Kaydetme
+
+- Yapılanlar:
+  - **İstek:** Kullanıcı dijital okurken bir metni seçip alıntı olarak kaydedebilmeli; alıntı Kitap Detay'daki Alıntılar bölümüne otomatik eklenmeli.
+  - **Metin okuyucu (Gutenberg, Vikikaynak, EPUB):**
+    - Metin seçilince açılan menünün başına "Alıntı olarak kaydet" düğmesi eklendi.
+    - Varsayılan düğmeler (Kopyala, Tümünü seç) korunuyor; dar ekranda "Diğer" altına taşınıyorlar.
+  - **PDF:** `pdfrx`'in seçim menüsüne aynı düğme eklendi. Sayfa numarası seçimin başladığı PDF sayfasından alınıyor.
+    - PDF kopyalamaya izin vermiyorsa (dosyanın kendi izin ayarı) düğme gösterilmiyor.
+  - **Kayıt:**
+    - Alıntı, okuyucudaki sayfa numarasıyla kaydediliyor. Bu numara önceki düzeltmeden beri sayaçla birebir aynı.
+    - Kaydedilince seçim ve menü kapanıyor; "Alıntı kaydedildi; kitap ayrıntılarındaki Alıntılar bölümüne eklendi." mesajı çıkıyor.
+    - Alıntılar paylaşılan `LibraryController` listesinde tutulduğu için Kitap Detay'daki Alıntılar bölümü ek bir işlem gerekmeden, anında güncelleniyor.
+  - **Metin temizliği:**
+    - Seçimdeki fazla boşluklar kırpılıyor. Metinde satır ve paragraf yapısı korunuyor (şiir alıntısı dizeleriyle kalıyor).
+    - PDF'te her görsel satır seçime satır sonu olarak geldiği için satırlar tek paragrafta birleştiriliyor. Satır sonunda tireyle bölünmüş kelimeler de birleştiriliyor ("güç-/lüdür" → "güçlüdür").
+  - **Tekrar önleme:** Aynı sayfadaki aynı metin ikinci kez eklenmiyor, "Bu alıntı zaten kayıtlı." deniyor. Başka sayfadaki aynı metin ayrı alıntı sayılıyor. Boş seçim kaydedilmiyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [reader_controller.dart](lib/features/reader/controllers/reader_controller.dart) – Seçilen metni temizleyip sayfa numarasıyla kitabın alıntılarına ekleyen `saveQuote`, sonucu temizleyen `consumeQuoteResult` ve metin temizleyen `normalizeQuote` eklendi.
+    - [reader_model.dart](lib/features/reader/models/reader_model.dart) – Son alıntı kaydının sonucunu (kaydedildi / zaten var) taşıyan `quoteResult` ve `QuoteSaveResult` eklendi.
+    - [reader_page_widget.dart](lib/features/reader/widgets/reader_page_widget.dart) – Seçim menüsüne "Alıntı olarak kaydet" eklendi. Seçili metni tutmak için yerel durumlu widget'a çevrildi (yalnızca yerel seçim, `setState` yok).
+    - [pdf_reader_widget.dart](lib/features/reader/widgets/pdf_reader_widget.dart) – PDF seçim menüsüne kopyalama iznine bağlı "Alıntı olarak kaydet" eklendi; seçili metin ve sayfası okunuyor.
+    - [reader_body_widget.dart](lib/features/reader/widgets/reader_body_widget.dart) – Alıntı kaydetme metin sayfalarına (sayfa no ile) ve PDF'e (satır birleştirme ile) iletiliyor.
+    - [reader_view.dart](lib/features/reader/views/reader_view.dart) – Alıntı sonucu durum dinleyicisinden SnackBar ile gösteriliyor (PROJECT.md'deki yan etki kuralına uygun).
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – Düğme ve iki sonuç mesajı için 3 yeni anahtar (`readerQuoteSave`, `readerQuoteSaved`, `readerQuoteDuplicate`).
+    - [reader_controller_test.dart](test/features/reader/reader_controller_test.dart) – Sayfa numarasıyla kayıt, tekrar önleme, başka sayfada aynı metin, boş seçim ve metin / PDF temizliği test ediliyor.
+    - [reader_view_test.dart](test/features/reader/reader_view_test.dart) – Uzun basıp seçince menüde düğmenin çıktığı, kaydedince alıntının eklendiği, mesajın göründüğü ve Kopyala'nın korunduğu test ediliyor.
+    - [digital_edition_section_test.dart](test/features/book_detail/digital_edition_section_test.dart) – Uçtan uca: Kitap Detay → İndir → Oku → metni seç → kaydet → geri dön → alıntı sayfa numarasıyla Alıntılar bölümünde.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 8'e okuyucudan alıntı kaydetme kuralı eklendi (6.7'ye dokunulmadı).
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 388 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Düğme menünün başında.** Okurken asıl eylem alıntı kaydetmek. Dar ekranda yer kalmadığında Kopyala ve Tümünü seç "Diğer" altına geçiyor, kaybolmuyorlar.
+  - **Kayıttan önce onay penceresi yok.** Seçim zaten kullanıcının kararı; pencere okumayı böler. Alıntı istenirse Kitap Detay'dan silinebiliyor.
+  - **PDF'te kopyalama izni dikkate alındı.** Yayıncı metnin kopyalanmasını kapattıysa alıntı kaydetmek de bu kısıtı aşmak olurdu.
+  - **Yeni paket eklenmedi.** Flutter'ın `SelectionArea` menüsü ve onaylı `pdfrx`'in seçim API'si kullanıldı.
+- Açık konular / sonraki adım:
+  - PDF'te alıntı kaydetme otomatik testle doğrulanamadı: PDFium test ortamında yüklenmiyor. Kod `pdfrx`'in belgelenmiş seçim API'sini kullanıyor; simülatörde gerçek bir PDF ile denenmesi önerilir.
+  - Metin okuyucuda kaydetme widget testleriyle doğrulandı, simülatörde ayrıca denenmedi.
+
+## [2026-10-22] Ek Geliştirme – Manuel Kitap Eklemede Cihazdan Kapak Resmi
+
+- Yapılanlar:
+  - **İstek:** Manuel kitap eklerken kapak resmi URL dışında cihazdan da eklenebilmeli.
+  - **Yeni kapak bölümü (manuel form):**
+    - Solda kapak önizlemesi, sağda kapak URL alanı ile "Galeriden seç" ve "Fotoğraf çek" düğmeleri var.
+    - Önizleme yazdıkça güncelleniyor: geçerli bir URL girilince o kapak, başlık yazılınca tür renginde başlıklı yer tutucu görünüyor.
+    - "Fotoğraf çek" yalnızca kameranın desteklendiği yerde (Android / iOS) görünüyor.
+  - **Cihazdan resim seçilince:**
+    - URL alanının yerini "Cihazdan seçilen resim kapak olarak kullanılacak." bilgisi alıyor.
+    - "Resmi kaldır" ile resim kaldırılınca URL alanı geri geliyor.
+    - Kitap kaydedilince kapak raf, okuma durumu ve detay ekranlarında ağ isteği olmadan görünüyor.
+  - **Saklama:**
+    - Resim seçilirken en fazla 600×900 piksele ve %80 JPEG kalitesine küçültülüyor.
+    - `BookModel.coverUrl` içinde `data:image/...;base64` olarak saklanıyor; profil resmiyle aynı yöntem.
+    - Veri modeli ve depolama anahtarları değişmedi.
+  - **Gösterim:** `BookCoverImage` artık `data:` adreslerini de çiziyor. Çözülen resimler bellekte (son 32 kapak) tutuluyor; raf her çizildiğinde yeniden çözülmüyor. Bozuk resim, ağ hatası gibi tür renginde yer tutucuya düşüyor.
+  - **Hata durumu:** Seçici hata verirse (ör. izin reddi) "Resim seçilemedi. Lütfen tekrar dene." mesajı çıkıyor; önceki resim korunuyor. Vazgeçilirse hiçbir şey değişmiyor.
+  - **Ek düzeltme (testle ortaya çıktı):** Manuel formdaki Tür ve Okuma Durumu açılır menüleri dar ekranda taşıyordu (320 px'te 139 px, büyük yazıda 360 px).
+    - Menüler genişliği en uzun seçeneğe ("Bilim Kurgu & Fantastik") göre alıyordu.
+    - Artık alana sığdırılıyor, uzun seçenek üç noktayla kısaltılıyor.
+    - Mevcut taşma testi manuel formu hiç açmadığı için hata daha önce görünmemişti.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [cover_image_data.dart](lib/core/utils/cover_image_data.dart) – Kapak resmini `data:` adresine çevirir, türünü baytlardan bulur (PNG / JPEG / GIF / WebP), geri çözer ve son kapakları bellekte tutar.
+    - [cover_picker.dart](lib/features/add_book/controllers/cover_picker.dart) – Galeriden / kameradan küçültülmüş kapak resmi seçer (`image_picker`); testte sahtesi verilebilir.
+    - [book_cover_fields_widget.dart](lib/features/add_book/widgets/book_cover_fields_widget.dart) – Kapak önizlemesi, URL alanı veya cihaz resmi bilgisi ve Galeri / Kamera / Kaldır düğmeleri.
+    - [fake_cover_picker.dart](test/helpers/fake_cover_picker.dart) – Testlerde sabit resim döndüren sahte kapak seçici ve 1×1 gerçek PNG.
+    - [cover_image_data_test.dart](test/core/cover_image_data_test.dart) – Kodlama, tür tespiti, geri çözme, yerel kapak tanıma ve bozuk veri test ediliyor.
+  - **Güncellenen:**
+    - [manual_book_form_widget.dart](lib/features/add_book/widgets/manual_book_form_widget.dart) – Cihazdan seçilen kapak yerel durumda tutuluyor ve kaydedilirken URL'in yerine geçiyor; seçici hatasında mesaj gösteriliyor.
+    - [book_optional_fields_widget.dart](lib/features/add_book/widgets/book_optional_fields_widget.dart) – Kapak URL alanı yeni kapak bölümüne taşındı; burada ISBN ve "bende var" kaldı.
+    - [book_classification_fields_widget.dart](lib/features/add_book/widgets/book_classification_fields_widget.dart) – Tür ve durum menüleri alana sığdırılıyor (`isExpanded`), uzun seçenekler kısaltılıyor.
+    - [add_book_body_widget.dart](lib/features/add_book/widgets/add_book_body_widget.dart) / [add_book_view.dart](lib/features/add_book/views/add_book_view.dart) – Kapak seçici forma iletiliyor; testte sahte seçici verilebiliyor.
+    - [book_cover_image.dart](lib/core/widgets/book_cover_image.dart) – Cihazdan seçilen (`data:`) kapaklar ağ isteği olmadan çiziliyor; bozuksa yer tutucu.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – Kapak bölümü için 6 yeni anahtar (`fieldBookCover`, `coverFromGallery`, `coverFromCamera`, `coverRemove`, `coverFromDeviceSelected`, `coverPickFailed`).
+    - [Info.plist](ios/Runner/Info.plist) – Galeri ve kamera izin metinleri profil resmiyle birlikte kitap kapağını da anlatıyor.
+    - [add_book_view_test.dart](test/features/add_book/add_book_view_test.dart) – Galeriden / kameradan seçme, önizleme, kaydedilen kapak, kaldırma, kamera görünürlüğü, hata ve vazgeçme test ediliyor; alan sırası yeni düzene göre güncellendi.
+    - [book_cover_image_test.dart](test/core/book_cover_image_test.dart) – Cihaz kapağının `MemoryImage` ile çizildiği ve bozuk kapağın yer tutucuya düştüğü test ediliyor.
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) – Manuel form, cihaz kapağı seçili halde 4 ekran boyutu × 2 yazı ölçeğinde taşma için test ediliyor.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 3'e cihazdan kapak, 6.1'de `image_picker` amacına kapak resmi eklendi (6.7'ye dokunulmadı).
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 405 test geçti; tüm `build` metotları ≤ 40 satır. Açılır menü düzeltmesi geri alındığında yeni taşma testleri 4 taşma yakalıyor, düzeltmeyle 0.
+- Alınan kararlar ve nedenleri:
+  - **Resim dosya yerine `coverUrl` içinde base64 olarak saklandı.**
+    - Projede profil resmi için zaten kullanılan yöntem.
+    - Web dahil her platformda kalıcı. iOS'ta uygulama klasörünün yolu güncellemelerde değiştiği için dosya yolu saklamak kırılgan olurdu.
+    - Kitap silinince resim de kendiliğinden siliniyor; veri modeli değişmediği için geçiş gerekmiyor.
+  - **Resim küçültülüyor.** 600×900 kapak için yeterli; tipik boyutu 40-80 KB. Böylece kitap listesi SharedPreferences'ta küçük kalıyor.
+  - **Yeni paket eklenmedi.** Onaylı `image_picker` kullanıldı.
+  - **Cihaz resmi seçiliyken URL alanı gizlendi.** İki kaynağın aynı anda dolu olması hangisinin kullanılacağını belirsizleştirirdi.
+- Açık konular / sonraki adım:
+  - Galeri ve kamera gerçek cihazda / simülatörde elle denenmedi; testlerde sahte seçici kullanıldı (profil resmindeki gibi).
+  - Kitap Detay'da var olan bir kitabın kapağını sonradan değiştirme özelliği yok (istenmedi). İstenirse aynı kapak bölümü oraya da eklenebilir.
+
+## [2026-10-22] Ek Geliştirme – Manuel Kitap Eklemede Hızlı Kategori Ekleme
+
+- Yapılanlar:
+  - **İstek:** Eklenecek kitap mevcut kategorilerde yoksa kullanıcı hızlıca kendi kategorisini ekleyebilmeli.
+  - **Hızlı ekleme (manuel form):**
+    - Tür alanının yanına "Yeni kategori ekle" (+) düğmesi geldi. Açılan pencerede kategori adı ve 8 renkten biri seçiliyor.
+    - Renk varsayılan olarak henüz kullanılmayan ilk renk geliyor; yani yalnızca ad yazıp "Ekle"ye basmak yetiyor.
+    - "Ekle"ye basılınca kategori kaydediliyor ve formda seçili geliyor. Kapak önizlemesi de kategorinin renginde çiziliyor.
+  - **Doğrulama:**
+    - Ad boş olamaz ve en fazla 30 karakter olabilir. Baştaki/sondaki ve çift boşluklar temizleniyor.
+    - Yerleşik türlerle ("Roman", "Şiir"…) ya da eklenmiş kategorilerle aynı ad reddediliyor: "Bu kategori zaten var; listeden seçebilirsin."
+    - Karşılaştırmada büyük/küçük harf ve Türkçe İ / I / ı farkı gözetilmiyor ("POLİSİYE" = "polisiye").
+  - **Kategorinin göründüğü yerler:**
+    - Ekleme formundaki tür menüsü (renk noktasıyla).
+    - Kitaplığım'daki tür filtresi çipleri.
+    - Kitap Detay ve Okuma Durumu kartlarındaki tür etiketi.
+    - Kapağı olmayan kitabın yer tutucusu.
+    - Yıllık Hedef'teki türlere göre dağılım.
+  - **Filtre ve sayım kuralı:** Kullanıcı kategorili kitap "Diğer" sayılmıyor; "Diğer" filtresinde ve dağılımında görünmüyor. Kategori kaydı bulunamayan bir kitap (ileride kategori silme eklenirse) kendi yerleşik türüne, yani "Diğer"e düşüyor.
+  - **Ek düzeltme (testle ortaya çıktı):** Yeni kategori penceresi 320 px'lik telefonda taşıyordu (131 px). İçerik kaydırılabilir yapıldı.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [custom_genre_model.dart](lib/core/models/custom_genre_model.dart) – Kullanıcı kategorisi modeli; ad temizleme, Türkçe uyumlu ad karşılaştırma ve sıradaki boş rengi bulma kuralları burada.
+    - [genre_choice.dart](lib/core/models/genre_choice.dart) – Seçili tür veya kullanıcı kategorisini tek değerde tutan kayıt türü; ekleme formu ve raf filtresi birlikte kullanıyor.
+    - [genre_repository.dart](lib/core/repositories/genre_repository.dart) – Kullanıcı kategorilerini `kitalog.genres` anahtarında saklar ve okur.
+    - [new_genre_dialog.dart](lib/features/add_book/widgets/new_genre_dialog.dart) – Ad ve renk seçilen hızlı kategori penceresi.
+    - [custom_genre_test.dart](test/core/custom_genre_test.dart) – Model, ad kuralları, renk seçimi, kitap alanı, ad doğrulaması, ekleme / tekrar önleme / kalıcılık ve filtre eşleşmesi test ediliyor.
+  - **Güncellenen:**
+    - [book_model.dart](lib/core/models/book_model.dart) – Kitabın kullanıcı kategorisi için `customGenreId` alanı eklendi; eski kayıtlarda boş geliyor.
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – Kategori listesi (`customGenres`), ekleme (aynı adda yenisini açmadan), kimlikle / adla bulma ve filtre eşleşmesi (`matchesGenre`) eklendi.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) – `GenreRepository` oluşturulup `LibraryController`'a veriliyor.
+    - [storage_keys.dart](lib/core/constants/storage_keys.dart) – `kitalog.genres` anahtarı.
+    - [app_colors.dart](lib/core/constants/app_colors.dart) – Kullanıcı kategorileri için yerleşik tür renklerinden ayırt edilen 8 renklik palet.
+    - [genre_extensions.dart](lib/core/extensions/genre_extensions.dart) – Kategori rengi, kategori varsa onun adı / rengi (`labelWith`, `colorWith`) ve kitabın kategorisini bulan `context.customGenreOf`.
+    - [validators.dart](lib/core/utils/validators.dart) / [validation_extensions.dart](lib/core/extensions/validation_extensions.dart) – Kategori adı doğrulaması (`genreName`) ve iki yeni hata mesajı.
+    - [genre_chip.dart](lib/core/widgets/genre_chip.dart) / [book_cover_image.dart](lib/core/widgets/book_cover_image.dart) – Kullanıcı kategorisi verilirse onun adı ve rengiyle çiziliyor.
+    - [book_classification_fields_widget.dart](lib/features/add_book/widgets/book_classification_fields_widget.dart) – Tür menüsünde yerleşik türler ve kullanıcı kategorileri renk noktalarıyla listeleniyor, yanında "Yeni kategori ekle" düğmesi var. Yeni kategori menüye kendiliğinden geliyor.
+    - [manual_book_form_widget.dart](lib/features/add_book/widgets/manual_book_form_widget.dart) – Kategori penceresini açıyor, oluşturulan kategoriyi seçiyor ve kitapla kaydediyor.
+    - [add_book_model.dart](lib/features/add_book/models/add_book_model.dart) / [add_book_controller.dart](lib/features/add_book/controllers/add_book_controller.dart) – Taslakta `customGenreId`; controller'da kategori oluşturan `createGenre`.
+    - [add_book_body_widget.dart](lib/features/add_book/widgets/add_book_body_widget.dart) / [add_book_view.dart](lib/features/add_book/views/add_book_view.dart) / [book_cover_fields_widget.dart](lib/features/add_book/widgets/book_cover_fields_widget.dart) – Kategori listesi ve oluşturma forma iletiliyor; kapak önizlemesi kategori renginde.
+    - [library_shelf_model.dart](lib/features/library/models/library_shelf_model.dart) / [library_shelf_controller.dart](lib/features/library/controllers/library_shelf_controller.dart) / [library_filter_bar_widget.dart](lib/features/library/widgets/library_filter_bar_widget.dart) / [library_view.dart](lib/features/library/views/library_view.dart) – Kitaplığım filtresi kullanıcı kategorilerini de içeriyor; yeni kategori çiplere anında geliyor.
+    - [reading_goal_state.dart](lib/features/reading_goal/models/reading_goal_state.dart) / [reading_goal_controller.dart](lib/features/reading_goal/controllers/reading_goal_controller.dart) / [genre_breakdown_widget.dart](lib/features/reading_goal/widgets/genre_breakdown_widget.dart) / [reading_goal_view.dart](lib/features/reading_goal/views/reading_goal_view.dart) – Türlere göre dağılımda kullanıcı kategorileri ayrı satırlar olarak, kendi renkleriyle gösteriliyor.
+    - [book_header_widget.dart](lib/features/book_detail/widgets/book_header_widget.dart) / [simple_book_card_widget.dart](lib/features/reading_status/widgets/simple_book_card_widget.dart) / [book_card_layout_widget.dart](lib/features/reading_status/widgets/book_card_layout_widget.dart) / [book_shelf_item_widget.dart](lib/features/library/widgets/book_shelf_item_widget.dart) – Etiket ve kapak yer tutucusu kitabın kategorisini kullanıyor.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – 8 yeni anahtar (`genreAdd`, `genreNewTitle`, `genreNewName`, `genreNewColor`, `genreColorOption`, `genreNewSave`, `errorGenreNameTooLong`, `errorGenreNameTaken`).
+    - [add_book_view_test.dart](test/features/add_book/add_book_view_test.dart) – Kategori ekleyip renk seçme, formda seçili gelme, kitapla kaydetme, tekrar eden / boş ad, vazgeçme ve menüde listelenme test ediliyor.
+    - [library_shelf_controller_test.dart](test/features/library/library_shelf_controller_test.dart) – Kategoriye göre süzme, "Diğer" filtresinin kategorili kitabı dışarıda bırakması ve yeni kategorinin çiplere gelmesi test ediliyor.
+    - [reading_goal_controller_test.dart](test/features/reading_goal/reading_goal_controller_test.dart) – Kategorili biten kitabın ayrı sayıldığı ve "Diğer"e eklenmediği test ediliyor.
+    - [book_detail_view_test.dart](test/features/book_detail/book_detail_view_test.dart) – Kitap Detay etiketinin kategori adı ve rengiyle göründüğü test ediliyor.
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) – Yeni kategori penceresi 4 ekran boyutu × 2 yazı ölçeğinde taşma için test ediliyor.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 2, 3 ve 6; 6.3'te `BookModel.customGenreId`, `CustomGenreModel`, `kitalog.genres` ve `GenreRepository` eklendi (6.7'ye dokunulmadı).
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 433 test geçti; tüm `build` metotları ≤ 40 satır.
+- Alınan kararlar ve nedenleri:
+  - **Yerleşik türler enum olarak kaldı, kullanıcı kategorileri ayrı listede.**
+    - Yerleşik türlerin çevirisi (TR / EN) ve sabit renkleri korunuyor.
+    - Kitap kategoriye kimlikle bağlandığı için kategori adı ileride değiştirilirse kitaplar etkilenmez.
+    - Eski kayıtlar ve örnek kitaplar hiçbir geçiş gerektirmeden çalışıyor.
+  - **Kullanıcı kategorisi çevrilmiyor.** Kullanıcının yazdığı ad her iki dilde aynı görünüyor.
+  - **Aynı ad reddediliyor, sessizce birleştirilmiyor.** Kullanıcı "Roman" yazdığında yerleşik türün zaten olduğunu görüp onu seçmeli. Aynı adda iki kategori filtrede ve dağılımda kafa karıştırırdı.
+  - **Renk, kendi paletinden.** Kategori renkleri yerleşik tür renklerinden ayırt edilebilir ve tür etiketlerindeki koyu yazıyla okunaklı.
+  - **Kategorili kitap "Diğer" sayılmıyor.** Kullanıcı kitabı bilerek kendi kategorisine koydu; "Diğer"de görünmesi beklenmez.
+- Açık konular / sonraki adım:
+  - Kategori yeniden adlandırma, silme ve var olan bir kitabın kategorisini Kitap Detay'dan değiştirme yok (istenmedi). Veri yapısı bunlara hazır; istenirse eklenebilir.
+  - Simülatörde ayrıca denenmedi; widget testleriyle doğrulandı.
+
+## [2026-10-22] Ek Düzeltme – Ödünç Sisteminin Fiziksel Kopyaya Bağlanması ve Biçim Rozetleri
+
+- Yapılanlar:
+  - **İstek:** Ödünç sistemi yeniden ele alınmalı:
+    - Kitap ekleme seçeneği "Bu kitap bende fiziksel olarak var" olmalı.
+    - Seçenek açıksa Kitap Detay'da ödünç bölümü görünmeli, kapalıysa görünmemeli.
+    - Rafta fiziksel / dijital rozetleri olmalı, ödünç rozeti buna göre uyarlanmalı.
+  - **Önceki durum:** Seçenek "Bu kitap bende var" diye yazıyordu. Ödünç bölümü kitabın fiziksel olup olmamasına bakmadan her kitapta görünüyordu. Rafta yalnızca "Ödünçte" rozeti vardı.
+  - **Kitap ekleme:** Seçenek "Bu kitap bende fiziksel olarak var" oldu (varsayılan açık). Kitap Detay künyesindeki satır da aynı dile geçti: "Fiziksel kopyası bende" / "Fiziksel kopyası yok".
+  - **Ödünç kuralı:**
+    - Ödünç yalnızca fiziksel kopya için anlamlı. Fiziksel kopyası olmayan kitapta Kitap Detay'daki "Ödünç Bilgisi" bölümü tamamen gizleniyor.
+    - Controller da fiziksel kopyası olmayan kitabın ödünç verilmesine izin vermiyor.
+    - Eski bir kayıtta fiziksel kopyası olmayan bir kitapta ödünç bilgisi kalmışsa veri silinmiyor ama yok sayılıyor: rozet çıkmıyor, ödünçte sayılmıyor.
+  - **Rafta biçim rozetleri (kapağın sağ üst köşesi):**
+    - Fiziksel kopya var → "Fiziksel".
+    - Fiziksel + dijital sürüm var → "Fiziksel" ve "Dijital".
+    - Yalnızca dijital sürüm var → sadece "Dijital".
+    - Fiziksel kopya ödünç verildiyse "Fiziksel" rozetinin yerine vurgulu renkte "Ödünçte" çıkıyor; varsa "Dijital" rozeti yanında kalıyor.
+    - İkisi de yoksa (ör. istek listesindeki kitap) rozet gösterilmiyor.
+  - **Örnek veri:** Değişiklik gerekmedi. Ödünç verilmiş 4 örnek kitabın hepsi fiziksel; fiziksel kopyası olmayan 3 örnek kitapta yalnızca "Dijital" rozeti çıkıyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [book_badges_widget.dart](lib/features/library/widgets/book_badges_widget.dart) – Kapaktaki Fiziksel / Ödünçte / Dijital rozetleri; ödünç durumu vurgulu renkte.
+    - [book_badges_widget_test.dart](test/features/library/book_badges_widget_test.dart) – Beş durumun (yalnızca fiziksel, fiziksel + dijital, yalnızca dijital, ödünçteki fiziksel + dijital, fiziksel kopyası olmayan kitapta eski ödünç kaydı) rozetleri test ediliyor.
+  - **Güncellenen:**
+    - [book_model.dart](lib/core/models/book_model.dart) – `isLent` artık fiziksel kopya şartı arıyor (`isOwned` ve `loan` dolu).
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – `lendBook` fiziksel kopyası olmayan kitapta hiçbir şey yapmıyor.
+    - [book_detail_content_widget.dart](lib/features/book_detail/widgets/book_detail_content_widget.dart) – Ödünç bölümü yalnızca fiziksel kopyası olan kitapta gösteriliyor.
+    - [book_shelf_item_widget.dart](lib/features/library/widgets/book_shelf_item_widget.dart) – Kapakta tek ödünç rozeti yerine biçim rozetleri.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – "Fiziksel" ve "Dijital" rozet anahtarları eklendi. Ekleme seçeneği ve künye satırının metinleri fiziksel kopya diline geçti.
+    - [library_view_test.dart](test/features/library/library_view_test.dart) – Rafta rozetlerin ve örnek verideki "Ödünçte" rozetinin göründüğü test ediliyor.
+    - [library_storage_test.dart](test/core/library_storage_test.dart) – Fiziksel kopyası olmayan kitabın ödünç verilemediği ve eski ödünç kaydının yok sayıldığı test ediliyor.
+    - [book_detail_view_test.dart](test/features/book_detail/book_detail_view_test.dart) – Fiziksel kopyası olmayan kitapta ödünç bölümünün görünmediği test ediliyor.
+    - [add_book_view_test.dart](test/features/add_book/add_book_view_test.dart) – Seçeneğin yeni metni, varsayılan açık olması ve kapatılınca kitabın fiziksel kopyasız kaydedilmesi test ediliyor.
+    - [models_test.dart](test/core/models_test.dart) – Gidiş-dönüş testi yeni kurala göre güncellendi: ödünç kaydı korunuyor ama fiziksel kopyası olmayan kitap ödünçte sayılmıyor.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 2, 3 ve 5 ile 6.3'te `BookModel` notu güncellendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `lib/features/library/widgets/loan_badge_widget.dart` (silindi) – Yalnızca "Ödünçte" gösteren eski rozetti; görevi `BookBadgesWidget`'a geçti.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 441 test geçti; tüm `build` metotları ≤ 40 satır. Rafın taşma testleri (4 ekran boyutu × 2 yazı ölçeği) yeni rozetlerle de geçti.
+- Alınan kararlar ve nedenleri:
+  - **"Ödünçte", "Fiziksel" rozetinin yerine geçiyor.**
+    - Ödünç verilen şey fiziksel kopyanın kendisi. "Fiziksel" ile "Ödünçte"yi yan yana göstermek hem yer kaplar hem de "kopya bende" izlenimi verir.
+    - Vurgulu renk ödünçteki kitabı rafta hemen fark ettiriyor.
+  - **"Dijital" rozeti dijital sürümün varlığına bakıyor, cihaza indirilmiş olmasına değil.** Telifi bitmiş kitaplar tek dokunuşla indirilebildiği için kullanıcı açısından dijital sürüm zaten var.
+  - **Eski ödünç verisi silinmedi, yok sayıldı.** Kullanıcının verisi kendiliğinden değiştirilmiyor; kural tek yerde (`isLent`) uygulandığı için her ekran aynı davranıyor.
+- Açık konular / sonraki adım:
+  - Var olan bir kitabın "fiziksel olarak var" bilgisini Kitap Detay'dan değiştirme yok (istenmedi). İstenirse künyeye bir anahtar eklenebilir.
+  - Simülatörde ayrıca denenmedi; widget testleriyle doğrulandı.
+
+## [2026-10-22] Ek Geliştirme – Kitaplığım Filtrelerinin Düğmeyle Açılan Panele Taşınması ve Çoklu Seçim
+
+- Yapılanlar:
+  - **İstek:**
+    - Arama kutusunun altındaki iki çip satırı (okuma durumu, tür) bir düğmeyle açılan filtrelemeye dönüşmeli.
+    - Birden fazla filtre aynı anda seçilebilmeli.
+    - Fiziksel, Dijital ve Ödünçte filtreleri eklenmeli.
+    - Düğme en uygun yere, örneğin daraltılmış arama kutusunun sağına konmalı.
+  - **Önceki durum:** Arama kutusunun altında iki yatay kaydırmalı çip satırı vardı (her biri "Tümü" ile başlıyordu). Her satırda yalnızca tek seçim yapılabiliyordu; raf için ekranın üst kısmında yer kalmıyordu.
+  - **Yeni üst satır:**
+    - Arama kutusu daraltıldı, sağına aynı yükseklikte ve köşe yarıçapında "Filtreler" düğmesi geldi.
+    - Filtre seçiliyken düğmenin köşesinde seçili filtre sayısı rozet olarak görünüyor. Rozet uygulamanın kehribar renginde; Material'in varsayılan kırmızısı hata gibi algılanıyordu.
+    - Ekran okuyucu düğmeyi "Filtreler (3 seçili)" diye okuyor.
+  - **Filtre paneli (alttan açılır):**
+    - Üç bölüm var: **Okuma durumu** (Okunacak / Okunuyor / Bitti), **Biçim** (Fiziksel / Dijital / Ödünçte) ve **Tür** (yerleşik türler + kullanıcı kategorileri, renk noktalarıyla).
+    - Her bölümde birden fazla seçenek seçilebiliyor; seçimler anında uygulanıyor.
+    - Panelin altındaki düğme sonuç sayısını gösteriyor ("5 kitabı göster"; eşleşme yoksa "Eşleşen kitap yok") ve paneli kapatıyor. Başlıktaki "Temizle" tüm filtreleri kaldırıyor.
+    - Panel ekranın en fazla %85'ini kaplıyor; uzun içerikte kendi içinde kayıyor.
+  - **Seçili filtre çipleri:**
+    - Panel kapalıyken seçili filtreler arama satırının altında, simgeli / renkli çipler olarak görünüyor. Her biri ✕ ile tek tek kaldırılabiliyor, sonda "Temizle" var.
+    - Filtre seçili değilse bu satır hiç görünmüyor ve rafa daha fazla yer kalıyor.
+  - **Birleştirme kuralı:** Aynı bölümde seçilenler "veya", bölümler arasında "ve" ile birleşiyor. Örneğin Roman + Çocuk + Bitti + Fiziksel = fiziksel kopyası olan, bitmiş roman **veya** çocuk kitapları.
+  - **Biçim filtrelerinin anlamı (önceki rozetlerle aynı):** Fiziksel = fiziksel kopya var; Dijital = dijital sürüm var; Ödünçte = fiziksel kopya ödünç verilmiş.
+  - **Simülatörde doğrulandı:** iPhone 18 Pro simülatöründe filtresiz raf ve filtre paneli açık iki ekran görüntüsü alındı.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [library_filter_sheet.dart](lib/features/library/widgets/library_filter_sheet.dart) – Alttan açılan filtre paneli: başlık + Temizle, üç bölüm, sonuç sayılı kapatma düğmesi.
+    - [library_filter_options.dart](lib/features/library/widgets/library_filter_options.dart) – Panel ve seçili filtre çiplerinin ortak kullandığı seçenek listesi (etiket, simge / tür rengi, seçili mi); biçim filtrelerinin etiket ve simgeleri.
+    - [library_filter_actions.dart](lib/features/library/models/library_filter_actions.dart) – Filtre widget'larının controller'a doğrudan bağlanmadan çağırdığı eylemler (projedeki `BookDetailActions` deseni).
+    - [16-library-filters.png](docs/screenshots/16-library-filters.png) – Filtre paneli açık, birkaç filtre seçili Kitaplığım ekran görüntüsü.
+  - **Güncellenen:**
+    - [library_shelf_model.dart](lib/features/library/models/library_shelf_model.dart) – Tekli tür / durum seçimi yerine çoklu seçim kümeleri (`statuses`, `formats`, `genres`), yeni `BookFormatFilter` (fiziksel / dijital / ödünçte) ve seçili filtre sayısı (`activeFilterCount`).
+    - [library_shelf_controller.dart](lib/features/library/controllers/library_shelf_controller.dart) – `setGenre` / `setStatus` yerine seç-kaldır (`toggleStatus`, `toggleFormat`, `toggleGenre`) ve `clearFilters`; süzme "grup içinde veya, gruplar arası ve" kuralıyla.
+    - [library_filter_bar_widget.dart](lib/features/library/widgets/library_filter_bar_widget.dart) – Çip satırları kaldırıldı; daraltılmış arama + rozetli filtre düğmesi + seçili filtre çipleri.
+    - [library_view.dart](lib/features/library/views/library_view.dart) – Filtre eylemleri tek nesne olarak filtre çubuğuna veriliyor.
+    - [app_sizes.dart](lib/core/constants/app_sizes.dart) – Arama kutusunun yüksekliği (`searchFieldHeight`); filtre düğmesi buna hizalanıyor.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – Filtre paneli için 8 yeni anahtar (`libraryFilters`, `libraryFiltersActive`, `libraryFilterStatus`, `libraryFilterFormat`, `libraryFilterGenre`, `libraryFilterClear`, `libraryFilterRemove`, `libraryShowResults` — sonuç sayısı tekil / çoğul biçimli). Artık kullanılmayan `libraryFilterAll` ("Tümü") kaldırıldı.
+    - [library_shelf_controller_test.dart](test/features/library/library_shelf_controller_test.dart) – Çoklu seçim, grup içi "veya" / gruplar arası "ve", ikinci dokunuşla kaldırma, Fiziksel / Dijital / Ödünçte filtreleri, temizleme ve filtre durumunun JSON gidiş-dönüşü test ediliyor.
+    - [library_view_test.dart](test/features/library/library_view_test.dart) – Filtre düğmesi, panelde birden fazla seçim (Roman + Şiir + Ödünçte), sonuç, seçili filtre çipleri, düğme ipucundaki sayı, çipten tek filtre kaldırma ve "Temizle" uçtan uca test ediliyor.
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) – Filtre paneli ve seçili filtre satırı (uzun adlı kategoriyle) 4 ekran boyutu × 2 yazı ölçeğinde taşma için test ediliyor.
+    - [02-library.png](docs/screenshots/02-library.png) – Kitaplığım ekran görüntüsü yeni üst satır ve biçim rozetleriyle yeniden alındı.
+    - [README.md](README.md) – "Ek görüntüler" satırına filtre paneli görüntüsü eklendi.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 2 yeni filtre tasarımına göre güncellendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Kitaplığım'ı filtresiz ve filtre paneli açık hâlde simülatörde açıp ekran görüntüsü almak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 452 test geçti; tüm `build` metotları ≤ 40 satır. iOS simülatöründe filtresiz raf ve açık filtre paneli görsel olarak kontrol edildi.
+- Alınan kararlar ve nedenleri:
+  - **Düğme arama kutusunun sağında.** İstekte önerilen ve mobilde yaygın olan yer; filtreler aramayla aynı satırda olduğu için ilişkileri açık. Raf için ekranın üst kısmında iki satır yer açıldı.
+  - **Alttan açılan panel.** Başparmakla ulaşılabilir; üç bölüm ve kullanıcı kategorileriyle uzayan tür listesi dar ekranda yatay kaydırmadan sığıyor.
+  - **Seçimler anında uygulanıyor, ayrıca "Uygula" adımı yok.** Sonuç sayısı panel kapanmadan görülüyor; kullanıcı boş sonuç veren seçimi hemen fark ediyor. Alttaki düğme yalnızca paneli kapatıyor.
+  - **Grup içinde "veya", gruplar arasında "ve".** Filtreleme ekranlarındaki yaygın kural: Roman + Şiir seçen, ikisinden birinin listelenmesini bekler.
+  - **Seçili filtreler panel kapalıyken de görünüyor.** Rafın neden eksik göründüğü sorusuna yer bırakmıyor; tek filtre paneli açmadan kaldırılabiliyor.
+- Açık konular / sonraki adım:
+  - Filtre seçimi sekmeler arasında geçerken ve kitap detayına gidip dönünce korunuyor (ana kabuk sekmeleri `IndexedStack` içinde canlı tutuyor). Uygulama yeniden açılınca sıfırlanıyor; model JSON'a çevrilebilir durumda, kalıcı yapılması istenirse eklenebilir.
+
+## [2026-10-22] Ek Düzeltme – Son Sayfaya Ulaşınca "Kitabı Bitirdin mi?" Onayının Otomatik Açılması
+
+- Yapılanlar:
+  - **Sorun:** Kitap Detay'daki Okuma İlerlemesi'nde "+" ile son sayfaya ulaşılınca, krem renkli bir SnackBar çıkıyordu ("Son sayfaya ulaştın. Kitabı bitirdin mi?"). Üzerindeki "Bitti olarak işaretle" çalışmıyormuş gibi görünüyordu ve tasarım uygulamanın koyu temasına uymuyordu.
+  - **Kök neden (testle yeniden üretildi):**
+    - Son sayfadayken her "+" basışı, sayfa artık artmasa da yeni bir öneri SnackBar'ı kuyruğa ekliyordu. Çünkü `setCurrentPage` "son sayfadasın" bilgisini her çağrıda yeniden veriyordu.
+    - Kullanıcı düğmeye basınca kitap aslında "Bitti" oluyordu. Ama kuyruktaki sıradaki SnackBar hemen yeniden çıktığı için işlem olmamış gibi görünüyordu.
+    - Deneme: üç kez "+" sonrası düğmeye basıldığında kitap `finished` oluyor, aynı öneri tekrar ekranda kalıyordu.
+  - **Çözüm 1 – Öneri yalnızca son sayfaya geçildiği anda:**
+    - `LibraryController.setCurrentPage` artık yalnızca sayfa son sayfanın altından son sayfaya geçtiğinde `true` dönüyor. Zaten son sayfadayken ileri gitmek öneriyi yinelemiyor.
+    - Geri gidip yeniden son sayfaya gelinirse öneri yine açılıyor.
+    - Kural tek yerde olduğu için Kitap Detay, Okuma Durumu kartları ve dijital okuyucu birlikte düzeldi.
+  - **Çözüm 2 – SnackBar yerine onay penceresi:**
+    - İstendiği gibi, "Bitti olarak işaretle" düğmesinin açtığı "Kitabı bitirdin mi?" penceresi son sayfaya ulaşılınca kendiliğinden açılıyor.
+    - Bu durumda açıklama "Son sayfaya ulaştın. Kitap "Bitti" olarak işaretlenecek ve bu yılın okuma hedefine sayılacak." oluyor.
+    - Aynı anda yalnızca bir pencere açılabiliyor. Onaylanınca kitap biter (bitiş tarihi yazılır); "Vazgeç" ile kitap "Okunuyor" kalır.
+    - Aynı pencere Okuma Durumu kartlarındaki sayaçta ve dijital okuyucuda da kullanılıyor; üçünde de eski SnackBar kaldırıldı.
+  - **Tasarım:**
+    - Onay penceresi uygulamanın diline göre yenilendi: üstte kehribar renkte simge, ortalanmış başlık ve açıklama, altta tam genişlikte "Bitti olarak işaretle" ve onun altında "Vazgeç".
+    - Eskiden "Vazgeç" sağ üstte, ana düğme alt satırda tek başına kalıyordu (ekran görüntüsündeki düzen). Düğmeler artık hep alt alta; dar ekranda ve büyük yazıda kaymıyor.
+    - "Tekrar Oku" onayı da aynı tasarıma geçti.
+  - **Simülatörde doğrulandı:** iPhone 18 Pro simülatöründe Kitap Detay üzerinde açılan pencerenin ekran görüntüsü alındı.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [finish_book_dialog.dart](lib/core/widgets/finish_book_dialog.dart) – "Kitabı bitirdin mi?" onayı; düğmeyle açıldığında ve son sayfaya ulaşıldığında (açıklama buna göre) aynı pencere.
+    - [17-finish-dialog.png](docs/screenshots/17-finish-dialog.png) – Son sayfaya ulaşınca açılan pencerenin ekran görüntüsü.
+  - **Güncellenen:**
+    - [confirm_dialog.dart](lib/core/widgets/confirm_dialog.dart) – `book_detail/widgets/` altından `core/widgets/` altına taşındı (artık üç feature kullanıyor) ve yeniden tasarlandı: isteğe bağlı simge, ortalanmış metin, alt alta tam genişlikte düğmeler.
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – `setCurrentPage` son sayfa sinyalini yalnızca son sayfaya geçişte veriyor.
+    - [book_detail_view.dart](lib/features/book_detail/views/book_detail_view.dart) – SnackBar yerine onay penceresi; aynı anda tek pencere.
+    - [status_selector_widget.dart](lib/features/book_detail/widgets/status_selector_widget.dart) – "Bitti olarak işaretle" ortak pencereyi, "Tekrar Oku" simgeli onayı kullanıyor.
+    - [reading_status_view.dart](lib/features/reading_status/views/reading_status_view.dart) / [reader_view.dart](lib/features/reader/views/reader_view.dart) – Son sayfa önerisi SnackBar yerine aynı onay penceresiyle.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – Kullanılmayan `finishSuggestion` yerine son sayfa açıklaması `finishReachedMessage`.
+    - [book_detail_view_test.dart](test/features/book_detail/book_detail_view_test.dart) – Pencerenin kendiliğinden açıldığı, onaylanınca kitabın bittiği ve pencerenin tekrar açılmadığı; vazgeçilince "+" ile yinelenmediği, geri gidip gelince yeniden açıldığı; düğmenin aynı pencereyi açtığı test ediliyor.
+    - [reading_status_view_test.dart](test/features/reading_status/reading_status_view_test.dart) – Karttaki sayaçla son sayfaya gelince pencerenin açıldığı ve kitabın bittiği test ediliyor.
+    - [reader_view_test.dart](test/features/reader/reader_view_test.dart) – Okuyucuda son sayfada aynı pencerenin açıldığı test ediliyor.
+    - [book_detail_controller_test.dart](test/features/book_detail/book_detail_controller_test.dart) / [library_storage_test.dart](test/core/library_storage_test.dart) – Son sayfadayken önerinin yinelenmediği, yeniden gelince verildiği test ediliyor.
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) – Pencere 4 ekran boyutu × 2 yazı ölçeğinde taşma için test ediliyor.
+    - [README.md](README.md) – "Ek görüntüler" satırına pencerenin görüntüsü eklendi.
+    - [PROJECT.md](PROJECT.md) – 6.3'te `BookModel` notu yeni davranışa göre güncellendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `lib/features/book_detail/widgets/confirm_dialog.dart` (taşındı) – `lib/core/widgets/confirm_dialog.dart` olarak devam ediyor.
+    - `test/features/book_detail/_probe_test.dart` (silindi) – Sorunu yeniden üretmek için geçici olarak yazılan testti.
+    - `tool/screenshot_main.dart` (silindi) – Pencereyi simülatörde açıp ekran görüntüsü almak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 463 test geçti; tüm `build` metotları ≤ 40 satır. iOS simülatöründe pencere görsel olarak kontrol edildi.
+- Alınan kararlar ve nedenleri:
+  - **SnackBar yerine onay penceresi.** Kitabı bitirmek yıllık hedefi ve istatistikleri etkileyen bir karar. Birkaç saniyede kaybolan bir çubuk yerine, düğmeyle açılan pencereyle aynı açık soru daha uygun; iki yolun aynı görünmesi de tutarlılık sağlıyor.
+  - **Kök neden sinyalin kaynağında düzeltildi.** Yalnızca SnackBar'ı pencereye çevirmek, son sayfada "+"a her basışta pencerenin yeniden açılmasına yol açardı.
+  - **Okuma Durumu ve okuyucu da aynı pencereye geçti.** Aynı sorun ve aynı krem SnackBar oralarda da vardı; kullanıcı her yerde aynı soruyla karşılaşıyor.
+- Açık konular / sonraki adım: Ekran görüntüsü için simülatördeki uygulama verisinde Suç ve Ceza'nın sayacı 550/551'e getirildi (yalnızca simülatörün yerel verisi; depodaki kod ve örnek veri etkilenmedi).
+
+## [2026-10-22] Ek Düzeltme – Kitaplığım Filtrelerinden Okuma Durumunun Çıkarılması
+
+- Yapılanlar:
+  - **İstek:** Filtre panelindeki "Okuma durumu" bölümü (Okunacak / Okunuyor / Bitti) kaldırılmalı; kullanıcı bunları zaten "Okuma Durumu" sekmesinde ayrı ayrı görebiliyor.
+  - **Panel:** Artık iki bölüm var: **Biçim** (Fiziksel / Dijital / Ödünçte) ve **Tür** (yerleşik türler + kullanıcı kategorileri).
+  - **Kod tarafı:** Okuma durumu filtresi yalnızca arayüzden gizlenmedi; model, controller, eylemler ve dil dosyalarından da tamamen çıkarıldı, işlevsiz kod kalmadı. Seçili filtre sayısı (düğmedeki rozet) artık yalnızca biçim ve tür seçimlerini sayıyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [library_shelf_model.dart](lib/features/library/models/library_shelf_model.dart) – `statuses` kümesi ve JSON alanı kaldırıldı; seçili filtre sayısı biçim + tür.
+    - [library_shelf_controller.dart](lib/features/library/controllers/library_shelf_controller.dart) – `toggleStatus` ve okuma durumuna göre süzme kaldırıldı; "Temizle" biçim ve tür seçimlerini sıfırlıyor.
+    - [library_filter_actions.dart](lib/features/library/models/library_filter_actions.dart) / [library_view.dart](lib/features/library/views/library_view.dart) – `toggleStatus` eylemi kaldırıldı.
+    - [library_filter_options.dart](lib/features/library/widgets/library_filter_options.dart) – Paneldeki "Okuma durumu" bölümü kaldırıldı.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – Kullanılmayan `libraryFilterStatus` anahtarı kaldırıldı.
+    - [library_shelf_controller_test.dart](test/features/library/library_shelf_controller_test.dart) – Okuma durumu yerine biçim filtreleriyle birleştirme ("veya" / "ve") ve JSON gidiş-dönüşü test ediliyor.
+    - [library_view_test.dart](test/features/library/library_view_test.dart) – Panelde "Okuma durumu" bölümünün ve "Okunuyor" seçeneğinin olmadığı test ediliyor.
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) – Taşma testi "Okunuyor" yerine "Dijital" seçerek çalışıyor.
+    - [16-library-filters.png](docs/screenshots/16-library-filters.png) – Filtre paneli yeni hâliyle simülatörde yeniden çekildi.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 2 güncellendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Filtre panelini simülatörde açıp ekran görüntüsü almak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 463 test geçti; tüm `build` metotları ≤ 40 satır. iOS simülatöründe panel görsel olarak kontrol edildi.
+- Alınan kararlar ve nedenleri:
+  - **Filtre koddan da kaldırıldı, yalnızca gizlenmedi.** Kullanılmayan seçenek modelde kalsaydı, eski bir kayıttan gelen durum filtresi görünmeden listeyi süzebilirdi. JSON okuma eski `statuses` alanını sessizce yok sayıyor.
+- Açık konular / sonraki adım: Yok.
+
+## [2026-10-22] Ek Düzeltme – Okuma Durumu Sekme Sırası ve Kartlardaki Hızlı Sayacın Kaldırılması
+
+- Yapılanlar:
+  - **İstek:**
+    - Okuma Durumu sekmesinde "Okunacak" solda, "Okunuyor" ortada olmalı.
+    - Okunuyor kartlarındaki − / + sayacı kaldırılmalı; kullanıcı karta dokununca Kitap Detay'a gidiyor ve sayfayı Okuma İlerlemesi'nden ayarlayabiliyor.
+  - **Sekme sırası:**
+    - Soldan sağa okuma sırasıyla: Okunacak, Okunuyor, Bitti.
+    - Açılışta seçili sekme yine "Okunuyor" (artık ortada); en sık bakılan sekme olduğu için korundu.
+  - **Okunuyor kartı:** − / + düğmeleri ve sayfa sayısı kaldırıldı. Kartta kapak, başlık, yazar, ilerleme çubuğu ve "240 / 432 sayfa · %56" kalıyor. Karta dokunmak eskisi gibi Kitap Detay'ı açıyor.
+  - **Ölü kodun temizliği:** Sayaç kalkınca ona bağlı kod işlevsiz kaldığı için kaldırıldı:
+    - Hızlı sayaç widget'ı.
+    - Controller'daki `changePage`, `markFinished` ve son sayfa önerisi.
+    - Modeldeki `finishSuggestedBookId`.
+    - Bir önceki düzeltmede bu ekrana eklenen "Kitabı bitirdin mi?" penceresi.
+  - Son sayfa önerisi Kitap Detay'da ve dijital okuyucuda çalışmaya devam ediyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [reading_status_view.dart](lib/features/reading_status/views/reading_status_view.dart) – Sekme sırası Okunacak / Okunuyor / Bitti, açılışta Okunuyor seçili; son sayfa önerisi dinleyicisi ve penceresi kaldırıldı.
+    - [reading_book_card_widget.dart](lib/features/reading_status/widgets/reading_book_card_widget.dart) – Kartta yalnızca ilerleme çubuğu, sayfa ve yüzde.
+    - [status_book_list_widget.dart](lib/features/reading_status/widgets/status_book_list_widget.dart) – Sayfa değiştirme callback'i kaldırıldı.
+    - [reading_status_controller.dart](lib/features/reading_status/controllers/reading_status_controller.dart) – `changePage`, `markFinished` ve öneri tüketme kaldırıldı; gruplama ve "Okumaya Başla" kaldı.
+    - [reading_status_model.dart](lib/features/reading_status/models/reading_status_model.dart) – `finishSuggestedBookId` kaldırıldı.
+    - [reading_status_view_test.dart](test/features/reading_status/reading_status_view_test.dart) – Sekme sırası (soldan sağa konum), açılışta Okunuyor'un seçili olması ve kartta sayaç olmaması test ediliyor; sayaçla bitirme testi kaldırıldı.
+    - [reading_status_controller_test.dart](test/features/reading_status/reading_status_controller_test.dart) – Sayaç testleri yerine, kitap başka ekrandan bitirilince "Bitti" listesine (başa) geçtiği test ediliyor.
+    - [04-reading.png](docs/screenshots/04-reading.png) – Okuma Durumu ekranı simülatörde yeniden çekildi.
+    - [README.md](README.md) / [PROJECT.md](PROJECT.md) – Sekme sırası ve kart açıklaması güncellendi (6.2 akış şeması, Sayfa 4 ve klasör ağacı; 6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `lib/features/reading_status/widgets/quick_page_counter_widget.dart` (silindi) – Okunuyor kartındaki − / + sayacıydı.
+    - `tool/screenshot_main.dart` (silindi) – Okuma Durumu sekmesini simülatörde açıp ekran görüntüsü almak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 461 test geçti; tüm `build` metotları ≤ 40 satır. iOS simülatöründe ekran görsel olarak kontrol edildi.
+- Alınan kararlar ve nedenleri:
+  - **Açılış sekmesi "Okunuyor" kaldı.** Sıra değişse de kullanıcının bu ekrana en çok okuduğu kitaplar için geldiği düşünüldü. Açılışın "Okunacak" olması istenirse tek satırlık değişiklik.
+  - **Sayaçla birlikte ona bağlı kod da silindi.** Kullanılmayan yöntemler ve dinleyiciler bırakılsaydı ileride yanlışlıkla tetiklenebilir ya da kafa karıştırırdı. Sayfa değiştirme artık tek yerde, Kitap Detay'da.
+- Açık konular / sonraki adım: Yok.
+
+## [2026-10-22] Ek Geliştirme – Giriş Ekranına "Şifremi Unuttum" (Geçici, Yerel)
+
+- Yapılanlar:
+  - **İstek:** Giriş sayfasına "Şifremi unuttum" eklenmeli. Seçenekler sunuldu; kullanıcı şimdilik geçici olarak **kayıtlı e-posta + telefonla doğrulama** seçeneğini seçti. İleride Firebase Auth tarzı bir servis eklenecek.
+  - **Neden geçici:** Uygulamada sunucu yok. Kullanıcı ve veriler cihazda olduğu için "sıfırlama e-postası gönder" akışı bugünkü yapıyla mümkün değil.
+  - **Giriş ekranı:** Şifre alanının hemen altında, sağa hizalı "Şifremi unuttum" bağlantısı var.
+  - **"Şifreni Sıfırla" ekranı (giriş / kayıtla aynı arka plan ve kart):**
+    - **1. adım:** Kayıtta kullanılan e-posta ve telefon girilir. Doğrulama ve klavye kuralları kayıt ekranıyla aynı.
+    - **2. adım:** "ali@ornek.com hesabı doğrulandı" bilgisi; yeni şifre ve tekrarı girilir. Şifre kuralları kayıt ekranıyla aynı.
+    - "Geri" 1. adıma, "Girişe dön" giriş ekranına götürüyor.
+    - Tamamlanınca giriş ekranına dönülüyor; e-posta alanı dolu geliyor ve "Şifren güncellendi. Yeni şifrenle giriş yapabilirsin." mesajı çıkıyor.
+  - **Güvenlik önlemleri (yerel çözümün sınırları içinde):**
+    - Hata mesajı genel: "E-posta veya telefon kayıtlı bilgilerle eşleşmedi." Hangi alanın yanlış olduğu söylenmiyor.
+    - Üst üste 5 hatalı denemeden sonra 30 saniye bekleme; bu sürede doğru bilgi de kabul edilmiyor.
+    - Yeni şifre kaydedilirken bilgiler yeniden doğrulanıyor. Şifre yine düz metin değil, özet olarak saklanıyor. Oturum kendiliğinden açılmıyor; kullanıcı yeni şifresiyle giriş yapıyor.
+    - Kitap verileri etkilenmiyor.
+  - **Firebase'e hazırlık:**
+    - Doğrulama ve sıfırlamanın nasıl yapıldığı yalnızca `AuthController`'daki iki yöntemde (`verifyRecovery`, `resetPassword`).
+    - Ekran ve controller bu yöntemlerin arkasını bilmiyor. Geçişte 1. adım "sıfırlama e-postası gönder"e dönüşecek; değişecek yer bu iki yöntem ve 1. adımın metni.
+  - **Ortaya çıkan ve düzeltilen hatalar:**
+    - **Telefon alanı – son hane düşüyordu (mevcut hata):** Dolu telefon alanına farklı bir 11 haneli numara yazılınca / yapıştırılınca (otomatik doldurma dahil) son hane siliniyordu.
+      - `PhoneInputFormatter` "ayraç silindi" kararını yalnızca rakam sayısına bakarak veriyordu.
+      - Artık rakamların kendisi de karşılaştırılıyor.
+      - Kayıt ve Ayarlar'daki telefon alanı da bu hatadan etkileniyordu. Regresyon testi eski kodda başarısız, düzeltmeyle geçiyor.
+    - **Rota türü:** Uygulamadaki rotalar `MaterialPageRoute<void>` üretiyordu. Sıfırlama ekranının e-postayı girişe döndürmesi tür hatasıyla çöküyordu (testte yakalandı). Bu rota `String` sonuç taşıyacak türde üretiliyor.
+  - **Simülatörde doğrulandı:** Giriş ekranı (bağlantı şifre alanına yapışık) ve sıfırlama ekranı ekran görüntüleriyle kontrol edildi. Bağlantı ilk denemede iki yanında fazla boşlukla duruyordu; şifre alanına bağlanıp kompakt yapıldı.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [forgot_password_view.dart](lib/features/auth/views/forgot_password_view.dart) – İki adımlı "Şifreni Sıfırla" ekranı; tamamlanınca e-postayla girişe döner.
+    - [forgot_password_controller.dart](lib/features/auth/controllers/forgot_password_controller.dart) – Doğrulama, yeni şifre kaydı ve 1. adıma geri dönme.
+    - [forgot_password_model.dart](lib/features/auth/models/forgot_password_model.dart) – Adım, durum, hata ve doğrulanan e-posta / telefon (telefon JSON'a yazılmaz).
+    - [forgot_verify_form_widget.dart](lib/features/auth/widgets/forgot_verify_form_widget.dart) – 1. adım: açıklama, e-posta ve telefon alanları.
+    - [forgot_new_password_form_widget.dart](lib/features/auth/widgets/forgot_new_password_form_widget.dart) – 2. adım: doğrulanan hesap bilgisi, yeni şifre ve tekrarı.
+    - [forgot_password_test.dart](test/features/auth/forgot_password_test.dart) – Eşleşme (büyük harf / telefon biçimi önemsiz), 5 denemede kilit ve süre dolunca açılma, sıfırlama (eski şifre geçmez, yeni geçer, oturum açılmaz), controller adımları ve uçtan uca giriş → sıfırlama → yeni şifreyle giriş akışı test ediliyor.
+    - [18-forgot-password.png](docs/screenshots/18-forgot-password.png) – "Şifreni Sıfırla" ekranının ekran görüntüsü.
+  - **Güncellenen:**
+    - [auth_controller.dart](lib/core/controllers/auth_controller.dart) – `verifyRecovery`, `resetPassword`, deneme sınırı ve iki yeni hata (`recoveryMismatch`, `tooManyAttempts`). Testler için saat dışarıdan verilebiliyor.
+    - [login_form_widget.dart](lib/features/auth/widgets/login_form_widget.dart) – Şifre alanının altında "Şifremi unuttum" bağlantısı; e-posta önceden doldurulabiliyor.
+    - [login_view.dart](lib/features/auth/views/login_view.dart) / [login_controller.dart](lib/features/auth/controllers/login_controller.dart) / [auth_form_model.dart](lib/features/auth/models/auth_form_model.dart) – Sıfırlama ekranını açma, dönüşte e-postayı doldurma ve bilgi mesajı.
+    - [auth_error_banner_widget.dart](lib/features/auth/widgets/auth_error_banner_widget.dart) – İki yeni hata mesajı.
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – `/forgot-password` rotası; sonuç (e-posta) taşıyabilen türde.
+    - [phone_input_formatter.dart](lib/core/utils/phone_input_formatter.dart) – Dolu alana yeni numara yazılınca son hanenin düşmesi düzeltildi.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – 12 yeni anahtar (bağlantı, ekran başlığı, iki adımın metinleri ve düğmeleri, başarı mesajı, iki hata mesajı).
+    - [phone_input_formatter_test.dart](test/core/phone_input_formatter_test.dart) – Dolu alana farklı numara yazma / yapıştırma regresyon testi.
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) – Sıfırlama ekranının iki adımı 4 ekran boyutu × 2 yazı ölçeğinde taşma için test ediliyor.
+    - [README.md](README.md) / [PROJECT.md](PROJECT.md) – Ek görüntüler satırı; 6.2 Sayfa 1 ve 6.4 güncellendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Giriş ve sıfırlama ekranlarını simülatörde açıp ekran görüntüsü almak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 484 test geçti; tüm `build` metotları ≤ 40 satır. iOS simülatöründe iki ekran görsel olarak kontrol edildi.
+- Alınan kararlar ve nedenleri:
+  - **İki adım.** Önce kimlik, sonra yeni şifre; kullanıcı bilgileri yanlışsa boşuna şifre yazmıyor. Firebase'e geçişte de aynı yapı korunuyor, yalnızca 1. adımın işi değişiyor.
+  - **Genel hata mesajı ve deneme sınırı.** E-posta ve telefon gizli bilgi değil. Hangisinin yanlış olduğunu söylememek ve deneme sayısını sınırlamak, yerel çözümün zayıflığını bir ölçüde azaltıyor.
+  - **Oturum kendiliğinden açılmıyor.** Kullanıcı yeni şifresini bir kez girerek doğru belirlediğinden emin oluyor; Firebase akışındaki davranışla da aynı.
+  - **Yeni paket eklenmedi.**
+- Açık konular / sonraki adım:
+  - **Bilinen sınır:** Deneme kilidi uygulama belleğinde tutuluyor; uygulama kapatılıp açılınca sıfırlanıyor. Kullanıcının e-posta ve telefonunu bilen biri cihaza erişirse şifreyi değiştirebilir. Bu, seçilen geçici yöntemin doğası; kalıcı çözüm Firebase Auth tarzı bir servis.
+  - Firebase'e geçerken `AuthController.verifyRecovery` / `resetPassword` değiştirilmeli; ekranlar ve testlerin büyük kısmı korunur.
+
+## [2026-10-22] Ek Geliştirme – Dijital Okuyucuda Çeviri (İngilizce ↔ Türkçe)
+
+- Yapılanlar:
+  - **İstek:** Kitap Detay'dan açılan dijital okuyucuda, İngilizce kitaplar için Türkçeye, Türkçe kitaplar için İngilizceye çeviri. Önce seçenekler sunulacak, kod yazılmayacak.
+  - **Analiz (kod yazılmadı):** PROJECT.md (6.1 onaylı paket listesi, 6.2 Sayfa 8, 6.3 modeller, Bölüm 7-10 kurallar) ve `.agents/skills/` (SKILL.md, state_flow.md, örnek ekran, feature betiği) incelendi. Okuyucunun mevcut yapısı çıkarıldı:
+    - Metin sayfaları `ReaderPageWidget` içinde `SelectionArea` ile gösteriliyor; seçim menüsünde zaten "Alıntı olarak kaydet" düğmesi var. "Çevir" düğmesi aynı menüye eklenebilir.
+    - PDF'te `PdfReaderWidget` seçim menüsüne düğme ekleniyor (`_addQuoteItem`); "Çevir" de aynı yolla eklenebilir, PDF kopyalamaya izin vermiyorsa gösterilmez.
+    - Kitabın dili `DigitalEditionModel.languageCode`'da: seed'de 29 kitap `en`, 2 kitap `tr`. Kullanıcının yüklediği PDF / EPUB'da dil boş (`''`) kaydediliyor; bu kitaplarda dil ya sorulmalı ya da tahmin edilmeli.
+    - Okuyucunun sayfa sayısı kitabın sayfa sayısına bağlı (6.2 Sayfa 8). Bu yüzden çeviri metni yeniden sayfalamamalı; sayfa kendi içinde kaydırılabildiği için çeviri aynı sayfa içinde gösterilebilir.
+    - Uygulamada sunucu yok; API anahtarı gerektiren servislerde anahtar uygulamanın içine gömülmek zorunda kalır (güvenlik riski).
+    - Onaylı listede çeviri paketi/servisi yok; hangi seçenek seçilirse seçilsin PROJECT.md 6.1'e eklenmesi için onay gerekiyor (`http` zaten var).
+  - **Sunulan seçenekler:**
+    - **Kapsam:** (a) Seçilen metni çevirme (alttan açılan pencerede), (b) sayfanın tamamını çevirme (orijinal / çeviri / alt alta), (c) ikisi birden.
+    - **Çeviri motoru:** (1) Google ML Kit cihaz üstü çeviri (`google_mlkit_translation`; ücretsiz, anahtarsız, dil modeli bir kez ~30 MB indirildikten sonra çevrimdışı; yalnızca Android/iOS), (2) MyMemory ücretsiz API (paket gerekmez, `http` yeter; anahtarsız ama günlük karakter sınırı var, kalite orta), (3) DeepL API Free (en iyi çeviri kalitelerinden; ücretsiz anahtar, ayda 500.000 karakter; anahtar uygulamaya gömülür), (4) Claude API (edebi metinde en doğal çeviri; ücretli, anahtar gerekir).
+    - **Önbellek:** Çevrilen sayfalar cihazda saklanırsa aynı sayfa ikinci kez çevrilmez ve çevrimdışı açılır.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [DONE.md](DONE.md) – Durum tablosuna bu iş "Karar Bekleniyor" olarak eklendi ve analiz kaydı yazıldı.
+- Doğrulama: Kod değişikliği yapılmadığı için `flutter analyze` / `flutter test` çalıştırılmadı.
+- Alınan kararlar ve nedenleri:
+  - **Kod yazılmadı.** İstek gereği önce seçenekler sunuldu; yeni paket veya dış servis PROJECT.md 6.1 gereği onay gerektiriyor.
+- Açık konular / sonraki adım: Kapsam, çeviri motoru ve yüklenen dosyaların dilinin nasıl belirleneceği için kullanıcı kararı bekleniyor.
+- **Kullanıcı kararı (aynı gün):** Kapsam C (seçili metin + sayfa çevirisi), motor Google ML Kit (cihaz içinde), çeviri önbelleği açık, yüklenen dosyanın dili ML Kit ile otomatik tanınacak. Uygulama kaydı aşağıdaki "Uygulama" başlığında.
+
+## [2026-10-22] Ek Geliştirme – Dijital Okuyucuda Çeviri (İngilizce ↔ Türkçe) – Uygulama
+
+- Yapılanlar:
+  - **İstek:** Kitap Detay'dan açılan dijital okuyucuda İngilizce kitapları Türkçeye, Türkçe kitapları İngilizceye çevirme. Seçilen yol: seçili metin + sayfa çevirisi, Google ML Kit (cihaz içinde), çeviri önbelleği, yüklenen dosyanın dilinin otomatik tanınması.
+  - **Paketler (kullanıcı onayıyla):** `google_mlkit_translation` (çeviri) ve `google_mlkit_language_id` (dil tanıma). İkisi de PROJECT.md 6.1'deki onaylı listeye eklendi.
+  - **Sayfa çevirisi:**
+    - Okuyucunun üst çubuğunda çeviri düğmesi var. Menüde üç seçenek: **Orijinal**, **Türkçe çeviri** (İngilizce kitapta) / **İngilizce çeviri** (Türkçe kitapta) ve **Orijinal ve çeviri alt alta**.
+    - "Alt alta" görünümünde her paragrafın hemen altında çevirisi italik ve kehribar renkte gösteriliyor.
+    - Çeviri aynı sayfanın içinde gösteriliyor, sayfa sayısı ve "Sayfa N" değişmiyor. Paragraf ve şiirde dize yapısı korunuyor; çünkü metin satır satır çevriliyor.
+    - Sayfa değişince yeni sayfa çevriliyor. Kaydırırken beklememek için bir sonraki sayfa arka planda önceden hazırlanıyor.
+    - Çeviri sürerken, dil paketi inerken veya hata olunca sayfanın üstünde bir bant çıkıyor; hatada "Tekrar dene" var.
+    - Çeviri düğmesi açıkken simge kehribar renkte.
+  - **Seçili metin çevirisi:**
+    - Metin seçilince menünün başında **"Çevir"** çıkıyor (kısa olduğu için önde; dar ekranda "Diğer" altına düşmüyor). PDF'te de aynı düğme var; PDF kopyalamaya izin vermiyorsa gösterilmiyor.
+    - Çeviri alttan açılan pencerede gösteriliyor: seçilen metin, çevirisi, "Cihazda yapılan otomatik çeviridir; hatalar içerebilir." notu, **"Alıntı olarak kaydet"** (orijinal metni sayfa numarasıyla kaydeder) ve **"Kopyala"**.
+    - Pencere iki düğmede de kapanıyor, bilgi mesajı pencerenin arkasında kalmıyor.
+  - **Dil paketi:**
+    - İlk çeviriden önce "Çeviri dil paketi indirilsin mi?" onayı açılıyor (~30 MB, bir kez). Sonra çeviri internetsiz çalışıyor.
+    - Reddedilirse görünüm orijinale dönüyor ve açık olan seçim penceresi kapanıyor. İndirme başarısız olursa "Tekrar dene" onay sormadan yeniden indiriyor.
+  - **Önbellek:**
+    - Çevrilen her satır, kitaba ait `<kitap>.<kaynak>-<hedef>.json` dosyasında satırın özetiyle (SHA-1) saklanıyor. Aynı satır ikinci kez çevrilmiyor, uygulama yeniden açılınca da çeviri anında geliyor.
+    - Çeviri yarıda hata verse bile o ana kadar çevrilenler kaydediliyor. Bozuk önbellek dosyası yok sayılıyor.
+    - Kitabın dosyası değişince veya cihazdan silinince önbellek temizleniyor.
+  - **Dil tanıma:**
+    - Yüklenen EPUB'un dili metninden, PDF'in dili ilk sayfalarından okunan metinden (kapak / künye atlanarak) tanınıyor ve kitaba kaydediliyor.
+    - Daha önce yüklenmiş, dili bilinmeyen kitaplarda dil okuyucu ilk açıldığında tanınıp kaydediliyor.
+    - Dil tanınamazsa (ör. taranmış PDF) ya da İngilizce / Türkçe değilse çeviri gösterilmiyor.
+  - **Platform:** ML Kit yalnızca Android ve iOS'ta çalışıyor; web ve masaüstünde çeviri düğmesi gizleniyor.
+  - **Mimari:** Çeviri motoru `TranslationEngine` arayüzünün arkasında. Uygulama ML Kit'i, testler sahte motoru kullanıyor. Motor değişirse (ör. DeepL) yalnızca bu arayüzün yeni bir uygulaması yazılır.
+  - **Testte bulunup düzeltilenler:**
+    - Dar ekranda (320 px) ve büyük yazıda üst banttaki ve penceredeki "Tekrar dene" satırı taşıyordu; düğme mesajın altına alındı.
+    - "Çeviri kopyalandı" mesajı alt pencerenin arkasında kalıyordu; kopyalayınca pencere kapanıyor.
+  - **iOS simülatörü (kullanıcı kararı):**
+    - ML Kit'in iOS kütüphanelerinde Apple Silicon simülatörü (arm64) için derleme yok. Bu Mac'teki iOS 26.5 / 27 simülatörleri de yalnızca arm64 çalıştırıyor (Rosetta ile x86_64 de mümkün değil).
+    - Bu yüzden uygulama artık iOS simülatöründe derlenmiyor. Seçenekler sunuldu; kullanıcı **paketlerin kalmasını, iOS'un gerçek iPhone'da test edilmesini** seçti.
+    - iOS en düşük sürümü 15.0'dan 15.5'e çıkarıldı (ML Kit şartı).
+  - **Android emülatöründe gerçek ML Kit ile doğrulandı (Pixel 8):**
+    - Frankenstein'da onay penceresi açıldı, dil paketleri gerçekten indi ve sayfa "alt alta" çevrildi.
+    - "rejoice" seçilip "Çevir"e basılınca pencerede "sevinmek" çıktı.
+    - Kürk Mantolu Madonna'da İngilizce çeviri çalıştı; paketler zaten indiği için onay sorulmadı.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [translation_engine.dart](lib/core/repositories/translation/translation_engine.dart) – Çeviri / dil tanıma arayüzü, hata türleri ve desteklenmeyen platform motoru.
+    - [mlkit_translation_engine.dart](lib/core/repositories/translation/mlkit_translation_engine.dart) – Google ML Kit ile cihaz üstü çeviri, dil paketi yönetimi ve dil tanıma.
+    - [translation_repository.dart](lib/core/repositories/translation_repository.dart) – İngilizce ↔ Türkçe yön, satır satır çeviri, dosya önbelleği ve dil paketi indirme.
+    - [pdf_text_sampler.dart](lib/core/utils/pdf_text_sampler.dart) – PDF'ten dil tanıma için örnek metin okur.
+    - [reader_translation_controller.dart](lib/features/reader/controllers/reader_translation_controller.dart) – Okuyucudaki sayfa / seçim çevirisi, dil paketi onayı, tekrar deneme ve dili bilinmeyen kitapta dil tanıma.
+    - [reader_translation_model.dart](lib/features/reader/models/reader_translation_model.dart) – Çeviri görünümü, durumu, çevrilen sayfalar ve seçim çevirisi.
+    - [reader_app_bar_widget.dart](lib/features/reader/widgets/reader_app_bar_widget.dart) – Okuyucunun üst çubuğu (kitap adı, çeviri menüsü, yazı boyutu); `build` 40 satırı geçmesin diye ayrıldı.
+    - [reader_translate_menu_widget.dart](lib/features/reader/widgets/reader_translate_menu_widget.dart) – Orijinal / çeviri / alt alta menüsü.
+    - [reader_page_text_widget.dart](lib/features/reader/widgets/reader_page_text_widget.dart) – Sayfa metnini orijinal, çeviri veya alt alta gösterir.
+    - [reader_translation_banner_widget.dart](lib/features/reader/widgets/reader_translation_banner_widget.dart) – Sayfanın üstündeki çeviri durumu / hata bandı.
+    - [reader_translation_sheet.dart](lib/features/reader/widgets/reader_translation_sheet.dart) – Seçili metnin çevirisi penceresi.
+    - [fake_translation_engine.dart](test/helpers/fake_translation_engine.dart) – Testler için sahte çeviri motoru.
+    - [translation_repository_test.dart](test/core/translation_repository_test.dart) – Dil yönü, satır yapısı, önbellek (kalıcılık, kitap / yön ayrımı, silme, bozuk dosya, yarıda kalan çeviri) ve dil paketi indirme test ediliyor.
+    - [reader_translation_controller_test.dart](test/features/reader/reader_translation_controller_test.dart) – Görünüm değişimi, sayfa değişince çeviri, önceden çeviri, dil paketi onayı / reddi, indirme ve çeviri hatası ile tekrar deneme, seçim çevirisi (PDF satır birleştirme dahil), desteklenmeyen platform ve dili bilinmeyen kitapta dil tanıma test ediliyor.
+    - [Podfile](ios/Podfile) / [Podfile.lock](ios/Podfile.lock) – ML Kit iOS'ta CocoaPods ile geldiği için oluştu; en düşük sürüm 15.5.
+    - [19-reader-translation.png](docs/screenshots/19-reader-translation.png) / [20-translation-sheet.png](docs/screenshots/20-translation-sheet.png) – Android emülatöründe alınan "alt alta" çeviri ve seçim çevirisi görüntüleri.
+  - **Güncellenen:**
+    - [pubspec.yaml](pubspec.yaml) / [pubspec.lock](pubspec.lock) – İki ML Kit paketi eklendi.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) / [app_scope.dart](lib/core/di/app_scope.dart) – `TranslationRepository` oluşturuluyor ve paylaşılıyor; platforma göre ML Kit veya "desteklenmiyor" motoru seçiliyor.
+    - [digital_book_repository.dart](lib/core/repositories/digital_book_repository.dart) – Dil tanıma için kopyadan örnek metin (`sampleText`); PDF'te sayfalardan okunuyor.
+    - [digital_edition_controller.dart](lib/features/book_detail/controllers/digital_edition_controller.dart) / [book_detail_view.dart](lib/features/book_detail/views/book_detail_view.dart) – Dosya yüklenince dil tanınıp kaydediliyor; dosya değişince / silinince çeviri önbelleği temizleniyor.
+    - [reader_view.dart](lib/features/reader/views/reader_view.dart) – Çeviri controller'ı, yeni üst çubuk, dil paketi onayı ve seçim çevirisi penceresi.
+    - [reader_body_widget.dart](lib/features/reader/widgets/reader_body_widget.dart) / [reader_page_widget.dart](lib/features/reader/widgets/reader_page_widget.dart) / [pdf_reader_widget.dart](lib/features/reader/widgets/pdf_reader_widget.dart) – Çeviri bandı, çevrilmiş sayfa ve seçim menüsünde "Çevir".
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – 16 yeni anahtar (menü, bant, onay penceresi, hata mesajları, pencere metinleri).
+    - [test_dependencies.dart](test/helpers/test_dependencies.dart) – Sahte çeviri motoru ve PDF metni verilebiliyor; varsayılan olarak çeviri kapalı (eski testler etkilenmiyor).
+    - [digital_edition_controller_test.dart](test/features/book_detail/digital_edition_controller_test.dart) – İngilizce / Türkçe EPUB ve PDF'te dil tanıma, tanınamayan dil ve önbellek temizliği test ediliyor.
+    - [reader_view_test.dart](test/features/reader/reader_view_test.dart) – Menü, çeviri ve alt alta görünüm, sonraki sayfa, dil paketi onayı / reddi, hata bandı, seçim çevirisi penceresi (kopyala, alıntı kaydet) ve red edilince pencerenin kapanması test ediliyor.
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) – Alt alta görünüm, hata bandı ve seçim penceresi 4 ekran boyutu × 2 yazı ölçeğinde taşma için test ediliyor.
+    - [project.pbxproj](ios/Runner.xcodeproj/project.pbxproj) / [Debug.xcconfig](ios/Flutter/Debug.xcconfig) / [Release.xcconfig](ios/Flutter/Release.xcconfig) / [contents.xcworkspacedata](ios/Runner.xcworkspace/contents.xcworkspacedata) – iOS en düşük sürümü 15.5; CocoaPods bağlantısı `pod install` tarafından eklendi.
+    - [PROJECT.md](PROJECT.md) – 6.1 onaylı paketler, 6.2 Sayfa 8, 6.3 `DigitalEditionModel.languageCode` notu ve repository listesi, 9. bölümde iOS simülatörü notu (6.7'ye dokunulmadı).
+    - [README.md](README.md) – Özellik listesine çeviri, ek görüntüler ve iOS simülatörü notu.
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Okuyucuyu emülatörde açıp gerçek ML Kit'i denemek ve ekran görüntüsü almak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 533 test geçti (49 yeni); tüm `build` metotları ≤ 40 satır. `flutter build apk --debug` ✔. Android emülatöründe (Pixel 8) gerçek ML Kit ile iki yön de denendi. `flutter build ios --simulator` ✘ (beklenen; yukarıdaki iOS simülatörü notu).
+- Alınan kararlar ve nedenleri:
+  - **Satır satır çeviri.** Paragraflar ve şiir dizeleri bozulmuyor, "alt alta" görünümde her paragrafın altına kendi çevirisi gelebiliyor; önbellek de satır bazında olduğu için sayfa sınırları değişse bile geçerli kalıyor.
+  - **Çeviri aynı sayfanın içinde.** Okuyucunun sayfa sayısı kitabın sayfa sayısına bağlı (6.2 Sayfa 8). Çeviri yeniden sayfalasaydı sayaçla eşleşme bozulurdu; sayfa zaten kaydırılabildiği için daha uzun çeviri sığıyor.
+  - **PDF'te yalnızca seçim çevirisi.** PDF orijinal sayfa düzeniyle gösteriliyor; sayfa üstüne çeviri yazmak düzeni bozardı.
+  - **Dil paketinden önce onay.** ~30 MB'lık indirme mobil veriyle habersiz yapılmamalı.
+  - **"Alıntı olarak kaydet" orijinal metni kaydediyor.** Alıntılar kitabın kendi metninden olmalı; makine çevirisi alıntı yerine geçmemeli.
+  - **Mevcut dosyaların biçimi korundu.** Yanlışlıkla çalışan `dart format` bazı okuyucu dosyalarını 80 sütuna göre yeniden biçimlemişti; düzenlenmeyen dosyalar eski hâline döndürüldü, düzenlenenlerde yalnızca yeni satırlar kaldı. Yeni dosyalar `dart format` ile biçimli.
+- Açık konular / sonraki adım:
+  - **iOS simülatörü kullanılamıyor:** Uygulama iOS'ta yalnızca gerçek iPhone'da çalışıyor; ekran görüntüleri ve sunum için Android emülatörü veya gerçek iPhone gerekiyor. Gerçek iPhone'da henüz denenmedi.
+  - **Çeviri kalitesi:** ML Kit modern İngilizcede iyi; Kürk Mantolu Madonna'nın 1943 Türkçesinde ve Nutuk'un eski dilinde çeviri zayıf ("simdiye", "jibling" gibi hatalar görüldü). Daha iyi kalite istenirse motor arayüzü sayesinde DeepL vb. eklenebilir.
+  - Dar ekranlarda (ör. 320 px) seçim menüsünde "Alıntı olarak kaydet" artık "Diğer" altına düşebiliyor; normal telefon genişliğinde (Pixel 8) tüm düğmeler görünüyor.
+
+## [2026-10-22] Ek Geliştirme – Ödünç Takibi Sekmesi ve Kitaplığım'dan "Ödünçte" Filtresinin Kaldırılması
+
+- Yapılanlar:
+  - **İstek:**
+    - Kullanıcının ödünç verdiği fiziksel kitapları daha iyi takip edebilmesi için ayrı bir "Ödünç Takibi" sekmesi olmalı.
+    - Kitaplığım'daki filtre panelinden "Ödünçte" seçeneği kaldırılmalı; ödünçteki kitaplar artık yeni sekmede izleniyor.
+  - **Önceki durum:**
+    - Ödünç bilgisi yalnızca Kitap Detay'daki "Ödünç Bilgisi" bölümünde görülüp değiştirilebiliyordu.
+    - Ödünçteki kitapların hepsini görmenin tek yolu Kitaplığım'daki "Ödünçte" filtresiydi.
+    - Gecikme yalnızca o kitabın detayına girilince görünüyordu.
+    - İade alınan ödüncün hiçbir kaydı kalmıyordu.
+  - **Yeni sekme (alt çubukta 3. sırada "Ödünç", başlık "Ödünç Takibi"):**
+    - Alt çubuk artık dört sekmeli: Kitaplığım, Okuma Durumu, Ödünç, Hedef.
+    - Üstte üç özet kutucuğu: **Ödünçte**, **Gecikmiş** (gecikme varsa kutucuk hata renginde) ve **İadesi yaklaşan** (iade gününe 0-3 gün kalanlar).
+    - Altında iki sekme: **Ödünçte (N)** ve **Geçmiş (N)**.
+  - **"Ödünçte" listesi:**
+    - Sıralama en acil olandan başlar: önce gecikenler (en çok geciken başta), sonra iade günü yaklaşanlar, en sonda iade tarihi olmayanlar (en uzun süredir ödünçte olan başta).
+    - Kartta şunlar var: kapak, başlık, "Murat kişisine ödünç verildi", "Veriliş tarihi: … · 45 gündür ödünçte" ve iade tarihi.
+    - Durum etiketi: "15 gün gecikti" (hata rengi), "Bugün iade edilmeli" / "Yarın iade edilmeli" / "İadeye 2 gün kaldı" (vurgu rengi, ≤ 3 gün), "İadeye 10 gün kaldı" (sade) veya "İade tarihi yok".
+    - **Düzenle:** Ödünç penceresi mevcut bilgiyle açılır. Kime ve iade tarihi değiştirilebilir; veriliş tarihi korunur. Süre uzatma da buradan yapılır.
+    - **İade alındı:** Onay penceresinden sonra kitap listeden çıkar ve geçmişin başına eklenir.
+    - Karta dokunmak Kitap Detay'ı açar.
+  - **"Geçmiş" listesi:**
+    - İadesi alınmış ödünçler, en son iade edilen başta.
+    - Kartta kime verildiği, veriliş – iade tarihi ve süre ("10 gün") yazar; iade gününden sonra geri alınanlarda "Geç iade edildi" etiketi çıkar.
+  - **Buradan ödünç verme (FAB "Ödünç Ver"):**
+    - Alttan "Ödünç verilecek kitabı seç" paneli açılır. Panelde yalnızca fiziksel kopyası olan ve şu an ödünçte olmayan kitaplar listelenir; başlık / yazar araması Türkçe harf duyarsızdır.
+    - Kitap seçilince bilinen ödünç penceresi (kime, isteğe bağlı iade tarihi) açılır.
+    - Ödünç verilebilecek kitap yoksa panel bunu açıklayan bir mesaj gösterir.
+  - **Gecikme rozeti:** Gecikmiş ödünç varsa alt çubuktaki "Ödünç" simgesinde gecikme sayısı hata renginde rozetle görünür. Simgenin ipucu: "Ödünç: 1 gecikmiş iade".
+  - **Gecikme kuralı:**
+    - Gün hesabı artık takvim günüyle yapılıyor: saat ve yaz saati farkı yok sayılıyor. İade günü gecikme sayılmıyor, ertesi gün gecikme sayılıyor.
+    - Önceden iade tarihi seçilen günün 00:00'ı olduğu için kitap iade gününün sabahından itibaren "gecikti" görünüyordu. Bu düzeltme Kitap Detay'daki ödünç bölümünü de kapsıyor.
+  - **Ödünç geçmişi (yeni veri):**
+    - Kitap iade alındığında ödünç bilgisi iade tarihiyle birlikte `kitalog.loanHistory` anahtarında saklanıyor. Hem yeni sekmeden hem Kitap Detay'dan iade alınan kitap geçmişe yazılıyor.
+    - Kitap silinince ona ait geçmiş kayıtları da siliniyor (alıntı ve notlar gibi).
+    - Bilgi düzenlemek geçmişe kayıt eklemiyor.
+  - **Kitaplığım filtresi:**
+    - Filtre panelinin "Biçim" bölümünde artık yalnızca **Fiziksel** ve **Dijital** var.
+    - "Ödünçte" filtresi yalnızca arayüzden gizlenmedi; enum'dan ve eşlemelerden de tamamen çıkarıldı.
+    - Eski bir kayıttan gelen `lent` filtresi JSON okunurken sessizce yok sayılıyor.
+    - Kapaktaki "Ödünçte" rozeti istenmediği için yerinde kaldı; rafta ödünçteki kitap hâlâ hemen fark ediliyor.
+  - **Örnek veri:**
+    - Mevcut 4 ödünç olduğu gibi kaldı (biri, Alice, 15 gün gecikmiş).
+    - Geçmiş sekmesi boş görünmesin diye 4 iade kaydı eklendi: Frankenstein / Selin (geç iade), Crime and Punishment / Burak, Meditations / Elif (iade tarihsiz), Dracula / Murat. Kayıtların hepsi fiziksel kopyası olan ve şu an ödünçte olmayan kitaplarda.
+    - Seed sürümü artırılmadı. Artırılsaydı mevcut kurulumlarda örnek kitapların okuma ilerlemesi sıfırlanırdı. Bu yüzden örnek geçmiş yalnızca ilk kurulumda yükleniyor; mevcut kurulumlarda geçmiş, ilk iadeyle dolmaya başlıyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [loan_record_model.dart](lib/core/models/loan_record_model.dart) – İadesi alınmış ödünç kaydı; süre (`daysOut`) ve geç iade (`wasLate`) hesaplanan değerler.
+    - [loan_history_repository.dart](lib/core/repositories/loan_history_repository.dart) – Ödünç geçmişini `kitalog.loanHistory` anahtarında saklayıp okur.
+    - [loans_model.dart](lib/features/loans/models/loans_model.dart) – Sekmenin durumu: ödünçteki kitaplar, geçmiş (kayıt + kitap), ödünç verilebilecek kitaplar, gecikmiş ve yaklaşan iade sayıları.
+    - [loans_actions.dart](lib/features/loans/models/loans_actions.dart) – Listelerin controller'a bağlanmadan çağırdığı aç / düzenle / iade al eylemleri.
+    - [loans_controller.dart](lib/features/loans/controllers/loans_controller.dart) – Paylaşılan kitap ve geçmiş listesini dinleyip aciliyete göre sıralar, sayar; ödünç verme, düzenleme ve iadeyi `LibraryController`'a iletir.
+    - [loans_view.dart](lib/features/loans/views/loans_view.dart) – Sekme ekranı; FAB, kitap seçme paneli, ödünç penceresi ve iade onayını bağlar.
+    - [loans_body_widget.dart](lib/features/loans/widgets/loans_body_widget.dart) – Özet kutucukları ile "Ödünçte" / "Geçmiş" sekmelerini bir araya getirir.
+    - [loan_summary_widget.dart](lib/features/loans/widgets/loan_summary_widget.dart) – Ödünçte / Gecikmiş / İadesi yaklaşan sayı kutucukları; gecikme varsa hata renginde.
+    - [active_loan_list_widget.dart](lib/features/loans/widgets/active_loan_list_widget.dart) – Ödünçteki kitapların listesi; boşsa yönlendirici mesaj.
+    - [active_loan_card_widget.dart](lib/features/loans/widgets/active_loan_card_widget.dart) – Ödünç kartı: kime, ne zamandır, iade tarihi, durum etiketi, "Düzenle" ve "İade alındı".
+    - [loan_due_status_widget.dart](lib/features/loans/widgets/loan_due_status_widget.dart) – İade gününe göre "gecikti / bugün / kaldı / tarih yok" etiketini seçer.
+    - [loan_status_chip_widget.dart](lib/features/loans/widgets/loan_status_chip_widget.dart) – Sade, uyarı ve tehlike tonlarında küçük durum etiketi (renkler temadan).
+    - [loan_history_list_widget.dart](lib/features/loans/widgets/loan_history_list_widget.dart) – İade geçmişi listesi; süre ve "Geç iade edildi" etiketiyle.
+    - [loan_cover_widget.dart](lib/features/loans/widgets/loan_cover_widget.dart) – Ödünç kartlarındaki ve seçme panelindeki küçük kapak.
+    - [lend_book_sheet.dart](lib/features/loans/widgets/lend_book_sheet.dart) – Ödünç verilecek kitabı aramalı olarak seçtiren alt panel.
+    - [loans_controller_test.dart](test/features/loans/loans_controller_test.dart) – Sıralama, gecikme ve yaklaşan iade sayıları, ödünç verilebilecekler, düzenleme, iade, örnek geçmiş, kitap silme ve JSON gidiş-dönüşü test ediliyor.
+    - [loans_view_test.dart](test/features/loans/loans_view_test.dart) – Özet ve sekmeler, sıralama, iade onayı (vazgeç / onayla), panelden ödünç verme, düzenleme, boş durum ve İngilizce metinler test ediliyor.
+    - [loan_models_test.dart](test/core/loan_models_test.dart) – Takvim günü hesabı (yaz saati dahil), iade günü kuralı, iade tarihsiz ödünç ve `LoanRecordModel` JSON'u test ediliyor.
+    - [21-loans.png](docs/screenshots/21-loans.png) / [22-loan-history.png](docs/screenshots/22-loan-history.png) / [23-lend-book-sheet.png](docs/screenshots/23-lend-book-sheet.png) – Ödünçte listesi, geçmiş ve kitap seçme paneli Android emülatöründe (Pixel 8) çekildi.
+  - **Güncellenen:**
+    - [loan_model.dart](lib/core/models/loan_model.dart) – Takvim günüyle `daysBetween`, `daysUntilDue`, `daysOut` eklendi; `isOverdue` iade gününü artık gecikme saymıyor.
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – `loanHistory` listesi ve `lentBooks` eklendi; `returnBook` geçmişe kaydediyor, `deleteBook` kitabın geçmişini siliyor, ilk kurulumda örnek geçmiş yükleniyor.
+    - [storage_keys.dart](lib/core/constants/storage_keys.dart) – `kitalog.loanHistory` anahtarı eklendi.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) – `LoanHistoryRepository` oluşturulup `LibraryController`'a veriliyor.
+    - [seed_data.dart](lib/core/data/seed_data.dart) – 4 iadesi alınmış örnek ödünç kaydı (biri geç iade) eklendi.
+    - [app_sizes.dart](lib/core/constants/app_sizes.dart) – Ödünç kapak genişlikleri ve FAB altında kalan boşluk (`fabClearance`) eklendi.
+    - [loan_dialog.dart](lib/core/widgets/loan_dialog.dart) – `book_detail`'den ortak widget'lara taşındı; düzenleme modu eklendi (bilgi dolu açılır, veriliş tarihi korunur, tarih seçici veriliş gününden başlar).
+    - [loan_section_widget.dart](lib/features/book_detail/widgets/loan_section_widget.dart) – Ödünç penceresini yeni yerinden kullanıyor.
+    - [app_routes.dart](lib/core/routing/app_routes.dart) – Ana kabuğa `LoansView` üçüncü sekme olarak eklendi.
+    - [home_shell_controller.dart](lib/features/home_shell/controllers/home_shell_controller.dart) – Varsayılan sekme sayısı 4 oldu.
+    - [home_shell_view.dart](lib/features/home_shell/views/home_shell_view.dart) – "Ödünç Takibi" başlığı eklendi; kitap listesi dinlenip gecikmiş ödünç sayısı alt çubuğa veriliyor.
+    - [home_navigation_bar_widget.dart](lib/features/home_shell/widgets/home_navigation_bar_widget.dart) – "Ödünç" sekmesi ile gecikme rozeti ve ipucu eklendi.
+    - [library_shelf_model.dart](lib/features/library/models/library_shelf_model.dart) – `BookFormatFilter.lent` kaldırıldı; biçim filtresi yalnızca fiziksel ve dijital.
+    - [library_filter_options.dart](lib/features/library/widgets/library_filter_options.dart) – Paneldeki "Ödünçte" seçeneğinin etiketi ve simgesi kaldırıldı.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – Sekme, özet, durum etiketleri, onay, seçme paneli, boş durumlar ve geçmiş için 27 yeni anahtar (TR/EN).
+    - [library_shelf_controller_test.dart](test/features/library/library_shelf_controller_test.dart) – "Ödünçte" yerine "Fiziksel" ile birleştirme testleri; biçim filtresinin yalnızca fiziksel / dijital olduğu test ediliyor.
+    - [library_view_test.dart](test/features/library/library_view_test.dart) – Panelde "Ödünçte" seçeneği olmadığı ve Bilim + Felsefe + Fiziksel seçimi test ediliyor.
+    - [library_storage_test.dart](test/core/library_storage_test.dart) – İadenin geçmişe yazılması, kalıcılığı, kitap silinince geçmişin silinmesi ve fiziksel kopyası olmayan kitaptaki eski kaydın geçmişe yazılmaması test ediliyor.
+    - [seed_data_test.dart](test/core/seed_data_test.dart) – Örnek geçmişin fiziksel ve ödünçte olmayan kitaplarda olduğu ve bir geç iade içerdiği test ediliyor.
+    - [home_shell_test.dart](test/features/home_shell/home_shell_test.dart) – Dört sekme, "Ödünç Takibi" başlığı ve gecikme rozetinin görünüp iadelerden sonra kaybolması test ediliyor.
+    - [responsive_test.dart](test/accessibility/responsive_test.dart) / [guidelines_test.dart](test/accessibility/guidelines_test.dart) – Ödünç Takibi ekranı taşma ve erişilebilirlik testlerine eklendi; ana kabuk dört sekmeyle deneniyor.
+    - [README.md](README.md) – Özellik listesine Ödünç Takibi ve ek görüntüler eklendi.
+    - [PROJECT.md](PROJECT.md) – 6.2 akış şeması, Sayfa 2 ve yeni Sayfa 9; 6.3'te `LoanModel` notu, `LoanRecordModel`, depolama anahtarı, repository listesi ve ortak bileşenler; 6.5 seed maddesi ve klasör ağacı güncellendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `lib/features/book_detail/widgets/loan_dialog.dart` (taşındı) – İki feature tarafından kullanıldığı için `lib/core/widgets/loan_dialog.dart`'a taşındı (PROJECT.md 7: feature'lar birbirinin widget'ını import etmez).
+    - `tool/screenshot_main.dart` (silindi) – Uygulamayı emülatörde oturumu açık başlatıp ekran görüntüsü almak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama: `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 563 test geçti (30 yeni); tüm `build` metotları ≤ 40 satır (en uzunu 38). Android emülatöründe (Pixel 8) sekme, gecikme rozeti, geçmiş ve kitap seçme paneli görsel olarak kontrol edildi. İlk denemede kart düğmeleri alt alta düşüyordu (temadaki tam genişlik varsayılanı); düzeltilip yeniden çekildi.
+- Alınan kararlar ve nedenleri:
+  - **Sekme, alt çubukta Okuma Durumu ile Hedef arasında.** Kitapla ilgili günlük işler (kitaplık, okuma, ödünç) yan yana duruyor, istatistik paneli sonda kalıyor.
+  - **İade geçmişi eklendi.** "Daha iyi takip" için yalnızca şu an kimde olduğunu bilmek yetmiyor; kime ne zaman verildiği, ne kadar kaldığı ve geç gelip gelmediği de görülebilmeli. Bu yeni bir depolama anahtarı gerektirdi ama başka paket gerektirmedi.
+  - **İade alındı için onay penceresi.** Listede düğme her kartta tekrar ediyor ve işlem kaydı geçmişe taşıyor; yanlış dokunuşta veri kaybolmasın. Kitap Detay'daki tek düğme ise eskisi gibi doğrudan çalışıyor.
+  - **İade günü gecikme sayılmıyor.** Kullanıcı "15 Ekim'de getir" dediğinde 15 Ekim boyunca kitap gecikmiş görünmemeli.
+  - **Yaklaşan iade eşiği 3 gün** (`LoansModel.dueSoonDays`). Hatırlatma için yeterince erken, ama listeyi sürekli "uyarı" rengine boyamayacak kadar kısa. İstenirse tek sabitten değiştirilebilir.
+  - **Kapaktaki "Ödünçte" rozeti korundu.** İstek yalnızca filtrenin kaldırılmasıydı; rozet rafta kitabın elde olmadığını göstermeye devam ediyor.
+  - **`LoanDialog` ortak widget'lara taşındı.** Kopyalamak yerine tek pencere kullanılıyor; Kitap Detay ve Ödünç Takibi aynı doğrulama ve tarih kurallarına bağlı.
+- Açık konular / sonraki adım:
+  - [16-library-filters.png](docs/screenshots/16-library-filters.png) eski filtre panelini ("Ödünçte" seçeneğiyle) gösteriyor; yeniden çekilmedi.
+  - Bildirim / hatırlatma (iade günü gelince telefon bildirimi) yok. Bunun için onaylı listede olmayan bir paket (ör. `flutter_local_notifications`) gerekir; istersen onayınla eklenebilir. → Bir sonraki kayıtta yapıldı.
+  - Ödünç alınan (başkasından alınan) kitapların takibi kapsam dışında bırakıldı; istenmedi.
+  - Gerçek iPhone'da denenmedi (iOS simülatörü ML Kit yüzünden kullanılamıyor).
+
+## [2026-10-22] Ek Geliştirme – Ödünç İade Hatırlatması (Yerel Bildirim)
+
+- Yapılanlar:
+  - **İstek:** Bir önceki kayıtta açık konu olarak bırakılan "iade günü gelince telefona hatırlatma" yapılmalı. Gereken paket için kullanıcı onay verdi.
+  - **Eklenen paketler (kullanıcı onayıyla):**
+    - `flutter_local_notifications` 22.3.2: cihaz üstü zamanlanmış bildirim. Sunucu ve internet gerekmez.
+    - `timezone` 0.11.2: zamanlama API'si `TZDateTime` istiyor. Paket zaten `flutter_local_notifications`'ın bağımlılığıydı; doğrudan import edildiği için `pubspec.yaml`'a yazıldı.
+    - İkisi de PROJECT.md 6.1'deki onaylı listeye eklendi.
+  - **Ne zaman hatırlatılıyor:**
+    - İade tarihi olan her ödünç için iki bildirim kuruluyor: iade gününden bir gün önce saat 10:00'da "Yarın iade günü", iade günü saat 10:00'da "Bugün iade günü".
+    - Bildirim metni örneği: "Murat, “Alice's Adventures in Wonderland” kitabını geri getirmeli."
+    - Kitap ödünç verildiği gün "yarın iade" hatırlatması kurulmuyor.
+    - İade tarihi olmayan ödünç, iadesi alınmış kitap, fiziksel kopyası olmayan kitaptaki eski kayıt ve geçmişte kalan anlar için bildirim kurulmuyor.
+  - **Ne zaman yeniden kuruluyor:**
+    - Ödünç verme, düzenleme (iade tarihi / kişi), iade alma, kitap silme ve uygulama dili değişikliğinde plan yeniden hesaplanıyor; zamanlanmış tüm bildirimler silinip yeniden kuruluyor.
+    - Kitap listesi her değiştiğinde (ör. okuma ilerlemesi) bildirimlere dokunulmuyor; yalnızca plan veya metin değiştiyse yeniden kuruluyor.
+    - Uygulama her açılışta planı bir kez yeniden kuruyor; geçmişte kalan hatırlatmalar böylece temizleniyor.
+    - Android'de cihaz yeniden başlayınca veya uygulama güncellenince eklenti bildirimleri kendisi yeniden kuruyor.
+  - **Bildirim izni:**
+    - İzin uygulama açılışında istenmiyor. Kullanıcı ilk kez iade tarihli bir ödünç kaydettiğinde (Ödünç Takibi veya Kitap Detay) isteniyor: Android 13+ ve iOS'ta sistem penceresi açılıyor.
+    - Açılıştaki ilk kurulum ile yalnızca bir şeyin kaldırıldığı değişiklikler (iade alma, dil değişikliği) izin istemiyor.
+  - **Platform ayarları:**
+    - Android:
+      - Core library desugaring açıldı (`desugar_jdk_libs` 2.1.4).
+      - `RECEIVE_BOOT_COMPLETED` izni ve eklentinin iki receiver'ı manifest'e eklendi.
+      - Bildirim çubuğunda uygulamanın tek renkli simgesi (`ic_launcher_monochrome`) kullanılıyor.
+      - Kanal adı uygulama diliyle "Ödünç hatırlatmaları" / "Loan reminders".
+    - iOS: Uygulama açıkken de bildirim gösterilsin diye `AppDelegate.swift`'te bildirim merkezi delegesi ayarlandı.
+  - **Kesin saat yerine esnek zamanlama:**
+    - Android'de `SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM` istenmedi.
+    - Sistem bildirimi 10:00 ile 11:00 arasında gösteriyor (emülatörde alarm penceresi +1 saat görüldü).
+  - **Web / masaüstü:** Hatırlatma yok; motor bu platformlarda hiçbir şey yapmıyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [loan_reminder_model.dart](lib/core/models/loan_reminder_model.dart) – Zamanlanan iade hatırlatması (kitap, tür: yarın / bugün, an); saklanmaz, ödünçlerden hesaplanır.
+    - [reminder_engine.dart](lib/core/repositories/reminders/reminder_engine.dart) – Bildirim motoru arayüzü ve web / masaüstü için hiçbir şey yapmayan motor.
+    - [local_notifications_reminder_engine.dart](lib/core/repositories/reminders/local_notifications_reminder_engine.dart) – `flutter_local_notifications` ile Android / iOS'ta bildirimleri izin isteyerek, esnek zamanlamayla kurar.
+    - [loan_reminder_controller.dart](lib/core/controllers/loan_reminder_controller.dart) – Ödünçlerden hatırlatma planını çıkarır, kitap ve dil değişikliklerinde (plan değiştiyse) bildirimleri yeniden kurar, izni yalnızca yeni iade tarihi kaydedilince ister.
+    - [fake_reminder_engine.dart](test/helpers/fake_reminder_engine.dart) – Bildirim kurmak yerine çağrıları kaydeden sahte motor.
+    - [loan_reminder_controller_test.dart](test/core/loan_reminder_controller_test.dart) – Plan kuralları (saat, sıralama, geçmiş / tarihsiz / iade alınmış / fiziksel olmayan, ödünç günü) ve senkron davranışı (açılışta izin yok, yeni ödünçte izin, değişmeyen plan, iade, dil, tema, desteklenmeyen platform) test ediliyor.
+  - **Güncellenen:**
+    - [pubspec.yaml](pubspec.yaml) / `pubspec.lock` – `flutter_local_notifications` ve `timezone` eklendi.
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – `isLoaded` eklendi; hatırlatmalar kitaplar yüklenmeden boş listeyi "ödünç yok" sanmasın diye.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) – Platforma göre bildirim motoru seçiliyor (testlerde verilebilir); `LoanReminderController` oluşturuluyor.
+    - [main.dart](lib/main.dart) – Açılışta hatırlatma denetleyicisi başlatılıyor.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – Kanal adı / açıklaması, iki başlık ve bildirim metni için 5 yeni anahtar (TR/EN).
+    - [build.gradle.kts](android/app/build.gradle.kts) – Core library desugaring açıldı.
+    - [AndroidManifest.xml](android/app/src/main/AndroidManifest.xml) – Açılışta yeniden kurma izni ve eklentinin zamanlanmış bildirim / açılış receiver'ları eklendi.
+    - [AppDelegate.swift](ios/Runner/AppDelegate.swift) – Uygulama açıkken bildirim gösterimi için bildirim merkezi delegesi ayarlandı.
+    - `ios/Podfile.lock` / [project.pbxproj](ios/Runner.xcodeproj/project.pbxproj) – Yeni eklentinin iOS bağlantısı `pod install` tarafından güncellendi.
+    - [test_dependencies.dart](test/helpers/test_dependencies.dart) – Testlerde bildirim motoru varsayılan olarak kapalı; hatırlatma testleri sahte motor veriyor.
+    - [README.md](README.md) – Özellik listesine iade hatırlatması eklendi.
+    - [PROJECT.md](PROJECT.md) – 6.1 onaylı paketler, 6.2 Sayfa 9 (hatırlatma kuralları), 6.3'te `LoanReminderModel` ve bildirim motoru notu güncellendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Emülatörde motoru 1 dakika sonrasına deneme bildirimiyle sınamak için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama:
+  - `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 572 test geçti (9 yeni).
+  - `flutter build apk --debug` ✔, `flutter build ios --debug --no-codesign` ✔.
+  - Android emülatöründe (Pixel 8, API 37):
+    - Deneme bildirimi zamanında geldi ("Bugün iade günü", Türkçe metin, uygulama simgesiyle).
+    - Normal açılışta örnek verideki 3 iade tarihli ödünç için 6 alarm 10:00'a kuruldu (`dumpsys alarm`).
+- Alınan kararlar ve nedenleri:
+  - **Bir gün önce + iade günü, saat 10:00.** "Yarın" hatırlatması kitabı istemek için zaman bırakıyor, iade günü hatırlatması da kesinleştiriyor. Saat sabit (`LoanReminderController.reminderHour`); ayarlardan seçilebilir yapılması istenmedi.
+  - **Gecikince tekrar eden hatırlatma yok.** Gecikme Ödünç Takibi'nde ve alt çubuk rozetinde zaten görünüyor; her gün bildirim göndermek rahatsız edici olurdu.
+  - **İzin bağlamında isteniyor.** Açılışta nedeni belli olmayan bir izin penceresi reddedilmeye daha açık; iade tarihi girildiği an istemek gerekçeyi kendiliğinden açıklıyor.
+  - **Esnek zamanlama.** Kesin alarm izni Android 14+'ta kullanıcıdan ayrıca alınmalı veya mağaza denetimine tabi. Bir iade hatırlatmasında birkaç dakikalık sapmanın önemi yok.
+  - **UTC an ile zamanlama, saat dilimi paketi yok.** Bildirimler tek seferlik; anın kendisi doğru olduğu için cihazın saat dilimi adını bulan ek bir pakete (`flutter_timezone`) gerek kalmadı.
+  - **Planın tamamı yeniden kuruluyor.** Uygulamanın tek bildirim türü bu ve ödünç sayısı küçük. Tek tek eşlemek yerine "hepsini sil, yeniden kur" daha az hataya açık; plan değişmediyse hiç dokunulmuyor.
+- Açık konular / sonraki adım:
+  - Bildirime dokununca uygulama açılıyor ama ilgili kitaba gitmiyor (bildirimde kitap kimliği taşınıyor; istenirse Kitap Detay'a yönlendirme eklenebilir). → Bir sonraki kayıtta yapıldı.
+  - Ayarlarda "hatırlatmaları kapat" anahtarı yok; şimdilik sistemin uygulama bildirim ayarlarından kapatılabiliyor. → Bir sonraki kayıtta yapıldı.
+  - Gerçek iPhone'da denenmedi (iOS simülatörü ML Kit yüzünden kullanılamıyor); iOS derlemesi başarılı.
+
+## [2026-10-22] Ek Geliştirme – Hatırlatmaya Dokununca Kitap Detay ve Ayarlar'da Hatırlatma Anahtarı
+
+- Yapılanlar:
+  - **İstek:** Bir önceki kayıtta açık bırakılan iki konu yapılmalı:
+    - Bildirime dokununca ilgili kitabın detayı açılmalı.
+    - Ayarlar'da "hatırlatmaları kapat" anahtarı olmalı.
+    - Gerçek iPhone denemesi not alınmalı (sonra yapılacak).
+  - **Bildirime dokununca Kitap Detay:**
+    - Bildirim zaten kitabın kimliğini taşıyordu; artık dokununca o kitabın Kitap Detay'ı açılıyor.
+    - Üç durumda çalışıyor: uygulama açıkken, arka plandayken ve süreç kapalıyken (soğuk açılış: splash → ana ekran → Kitap Detay).
+    - Oturum kapalıyken dokunulursa istek bekletiliyor ve girişten sonra kitap açılıyor.
+    - Kitap bu arada silinmişse istek yok sayılıyor; uygulama ana ekranda kalıyor.
+    - Her dokunuş bir kez işleniyor; geri dönünce sayfa yeniden açılmıyor.
+  - **Ayarlar > Bildirimler > "İade hatırlatmaları" anahtarı:**
+    - Tema / Dil kartının altında, açıklamasıyla: "Ödünç verdiğin kitabın iade gününden bir gün önce ve iade günü saat 10:00'da bildirim gönderir."
+    - Varsayılan açık. Eski kayıtlarda alan yoksa açık sayılıyor.
+    - **Kapatınca:** Zamanlanmış tüm hatırlatmalar hemen siliniyor. Kapalıyken ödünç verilen kitaplar için ne bildirim kuruluyor ne izin isteniyor.
+    - **Açınca:** Bildirim izni isteniyor ve hatırlatmalar (kapalıyken eklenen ödünçler dahil) yeniden kuruluyor. İzin verilmezse ayar açık kalıyor ve "Bildirim izni kapalı. Hatırlatmaları görmek için telefonun ayarlarından Kitalog bildirimlerini aç." mesajı çıkıyor.
+    - Bildirim desteklenmeyen platformlarda (web, masaüstü) bölüm gösterilmiyor.
+  - **Düzeltilen hata (geliştirirken bulundu):**
+    - Anahtar kapalıyken plan değişse de imza değişmediği için ("kapalı") son plan kaydedilmiyordu.
+    - Sonuç olarak yeniden açınca, kapalıyken eklenen ödünç "yeni" sayılıyor ve izin iki kez isteniyordu.
+    - Plan artık anahtar kapalıyken de izleniyor; test bunu kapsıyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [notification_section_widget.dart](lib/features/settings/widgets/notification_section_widget.dart) – Ayarlar'daki Bildirimler kartı ve "İade hatırlatmaları" anahtarı.
+    - [24-settings-notifications.png](docs/screenshots/24-settings-notifications.png) – Ayarlar'daki Bildirimler bölümü Android emülatöründe (Pixel 8) çekildi.
+  - **Güncellenen:**
+    - [app_settings_model.dart](lib/core/models/app_settings_model.dart) – `loanRemindersEnabled` alanı (varsayılan açık, JSON'da yoksa açık) eklendi.
+    - [settings_controller.dart](lib/core/controllers/settings_controller.dart) – `setLoanRemindersEnabled` eklendi.
+    - [reminder_engine.dart](lib/core/repositories/reminders/reminder_engine.dart) – `initialize` dokunma geri çağrısı alıyor; uygulamanın hangi bildirimle açıldığını veren `launchPayload` eklendi.
+    - [local_notifications_reminder_engine.dart](lib/core/repositories/reminders/local_notifications_reminder_engine.dart) – Dokunulan bildirimin kitabını iletiyor; soğuk açılışta eklentinin açılış bilgisini okuyor.
+    - [loan_reminder_controller.dart](lib/core/controllers/loan_reminder_controller.dart) – `pendingBookId` / `takePendingBook` ile dokunulan kitabı iletiyor; anahtar kapalıyken hatırlatmaları siliyor; `setEnabled` açarken izin istiyor; kapalıyken de planı izleyerek çift izin isteği hatasını gideriyor.
+    - [app_scope.dart](lib/core/di/app_scope.dart) / [app_dependencies.dart](lib/core/di/app_dependencies.dart) – Hatırlatma denetleyicisi ekranlarla paylaşılıyor.
+    - [home_shell_view.dart](lib/features/home_shell/views/home_shell_view.dart) – Bekleyen kitabı (açılışta ve sonradan gelen) Kitap Detay'da açıyor; silinmiş kitabı yok sayıyor.
+    - [settings_body_widget.dart](lib/features/settings/widgets/settings_body_widget.dart) – Bildirimler bölümü yalnızca destekleyen platformda gösteriliyor.
+    - [settings_view.dart](lib/features/settings/views/settings_view.dart) – Anahtarı denetleyiciye bağlıyor; izin verilmezse bilgilendirme mesajı gösteriyor.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – Bildirimler başlığı, anahtar, açıklama ve izin mesajı için 4 yeni anahtar (TR/EN).
+    - [fake_reminder_engine.dart](test/helpers/fake_reminder_engine.dart) – Bildirimden açılma, dokunma geri çağrısı ve izin reddi taklit edilebiliyor.
+    - [loan_reminder_controller_test.dart](test/core/loan_reminder_controller_test.dart) – Anahtarı kapatma / açma (silme, kapalıyken ödünç, tek izin isteği), izin reddi ve dokunulan kitabın iletilip bir kez tüketilmesi test ediliyor.
+    - [settings_controller_test.dart](test/core/settings_controller_test.dart) – Anahtarın varsayılanı, kalıcılığı ve eski kayıtta açık sayılması test ediliyor.
+    - [settings_view_test.dart](test/features/settings/settings_view_test.dart) – Desteklenmeyen platformda bölümün gizlenmesi, anahtarın kapanıp açılması ve izin reddinde mesaj test ediliyor.
+    - [home_shell_test.dart](test/features/home_shell/home_shell_test.dart) – Açılışta ve sonradan gelen dokunmada Kitap Detay'ın açılması ve silinmiş kitabın yok sayılması test ediliyor.
+    - [README.md](README.md) – Hatırlatma maddesine dokunma ve ayar eklendi; ek görüntülere bildirim ayarı eklendi.
+    - [PROJECT.md](PROJECT.md) – 6.2 Sayfa 7 (Bildirimler) ve Sayfa 9 (dokunma, anahtar); 6.3'te `AppSettingsModel.loanRemindersEnabled` ve bildirim motoru notu güncellendi (6.7'ye dokunulmadı).
+  - **Silinen:**
+    - `tool/screenshot_main.dart` (silindi) – Emülatörde anlık deneme bildirimi göstermek için geçici olarak yazılan giriş noktasıydı.
+- Doğrulama:
+  - `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 580 test geçti (8 yeni); tüm `build` metotları ≤ 40 satır.
+  - Android emülatöründe (Pixel 8):
+    - Uygulama açıkken bildirime dokununca Alice'in Kitap Detay'ı açıldı.
+    - Süreç kapalıyken (`am kill`) dokununca uygulama açılıp aynı detaya gitti.
+    - Ayarlar'da anahtar kapatılınca bekleyen hatırlatma alarmı 0'a indi, açılınca 6'ya döndü (`dumpsys alarm`).
+  - Not: Android'de "Zorla durdur" uygulamanın bildirimlerini de sildiği için soğuk açılış bu yolla değil, süreç öldürülerek denendi.
+- Alınan kararlar ve nedenleri:
+  - **Kitap Detay'ı ana kabuk açıyor.** Oturum açıkken uygulamanın kökü ana kabuk. Böylece istek splash ve giriş akışını bozmadan bekletiliyor; feature'lar da birbirini import etmiyor (istek `AppScope` üzerinden geliyor).
+  - **Anahtar uygulama içinde, izin sistemde.** Kullanıcı hatırlatmaları uygulamadan kapatabiliyor. Açarken izin verilmemişse açıklayıcı mesaj gösteriliyor; telefon ayarına doğrudan götüren düğme eklenmedi (istenmedi).
+  - **Kapalıyken veri silinmiyor, yalnızca bildirimler.** Ödünç bilgisi ve plan korunuyor; yeniden açınca her şey kaldığı yerden kuruluyor.
+- Açık konular / sonraki adım:
+  - **Gerçek iPhone denemesi (sonra yapılacak, kullanıcı notu):** iOS derlemesi başarılı ama hatırlatmalar gerçek iPhone'da hiç denenmedi (iOS simülatörü ML Kit yüzünden kullanılamıyor). Denenecekler:
+    - İzin penceresi: iade tarihli ilk ödünçte ve Ayarlar'da anahtar açılırken.
+    - Zamanlanmış bildirimin 10:00'da gelmesi; uygulama açıkken de gösterilmesi.
+    - Bildirime dokununca Kitap Detay'ın açılması (açık / arka plan / kapalı).
+    - Anahtar kapatılınca hatırlatmaların silinmesi.
+
+## [2026-10-22] Ek Düzeltme – Çeviri Altyapısının iOS Simülatöründe de Çalışması
+
+- Yapılanlar:
+  - **İstek:** Okuyucudaki çeviri (ML Kit) yüzünden uygulama iOS simülatöründe derlenmiyor. Kullanıcının gördüğü çeviri deneyimi aynı kalmalı; yalnızca arkadaki sistem Android'in yanında iOS simülatöründe de çalışacak şekilde değişmeli. Önce öneriler sunulacak, kod yazılmayacak.
+  - **Analiz (kod yazılmadı):** PROJECT.md (6.1 onaylı paketler, 6.2 Sayfa 8, 6.3 `TranslationRepository` / `TranslationEngine`, Bölüm 7-10, 9. bölümdeki iOS simülatörü notu), `.agents/skills/` (SKILL.md, state_flow.md, örnek ekran, feature betiği) ve önceki çeviri kayıtları incelendi.
+  - **Sorunun kaynağı (bu Mac'te doğrulandı):**
+    - `MLKitTranslate.framework` (ML Kit 8.0.0, `google_mlkit_translation` 0.15.1) yalnızca `x86_64` (Intel simülatörü) ve `arm64` (gerçek iPhone) dilimlerini içeriyor; Apple Silicon simülatörü için `arm64-simulator` dilimi yok (`lipo -info`).
+    - Kurulu iOS 26.5, 27.0 ve 27.1 simülatörleri yalnızca `arm64` çalıştırıyor (`dyld_sim` → `arm64`). Rosetta açık olsa da `x86_64` simülatör seçeneği yok. Yani ML Kit pod'ları projede kaldıkça simülatör derlemesi bağlanamıyor (link hatası).
+    - Simülatör çalışma ortamında Apple'ın `Translation.framework` ve `NaturalLanguage.framework` kütüphaneleri bulunuyor.
+  - **Mevcut mimarinin avantajı:** Çeviri zaten `TranslationEngine` arayüzünün arkasında (`identifyLanguage`, `isModelDownloaded`, `downloadModel`, `translate`, `close`). `TranslationRepository`, `ReaderTranslationController` ve tüm okuyucu widget'ları yalnızca bu arayüzü kullanıyor. Motor değişse bile arayüz, önbellek, menü, bant, alt pencere ve testler aynı kalabilir.
+  - **Sunulan seçenekler:**
+    - **(1) Önerilen – Uygulama içi yerel köprü, iki platformda yerel motor:** `google_mlkit_translation` ve `google_mlkit_language_id` Dart paketleri kaldırılır, yerine projenin içinde tek bir `MethodChannel` (`kitalog/translation`) yazılır.
+      - Android (Kotlin): aynı Google ML Kit, Dart paketi yerine doğrudan Gradle bağımlılığı olarak (`com.google.mlkit:translate`, `com.google.mlkit:language-id`). Davranış, dil paketleri ve kalite Android'de bugünküyle aynı kalır.
+      - iOS (Swift): Apple `Translation` (çeviri, cihaz üstü, çevrimdışı) + `NaturalLanguage` (`NLLanguageRecognizer` ile dil tanıma). Sistem kütüphaneleri olduğu için hem gerçek iPhone'da hem simülatörde derlenir; iOS kurulum boyutu ML Kit pod'ları çıktığı için küçülür.
+      - Dart: `TranslationEngine`'in yeni uygulaması `NativeTranslationEngine`; `AppDependencies._platformTranslationEngine` yalnızca bunu seçer. Repository, controller, UI ve ARB dokunulmaz.
+      - Bedeller: (a) Apple çevirisi programla iOS 18+ ile kullanılabiliyor; şu anki en düşük sürüm 15.5. (b) iOS'ta dil paketini sistem indiriyor ve kendi onay penceresini gösteriyor; bizim "Çeviri dil paketi indirilsin mi?" penceremizden sonra sistem penceresi de açılabilir. (c) Apple çevirisinin simülatörde gerçekten metin çevirip çevirmediği (yalnızca derlenmesi değil) kodlamadan önce küçük bir denemeyle doğrulanmalı.
+    - **(2) ML Kit'i koruyup simülatör için ikili dosya yaması (`arm64` → `arm64-simulator`, `vtool` / arm64-to-sim):** Önerilmez. Google'ın kapalı kaynak ikili dosyaları değiştirilir, her `pod update`'te yeniden yapılmalı, çalışma anında yine hata verebilir.
+    - **(3) Simülatörde sahte / ağ tabanlı motor, cihazda ML Kit:** Tek başına çözüm değil. ML Kit pod'ları simülatör derlemesinde yine bağlanmaya çalışılır; eklentiyi yalnız simülatörde dışlamak Podfile / bağlayıcı (linker) hileleri gerektirir.
+    - **(4) Rosetta ile `x86_64` simülatör:** Bu Mac'teki iOS 26.5 / 27 çalışma ortamları yalnızca `arm64`; eski bir iOS çalışma ortamı kurmak Xcode 27 ile kırılgan ve geçici. Önerilmez.
+  - **Seçenek 1 için önerilen uygulama sırası:**
+    - Adım 0 – Deneme: Runner içinde küçük bir Swift kodla iOS 27.1 simülatöründe Apple çevirisinin `en → tr` ve `tr → en` çalıştığı, dil paketi durumunun okunabildiği doğrulanır. Çalışmazsa seçenekler yeniden değerlendirilir.
+    - Adım 1 – Dart köprüsü ve `NativeTranslationEngine` (hata kodları mevcut `TranslationFailure` türlerine eşlenir) + birim testleri (sahte kanal).
+    - Adım 2 – Android Kotlin tarafı (ML Kit Gradle bağımlılığı), ML Kit Dart paketlerinin kaldırılması, Pixel 8 emülatöründe iki yönün yeniden denenmesi.
+    - Adım 3 – iOS Swift tarafı (Translation + NaturalLanguage), Podfile / en düşük sürüm, simülatörde iki yönün ve seçim çevirisinin denenmesi.
+    - Adım 4 – PROJECT.md (6.1, 6.2 Sayfa 8, 6.3, 9. bölümdeki simülatör notu), README ve DONE.md güncellemesi; `flutter analyze`, `flutter test`, `flutter build apk --debug`, `flutter build ios --simulator`.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [DONE.md](DONE.md) – Durum tablosuna bu iş "Karar Bekleniyor" olarak eklendi ve analiz kaydı yazıldı.
+- Doğrulama: Kod değişikliği yapılmadığı için `flutter analyze` / `flutter test` çalıştırılmadı. Ortam kontrolleri: Xcode 27.1, iOS 26.5 / 27.0 / 27.1 simülatörleri (yalnızca `arm64`), ML Kit ikili dosyasında `x86_64 arm64` dilimleri.
+- Alınan kararlar ve nedenleri:
+  - **Kod yazılmadı.** İstek gereği önce öneriler sunuldu; paket kaldırma, yerel kod ve en düşük iOS sürümü kullanıcı kararı gerektiriyor.
+- Açık konular / sonraki adım: Kullanıcı kararı bekleniyor:
+  - Seçenek 1 onayı (ML Kit Dart paketlerinin kaldırılıp yerel köprüye geçilmesi; PROJECT.md 6.1 güncellenir).
+  - iOS en düşük sürümü: 18'e çıkarılsın mı, yoksa 15.5 kalıp iOS 18 altında çeviri gizlensin mi?
+  - iOS'ta dil paketi onayı: bizim penceremiz + sistem penceresi mi, yoksa iOS'ta yalnızca sistem penceresi mi?
+- **Kullanıcı kararı (aynı gün):**
+  - Seçenek 1 onaylandı: ML Kit Dart paketleri kaldırılacak, yerine uygulama içi yerel köprü (`kitalog/translation`) yazılacak.
+  - iOS en düşük sürümü 15.5'ten **18.0**'a çıkarılacak.
+  - iOS'ta dil paketi için **yalnızca sistemin penceresi** gösterilecek; Android'de bugünkü "Çeviri dil paketi indirilsin mi?" penceresi aynen kalacak.
+  - Kodlamaya henüz başlanmayacak; kullanıcı "başla" diyene kadar beklenecek. İlk iş Adım 0 (iOS simülatöründe Apple çevirisi denemesi) olacak.
+- **Adım 0 – Simülatör denemesi (kullanıcı "kodlayalım" dedikten sonra, aynı gün):**
+  - Proje dışında, geçici klasörde (`scratchpad/trspike`) boş bir Flutter iOS uygulaması açıldı. En düşük sürüm 18.0 yapıldı, `AppDelegate.swift`'e deneme kodu yazıldı. Kitalog projesinde hiçbir dosya değişmedi.
+  - iPhone 18 Pro simülatöründe (iOS 27.1) denendi:
+    - Derleme: ✔ `Translation` ve `NaturalLanguage` ile simülatör derlemesi sorunsuz (17 sn).
+    - Dil tanıma (`NLLanguageRecognizer`): ✔ Türkçe cümle `tr` (güven 1.0) olarak tanındı.
+    - Dil paketi durumu (`LanguageAvailability`): ✘ `en → tr` ve `tr → en` için `unsupported` döndü.
+    - Çeviri (`translationTask` + `prepareTranslation`): ✘ Sistem penceresi açıldı ve "Çeviri, simülasyon aygıtlarında desteklenmez. Bu özelliği test etmek için kodunuzu gerçek bir aygıtta çalıştırın." mesajını gösterdi.
+  - **Sonuç:** Apple çevirisi simülatörde çalışmıyor; Apple bunu kendisi engelliyor. Seçenek 1 ile uygulama simülatörde derlenip açılır ve dil tanıma çalışır, ama çeviri yalnızca gerçek iPhone'da çalışır.
+  - Önceden belirlendiği gibi kodlama burada durduruldu; yeni seçenekler kullanıcıya sunuldu. Deneme uygulaması simülatörden kaldırıldı.
+
+## [2026-10-22] Ek Düzeltme – Çeviri Altyapısının iOS Simülatöründe de Çalışması – Uygulama (Plan A)
+
+- Yapılanlar:
+  - **İstek:** Adım 0'da Apple çevirisinin simülatörde çalışmadığı görüldükten sonra kullanıcı **Plan A**'yı seçti: Android'de ML Kit, gerçek iPhone'da Apple Translation; iOS simülatöründe uygulama derlenip çalışır, okuyucudaki çeviri web / masaüstündeki gibi gizlenir. Kullanıcının gördüğü çeviri deneyimi değişmedi; tek fark iOS'ta dil paketi onayını sistemin kendi penceresinin sorması (kullanıcı kararı).
+  - **Adım 1 – Dart köprüsü:**
+    - ML Kit Dart paketleri (`google_mlkit_translation`, `google_mlkit_language_id`) ve `MlKitTranslationEngine` kaldırıldı; yerine `NativeTranslationEngine` yazıldı. Tek bir `MethodChannel` (`kitalog/translation`) üzerinden `info`, `identifyLanguage`, `areModelsDownloaded`, `downloadModels`, `translate`, `close` çağrılıyor.
+    - `TranslationEngine` arayüzü dil çifti bazlı oldu (`areModelsDownloaded` / `downloadModels(from, to)`), çünkü Apple dil paketlerini dil çifti olarak yönetiyor. Yeni `systemConfirmsDownload` bayrağı: `true` ise (iOS) uygulama kendi onay penceresini açmadan indirmeyi başlatıyor, onayı sistem soruyor.
+    - Yeni hata türü `TranslationFailure.downloadDeclined`: kullanıcı iOS sistem penceresinde vazgeçerse okuyucu Android'deki "reddet" ile aynı davranıyor (görünüm orijinale döner, seçim penceresi kapanır, hata bandı çıkmaz).
+    - Motor açılışta (`main.dart`) yerel tarafa sorularak seçiliyor: yerel taraf "desteklenmiyor" derse (iOS simülatörü) ya da köprü yoksa (web, masaüstü) çeviriyi gizleyen motor kullanılıyor.
+    - Repository, controller'ın geri kalanı, tüm okuyucu widget'ları, önbellek ve ARB dosyaları değişmedi.
+  - **Adım 2 – Android (Kotlin):**
+    - `TranslationChannel.kt` aynı Google ML Kit'i Gradle bağımlılığı olarak kullanıyor (`com.google.mlkit:translate:17.0.3`, `com.google.mlkit:language-id:17.0.6`; eski Dart paketlerinin kullandığı sürümlerin aynısı). Dil tanıma güven eşiği aynı (0,5).
+    - `MainActivity` köprüyü Flutter motoru kurulurken bağlıyor, motor kapanınca çevirmenleri bırakıyor.
+  - **Adım 3 – iOS (Swift):**
+    - `TranslationChannel.swift`: çeviri Apple `Translation`, dil tanıma `NaturalLanguage` (`NLLanguageRecognizer`, güven eşiği 0,5) ile yapılıyor. `AppDelegate` köprüyü Flutter motoru kurulunca bağlıyor.
+    - Apple'ın çeviri oturumu yalnızca SwiftUI `translationTask` içinde alınabildiği için Flutter penceresine 1×1 boyutunda, görünmez ve dokunulamaz bir SwiftUI görünümü ekleniyor. Çağrılar sıraya giriyor ve oturum açıkken sırayla çalıştırılıyor. Satır satır gelen çeviriler beklemesin diye oturum iş bittikten sonra 300 ms açık tutuluyor.
+    - Dil paketi eksikken `translate` sistem penceresini kendiliğinden açmıyor; `modelDownload` hatası dönüyor, okuyucudaki "Tekrar dene" paketi yeniden indiriyor.
+    - Simülatörde `info` → `supported: false` (`#if targetEnvironment(simulator)`).
+    - iOS en düşük sürümü 15.5'ten **18.0**'a çıkarıldı.
+    - ML Kit gidince tüm iOS eklentileri Swift Package Manager ile geldiği için CocoaPods gereksiz kaldı. `pod deintegrate` çalıştırıldı, `Podfile` / `Podfile.lock` / `Pods/` silindi. `Debug.xcconfig`, `Release.xcconfig` ve `contents.xcworkspacedata` ML Kit'ten önceki hâline (git) döndü. `project.pbxproj` da git'teki hâline döndürülüp yalnızca yeni Swift dosyası ve 18.0 sürümü eklendi (deintegrate'in bıraktığı boş "Frameworks" kalıntıları alınmadı).
+  - **Adım 4 – Belgeler:** PROJECT.md (6.1 onaylı liste, 6.2 Sayfa 8, 6.3 çeviri motoru, 9. bölümdeki simülatör notu ve çalıştırma satırı) ve README güncellendi; PROJECT.md 6.7'ye dokunulmadı.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [native_translation_engine.dart](lib/core/repositories/translation/native_translation_engine.dart) – Yerel köprü (`kitalog/translation`) ile çeviri / dil tanıma; açılışta platforma göre motor seçimi ve yerel hata kodlarının çeviri hatalarına eşlenmesi.
+    - [TranslationChannel.kt](android/app/src/main/kotlin/com/knetrix/kitalog/TranslationChannel.kt) – Android tarafı: Google ML Kit ile çeviri, paket indirme ve dil tanıma.
+    - [TranslationChannel.swift](ios/Runner/TranslationChannel.swift) – iOS tarafı: Apple Translation ile çeviri ve sistem penceresiyle paket indirme, NaturalLanguage ile dil tanıma, simülatörde "desteklenmiyor".
+    - [native_translation_engine_test.dart](test/core/native_translation_engine_test.dart) – Sahte kanal ile motor seçimi (destekli / simülatör / köprü yok / masaüstü), argümanlar, çeviri ve hata kodu eşlemesi test ediliyor (7 test).
+  - **Güncellenen:**
+    - [translation_engine.dart](lib/core/repositories/translation/translation_engine.dart) – Dil çifti bazlı arayüz, `systemConfirmsDownload`, `TranslationFailure.downloadDeclined`.
+    - [translation_repository.dart](lib/core/repositories/translation_repository.dart) – Paket kontrolü / indirme dil çiftiyle; `systemConfirmsDownload` dışarı açıldı.
+    - [reader_translation_controller.dart](lib/features/reader/controllers/reader_translation_controller.dart) – Onayı sistem soruyorsa doğrudan indirme; sistem penceresinde vazgeçilince "reddet" davranışı.
+    - [reader_translation_banner_widget.dart](lib/features/reader/widgets/reader_translation_banner_widget.dart) – Yeni hata türü bant mesajına eklendi.
+    - [reader_translation_model.dart](lib/features/reader/models/reader_translation_model.dart) – Yorum güncellendi.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) / [main.dart](lib/main.dart) – ML Kit seçimi kaldırıldı; motor açılışta `NativeTranslationEngine.create()` ile veriliyor.
+    - [pubspec.yaml](pubspec.yaml) / [pubspec.lock](pubspec.lock) – İki ML Kit Dart paketi kaldırıldı.
+    - [MainActivity.kt](android/app/src/main/kotlin/com/knetrix/kitalog/MainActivity.kt) / [build.gradle.kts](android/app/build.gradle.kts) – Köprünün bağlanması ve ML Kit Gradle bağımlılıkları.
+    - [AppDelegate.swift](ios/Runner/AppDelegate.swift) / [project.pbxproj](ios/Runner.xcodeproj/project.pbxproj) – Köprünün bağlanması, yeni Swift dosyası, iOS 18.0.
+    - [fake_translation_engine.dart](test/helpers/fake_translation_engine.dart) / [test_dependencies.dart](test/helpers/test_dependencies.dart) – Yeni arayüz; sistem onayı ve sistem penceresinde vazgeçme taklidi.
+    - [reader_translation_controller_test.dart](test/features/reader/reader_translation_controller_test.dart) – iOS akışı: onay penceresiz indirme + çeviri ve sistem penceresinde vazgeçme (2 yeni test).
+    - [PROJECT.md](PROJECT.md) / [README.md](README.md) – Yukarıdaki belge güncellemeleri.
+  - **Silinen:**
+    - `lib/core/repositories/translation/mlkit_translation_engine.dart` – Yerini `NativeTranslationEngine` aldı.
+    - `ios/Podfile`, `ios/Podfile.lock`, `ios/Pods/` – Yalnızca ML Kit için vardı.
+    - `tool/translation_smoke_main.dart` (silindi) – Köprüyü emülatörde / simülatörde gerçek yerel kodla denemek için geçici olarak yazılan giriş noktasıydı.
+    - Proje dışındaki geçici deneme uygulaması (`scratchpad/trspike`) – Adım 0 içindi; simülatörden kaldırıldı.
+- Doğrulama:
+  - `flutter pub get` ✔, `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 589 test geçti (9 yeni).
+  - `flutter build apk --debug` ✔, `flutter build ios --simulator` ✔ (önceden ✘), `flutter build ios --no-codesign` ✔ (gerçek iPhone SDK'sı; Swift uyarısı yok).
+  - **Android emülatöründe (Pixel 8) gerçek ML Kit ile köprü denendi:** dil tanıma `tr` / `en` doğru; paket durumu indirmeden önce `false`, sonra `true`; "I rejoice in your happiness." → "Mutluluğun için sevindim.", "Kitabı okumayı çok sevdim." → "I loved reading the book."; desteklenmeyen dilde `translate` hatası döndü.
+  - **iOS simülatöründe (iPhone 18 Pro, iOS 27.1):** köprü kayıtlı ve `info` → `{supported: false, systemConfirmsDownload: true}` döndü; çeviri gizli. Gerçek uygulama simülatörde açıldı, Kitaplığım ekranı sorunsuz göründü.
+- Alınan kararlar ve nedenleri:
+  - **Dart paketi yerine kendi köprümüz.** Flutter'da bir eklentiyi yalnızca bir platformdan çıkarmak mümkün değil. ML Kit Dart paketi iOS'ta kaldıkça simülatör derlenmiyordu. Kendi köprümüzle Android aynı motoru kullanmaya devam ediyor, iOS'a hiç Google kütüphanesi girmiyor.
+  - **Arayüz dil çifti bazlı.** Apple paketleri dil çifti olarak yönetiyor; ML Kit'te iki dilin paketine bakmak aynı sonucu veriyor. Böylece iki platform aynı arayüze oturuyor.
+  - **iOS'ta `translate` paket indirmez.** Kullanıcı habersiz bir sistem penceresiyle karşılaşmasın diye indirme yalnızca "çeviriyi aç" / "Tekrar dene" anında oluyor (Android'deki akışla aynı yerde).
+  - **Simülatörde çeviri gizli, hata gösterilmiyor.** Apple simülatörde çeviriyi kapattığı için menüyü gösterip hata vermek yerine web / masaüstündeki gibi gizlemek daha tutarlı.
+  - **CocoaPods kaldırıldı.** Yalnızca ML Kit için eklenmişti; tüm eklentiler artık Swift Package Manager ile geliyor ve Flutter da kaldırılmasını öneriyordu.
+- Açık konular / sonraki adım:
+  - **Gerçek iPhone'da çeviri denenmedi (kritik):** iOS tarafı derleniyor ama Apple çevirisi simülatörde kapalı olduğu için gerçek metin çevirisi, sistemin dil paketi penceresi, pencerede vazgeçme ve satır satır çeviri hızı hiçbir yerde çalıştırılamadı. Gerçek iPhone'da denenecekler:
+    - Okuyucuda "Türkçe çeviri" seçilince sistem penceresinin açılması, paketin inmesi ve sayfanın çevrilmesi.
+    - Sistem penceresinde vazgeçince görünümün orijinale dönmesi.
+    - Seçili metni "Çevir" ile çevirme (metin ve PDF).
+    - Türkçe kitapta (Kürk Mantolu Madonna) İngilizce çeviri.
+    - Bir sayfanın çevrilme süresi (oturum satırlar arasında 300 ms açık tutuluyor; yavaşsa bu süre ayarlanabilir).
+  - **iOS 17 ve öncesi:** En düşük sürüm 18.0 olduğu için bu cihazlar uygulamayı kuramaz (kullanıcı kararı).
+  - Android'de okuyucu ekranı bu değişiklikten sonra elle açılıp denenmedi; köprü gerçek ML Kit ile, okuyucu akışı widget ve controller testleriyle doğrulandı. Android'de görünür bir değişiklik yok.
+
+## [2026-10-22] Ek Geliştirme – Bildirim Sisteminin Geliştirilmesi (Günlük Okuma Hatırlatması)
+
+- Yapılanlar:
+  - **İstek:** Bildirim sistemi geliştirilmeli; örneğin günlük kitap okuma bildirimi. Önce öneri sunulacak, kod yazılmayacak.
+  - **Analiz (kod yazılmadı):** PROJECT.md (6.1 onaylı paketler, 6.2 Sayfa 7 ve 9, 6.3 modeller ve bildirim motoru notu, Bölüm 7-10 kurallar) ve `.agents/skills/` (SKILL.md, state_flow.md, örnek ekran, feature betiği) incelendi. Mevcut bildirim altyapısı çıkarıldı:
+    - `ReminderEngine` arayüzü ve `LocalNotificationsReminderEngine` hazır; `flutter_local_notifications` ve `timezone` zaten onaylı listede. Yeni paket gerekmiyor.
+    - Motor tek bildirim türüne göre yazılmış: `replaceAll` önce `cancelAll()` çağırıyor ve kimlikler `1, 2, 3…` diye veriliyor. İkinci bir bildirim türü eklenirse iade hatırlatmaları okuma hatırlatmasını (veya tersi) siler. Motor türlere (gruplara) göre ayrılmalı.
+    - Android kanalı tek (`loan_reminders`). Okuma hatırlatması ayrı kanalda olmalı ki kullanıcı telefon ayarlarından yalnızca birini kapatabilsin.
+    - Bildirimin `payload`'ı yalnızca kitap kimliği; dokununca her zaman Kitap Detay açılıyor. Farklı hedefler (Okuyucu, Okuma Durumu, Yıllık Hedef) için `payload` biçimlendirilmeli (ör. `book:<id>`, `goal`); eski bildirimlerdeki düz kimlik kitap olarak okunmaya devam etmeli.
+    - Zamanlama tek seferlik ve UTC anla yapılıyor; günlük tekrar eden bildirim (`matchDateTimeComponents`) cihazın yerel saat dilimini istediği için ek paket (`flutter_timezone`) gerektirir. Bunun yerine önümüzdeki 7 gün için tek seferlik bildirimler kurulup her açılışta pencere ileri kaydırılabilir.
+    - Uygulamada "bugün okundu mu" bilgisi yok: okuma ilerlemesi yalnızca `BookModel.currentPage` olarak tutuluyor, gün bazlı kayıt yok. "Bugün okuduysan hatırlatma" ve okuma serisi için günlük okuma kaydı gerekiyor.
+    - Saat seçimi Flutter'ın kendi `showTimePicker`'ı ile yapılabilir (paket gerekmez).
+  - **Sunulan öneri:**
+    - **Altyapı:** Motor gruplara ayrılır (`replaceGroup`: yalnızca o grubun bildirimleri silinip kurulur, her grubun kendi kimlik aralığı ve Android kanalı olur); `payload` hedef türüyle taşınır.
+    - **Günlük okuma hatırlatması (ana özellik):** Ayarlar > Bildirimler'e anahtar ve saat seçimi (varsayılan 21:00). Metin "Okunuyor" durumundaki son kitaba göre üretilir ("Kürk Mantolu Madonna'da sayfa 84'tesin. 10 dakika okumaya ne dersin?"); okunan kitap yoksa genel metin. Dokununca dijital sürümü varsa Okuyucu, yoksa Kitap Detay, kitap yoksa Okuma Durumu açılır. O gün okuma ilerlemesi kaydedildiyse o günün hatırlatması atlanır.
+    - **Ek seçenekler:** (a) okuma serisi ("5 gündür okuyorsun, seriyi bozma"), (b) haftalık yıllık hedef durumu (Pazar akşamı; plana göre gerideysen), (c) uzun süredir ilerlemeyen "Okunuyor" kitap hatırlatması (ör. 14 gün).
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Güncellenen:**
+    - [DONE.md](DONE.md) – Durum tablosuna bu iş "Karar Bekleniyor" olarak eklendi ve analiz kaydı yazıldı.
+- Doğrulama: Kod değişikliği yapılmadığı için `flutter analyze` / `flutter test` çalıştırılmadı.
+- Alınan kararlar ve nedenleri:
+  - **Kod yazılmadı.** İstek gereği önce öneri sunuldu.
+  - **Yeni paket önerilmedi.** 7 günlük kayan pencere, mevcut UTC tabanlı tek seferlik zamanlamayla çalışıyor; ayrıca her günün metni o günkü kitaba göre güncel kalıyor ve uygulamayı uzun süre açmayan kullanıcıya sonsuza kadar bildirim gitmiyor.
+- Açık konular / sonraki adım: Kapsam (yalnızca günlük hatırlatma mı, ek seçeneklerden hangileri), varsayılan saat, anahtarın varsayılan durumu (açık / kapalı), "bugün okuduysan atla" kuralı ve dokununca açılacak ekran için kullanıcı kararı bekleniyor.
+- **Kullanıcı kararı (aynı gün):** Altyapı + günlük okuma hatırlatması, ek olarak (a) okuma serisi ve (c) yarım kalan kitap; (b) haftalık hedef durumu yapılmayacak. Varsayılan saat 21:00, anahtar varsayılan kapalı, "bugün okuduysan atla" uygulanacak; dokununca dijital sürümü varsa Okuyucu, yoksa Kitap Detay. Uygulama kaydı aşağıdaki "Uygulama" başlığında.
+
+## [2026-10-22] Ek Geliştirme – Bildirim Sisteminin Geliştirilmesi (Günlük Okuma Hatırlatması) – Uygulama
+
+- Yapılanlar:
+  - **İstek:** Bir önceki kayıttaki kararlarla altyapı, günlük okuma hatırlatması, okuma serisi ve yarım kalan kitap hatırlatması yapılmalı. Yeni paket eklenmedi.
+  - **Altyapı (bildirim grupları):**
+    - Motor artık bildirimleri gruplara ayırıyor: iade hatırlatmaları (kimlik 1-10000, kanal "Ödünç hatırlatmaları") ve okuma hatırlatmaları (kimlik 10001-20000, kanal "Okuma hatırlatmaları").
+    - Bir grubun planı yeniden kurulurken (`replaceGroup`) yalnızca o grubun bekleyen bildirimleri siliniyor; eski `cancelAll()` kaldırıldı. Ekranda duran bildirimler de artık silinmiyor.
+    - Önceki sürümün kurduğu iade bildirimleri (kimlik 1, 2, 3…) iade grubunun aralığında kaldığı için güncellemeden sonra doğru silinip yeniden kuruluyor.
+    - Android'de iki ayrı kanal olduğu için kullanıcı telefon ayarlarından yalnızca birini kapatabiliyor.
+    - Bildirim artık nereye gideceğini taşıyor: `book:<id>` (Kitap Detay), `read:<id>` (okumaya dön), `readingStatus` (Okuma Durumu sekmesi). Eski bildirimlerdeki düz kitap kimliği Kitap Detay sayılıyor.
+    - Motoru hazırlamak ve dokunulan bildirimi ana kabuğa iletmek yeni `NotificationController`'a taşındı. `LoanReminderController` yalnızca iade planını kuruyor.
+  - **Günlük okuma kaydı:**
+    - Kitapta sayfa ilerleyince (Kitap Detay'daki sayaç veya Okuyucu) o günün kaydına kitap ve ilerlenen sayfa sayısı ekleniyor; aynı gün birleşiyor, geri gitmek sayılmıyor.
+    - 400 günden eski kayıtlar siliniyor. Kitap silinince kaydı korunuyor, böylece seri bozulmuyor.
+    - Yeni depolama anahtarı: `kitalog.readingLog`.
+  - **Günlük okuma hatırlatması:**
+    - Ayarlar > Bildirimler > "Günlük okuma hatırlatması", varsayılan kapalı. Açılınca bildirim izni isteniyor.
+    - Önümüzdeki 7 gün için her gün seçilen saatte (varsayılan 21:00) tek seferlik bildirim kuruluyor; plan her açılışta ve her değişiklikte ileri kaydırılıyor.
+    - Metin "Okunuyor" durumundaki en son ilerlenen kitaptan üretiliyor. Örnek: "“Nutuk” kitabında 177. sayfadasın. 10 dakika okumaya ne dersin?" Sayfa 0'daysa "“Kitap” seni bekliyor…", okunan kitap yoksa "Bugün birkaç sayfa okumaya ne dersin?…".
+    - O gün sayfa ilerlemesi kaydedildiyse o günün bildirimi hemen kaldırılıyor.
+  - **Okuma serisi (a):** Dün ve öncesinde art arda en az 2 gün okunduysa başlık "N gündür okuyorsun, seriyi bozma!" oluyor. Ayrı bir bildirim değil, günlük davetin başlığı; böylece günde birden fazla bildirim gitmiyor.
+  - **Yarım kalan kitaplar (c):**
+    - Ayrı anahtar ("Yarım kalan kitaplar"), varsayılan kapalı.
+    - "Okunuyor" kitapta son ilerlemeden (kayıt yoksa başlama gününden) 14 gün sonra seçilen saatte bir kez: "Yarım kalan kitap – “Kitap” kitabında 14 gündür ilerleme yok. Kaldığın yerden devam etmeye ne dersin?"
+    - O gün günlük davet de varsa yarım kalan kitap hatırlatması onun yerini alıyor.
+  - **Saat seçimi:** "Okuma hatırlatması saati" satırı Flutter'ın kendi saat seçicisini açıyor (Türkçe, 24 saat). Satır, okuma anahtarlarından biri açıkken etkin.
+  - **Dokununca:** Okuma hatırlatmasında kitabın dijital sürümü varsa Okuyucu açılıyor (geri gelince Kitap Detay), yoksa Kitap Detay; okunan kitap yoksa Okuma Durumu sekmesi seçiliyor. Kitap silinmişse istek yok sayılıyor. İade hatırlatması eskisi gibi Kitap Detay'ı açıyor.
+- Oluşturulan / güncellenen / silinen dosyalar:
+  - **Oluşturulan:**
+    - [notification_target_model.dart](lib/core/models/notification_target_model.dart) – Bildirime dokununca açılacak hedef ve `payload` biçimi (eski düz kimlik desteğiyle).
+    - [reading_log_entry_model.dart](lib/core/models/reading_log_entry_model.dart) – Günlük okuma kaydı (kitap, gün, ilerlenen sayfa).
+    - [reading_reminder_model.dart](lib/core/models/reading_reminder_model.dart) – Zamanlanan okuma hatırlatması (günlük / seri / yarım kalan); saklanmaz, hesaplanır.
+    - [reading_log_repository.dart](lib/core/repositories/reading_log_repository.dart) – Günlük okuma kaydını `kitalog.readingLog` anahtarında saklar.
+    - [notification_controller.dart](lib/core/controllers/notification_controller.dart) – Motoru bir kez hazırlar, iade ve okuma planlarını başlatır, dokunulan bildirimin hedefini ana kabuğa iletir.
+    - [reading_reminder_controller.dart](lib/core/controllers/reading_reminder_controller.dart) – 7 günlük okuma planını (günlük, seri, yarım kalan) çıkarır; plan değişince hemen, yalnızca metin değişince (ör. sayfa çevirmek) 2 sn bekleyip bir kez kurar.
+    - [reading_reminder_tiles_widget.dart](lib/features/settings/widgets/reading_reminder_tiles_widget.dart) – Ayarlar'daki iki okuma anahtarı ve saat satırı.
+    - [notification_models_test.dart](test/core/notification_models_test.dart) – Hedef biçimi, eski kimlik, kayıt / hatırlatma JSON'u, yeni ayar alanları ve grup kimlik aralıkları test ediliyor.
+    - [reading_log_test.dart](test/core/reading_log_test.dart) – Kaydın birleşmesi, geri gitmenin sayılmaması, biten kitap, saklama süresi, kitap silme ve kalıcılık test ediliyor.
+    - [reading_reminder_controller_test.dart](test/core/reading_reminder_controller_test.dart) – Plan kuralları (7 gün, saat, bugün okundu, seri, kitapsız, yarım kalan, aynı gün) ve senkron (izin, iade grubuna dokunmama, metin yenileme, dil, kapatma, desteklenmeyen platform) test ediliyor.
+    - [notification_controller_test.dart](test/core/notification_controller_test.dart) – Tek hazırlık, iki ayrı grup, açılıştaki ve sonradan gelen dokunma, boş payload test ediliyor.
+    - [25-settings-reading-reminders.png](docs/screenshots/25-settings-reading-reminders.png) – Ayarlar'daki yeni Bildirimler bölümü Android emülatöründe (Pixel 8) çekildi.
+    - [26-reading-reminder-notification.png](docs/screenshots/26-reading-reminder-notification.png) – Emülatörde gelen günlük okuma bildirimi.
+  - **Güncellenen:**
+    - [reminder_engine.dart](lib/core/repositories/reminders/reminder_engine.dart) – `ReminderGroup` (kimlik aralığı + kanal) eklendi; `replaceAll` yerine `replaceGroup`.
+    - [local_notifications_reminder_engine.dart](lib/core/repositories/reminders/local_notifications_reminder_engine.dart) – Yalnızca grubun bekleyen bildirimlerini siliyor, grubun kanalı ve kimlik aralığıyla kuruyor.
+    - [loan_reminder_controller.dart](lib/core/controllers/loan_reminder_controller.dart) – Motor hazırlığı ve bekleyen kitap `NotificationController`'a taşındı; iade grubunu `book:<id>` hedefiyle kuruyor.
+    - [library_controller.dart](lib/core/controllers/library_controller.dart) – Günlük okuma kaydı (`readingLog`) eklendi; sayfa ilerleyince kaydediliyor.
+    - [app_settings_model.dart](lib/core/models/app_settings_model.dart) – `readingRemindersEnabled`, `stalledBookRemindersEnabled` (varsayılan kapalı) ve `readingReminderMinutes` (varsayılan 21:00; geçersizse varsayılana düşer).
+    - [settings_controller.dart](lib/core/controllers/settings_controller.dart) – Üç yeni ayar için kaydetme metotları.
+    - [storage_keys.dart](lib/core/constants/storage_keys.dart) – `kitalog.readingLog`.
+    - [app_dependencies.dart](lib/core/di/app_dependencies.dart) / [app_scope.dart](lib/core/di/app_scope.dart) – Okuma kaydı repository'si, okuma planlayıcısı ve `NotificationController` oluşturuluyor; ekranlar `NotificationController`'ı paylaşıyor.
+    - [main.dart](lib/main.dart) – Açılışta `NotificationController` başlatılıyor.
+    - [home_shell_view.dart](lib/features/home_shell/views/home_shell_view.dart) – Hedefe göre Okuyucu / Kitap Detay / Okuma Durumu açılıyor.
+    - [notification_section_widget.dart](lib/features/settings/widgets/notification_section_widget.dart) – Bölüm, iade anahtarının altına okuma hatırlatmalarını alıyor; geri çağrılar tek kayıtta (`NotificationActions`).
+    - [settings_body_widget.dart](lib/features/settings/widgets/settings_body_widget.dart) / [settings_view.dart](lib/features/settings/views/settings_view.dart) – Yeni anahtarlar, izin reddi mesajı ve saat seçici bağlandı.
+    - [app_tr.arb](lib/l10n/app_tr.arb) / [app_en.arb](lib/l10n/app_en.arb) – Ayarlar ve bildirim metinleri için 15 yeni anahtar (TR/EN).
+    - [fake_reminder_engine.dart](test/helpers/fake_reminder_engine.dart) – Çağrıları grup grup kaydediyor.
+    - [loan_reminder_controller_test.dart](test/core/loan_reminder_controller_test.dart) – Yeni `payload` biçimine uyarlandı; dokunma testi `notification_controller_test.dart`'a taşındı.
+    - [home_shell_test.dart](test/features/home_shell/home_shell_test.dart) – Okuyucu, dijital sürümsüz kitapta Kitap Detay ve Okuma Durumu sekmesi testleri eklendi.
+    - [settings_view_test.dart](test/features/settings/settings_view_test.dart) / [settings_controller_test.dart](test/core/settings_controller_test.dart) – Varsayılan kapalı anahtarlar, izin, saat satırının etkinliği, saat seçici ve kalıcılık test ediliyor.
+    - [README.md](README.md) – Özellik listesine okuma hatırlatmaları eklendi.
+    - [PROJECT.md](PROJECT.md) – 6.1 (paket amaçları), 6.2 Sayfa 7 ve yeni Sayfa 10 (Okuma Hatırlatmaları), 6.3'te yeni modeller, ayar alanları, `kitalog.readingLog` ve bildirim motoru notu güncellendi (6.7'ye dokunulmadı).
+- Doğrulama:
+  - `flutter gen-l10n` ✔, `flutter analyze` → 0 uyarı / 0 hata, `flutter test` → 620 test geçti (31 yeni); yeni `build` metotları ≤ 40 satır.
+  - `flutter build apk --debug` ✔, `flutter build ios --debug --no-codesign` ✔.
+  - Android emülatöründe (Pixel 8), önceki sürümün verisinin üstüne kurularak:
+    - Okuma hatırlatmaları açılıp saat 16:00 yapılınca `dumpsys alarm`'da 13 alarm görüldü: 6 iade (10:00, kimlik 1-6) ve 7 okuma daveti (22-28 Ekim 16:00, kimlik 10001-10007). Eski iade bildirimleri yeni gruba doğru geçti.
+    - Örnek verideki "Okunuyor" kitaplar uzun süre önce başladığı için yarım kalan kitap hatırlatması kurulmadı (beklenen davranış).
+    - Ayarlar'daki yeni bölüm ve saat seçici (Türkçe, 24 saat) ekranda doğru göründü.
+    - Uygulama arka plandayken bildirim 16:02'de geldi (esnek zamanlama, kanal `reading_reminders`, kimlik 10001): "Okuma zamanı – “Moby Dick” kitabında 120. sayfadasın. 10 dakika okumaya ne dersin?"
+    - Bildirime dokununca Moby Dick'in Okuyucu'su açıldı; geri tuşuyla Kitap Detay'a dönüldü.
+- Alınan kararlar ve nedenleri:
+  - **Tekrar eden bildirim yerine 7 günlük tek seferlik pencere.** Günlük tekrar, saat dilimi adını bulan ek paket (`flutter_timezone`) isterdi. Pencere sayesinde her günün metni o günkü kitaba göre güncel, "bugün okuduysan atla" mümkün, uygulamayı uzun süre açmayana da sonsuza kadar bildirim gitmiyor.
+  - **Seri ayrı bildirim değil, günlük davetin başlığı.** Seri yalnızca o gün henüz okunmamışken anlamlı ve bu tam günlük davetin gittiği an; ikinci bildirim gereksiz olurdu.
+  - **Yarım kalan kitap tek seferlik.** Her kitap için son ilerlemeden 14 gün sonra bir kez; geçmişte kalan an yeniden kurulmuyor, kullanıcı her açılışta aynı hatırlatmayı almıyor.
+  - **İki okuma anahtarı, tek saat.** Kullanıcı günlük daveti kapatıp yarım kalan kitap hatırlatmasını açık tutabiliyor; ayrı saatler ayarları gereksiz kalabalıklaştırırdı.
+  - **İzin yalnızca anahtar açılırken.** Okuma hatırlatmaları varsayılan kapalı; açılışta izin istenmiyor.
+  - **Metin değişiminde 2 sn bekleme.** Okuyucuda her sayfa çevrilişinde "N. sayfadasın" metni değiştiği için her seferinde 7 bildirim yeniden kurulmasın; plan değiştiğinde (ör. bugün ilk kez okundu) beklemeden kuruluyor.
+  - **Haftalık hedef durumu (b) yapılmadı** (kullanıcı kararı).
+- Açık konular / sonraki adım:
+  - **Gerçek iPhone denemesi (sonra yapılacak, kullanıcı notu):** okuma hatırlatmaları da gerçek iPhone'da denenmedi. Denenecekler: anahtar açılırken izin penceresi, seçilen saatte bildirim, dokununca Okuyucu / Kitap Detay, bugün okuyunca o günün bildiriminin kalkması.
+  - Uygulama gece yarısını geçerek açık kalırsa pencere ancak bir sonraki değişiklikte veya açılışta ileri kayıyor; 7 günlük pencere bunu karşılıyor.
+  - Okuyucuda okuyup 2 sn içinde uygulamayı kapatmak yalnızca metin yenilemesini kaçırır; "bugün okundu" değişikliği beklemeden kurulduğu için o günün bildirimi yine kalkar.
+
 ---
 
 ## Final Özeti
 
 **Tamamlananlar**
 - PROJECT.md 6.6'daki 5 aşamanın tamamı. Aşama 2'deki 7 ekran ve Aşama 5'teki dijital okuma (5.1-5.5) belirtilen sırayla yapıldı. PROJECT.md 6.2'deki 9 sayfa maddesi (Sayfa 0-8) `[x]` işaretlendi. 6.7 bölümüne ve git'e dokunulmadı (commit atılmadı).
-- 10 feature (`splash`, `auth`, `home_shell`, `library`, `add_book`, `reading_status`, `book_detail`, `reading_goal`, `settings`, `reader`), 8 repository, 3 paylaşılan controller, ortak widget'lar, TR/EN ARB (229 anahtar), koyu/aydınlık tema.
+- 11 feature (`splash`, `auth`, `home_shell`, `library`, `add_book`, `reading_status`, `book_detail`, `loans`, `reading_goal`, `settings`, `reader`), 9 repository, 3 paylaşılan controller, ortak widget'lar, TR/EN ARB (229 anahtar), koyu/aydınlık tema.
 - **Dijital okuma:**
   - Telifi bitmiş kitaplar Project Gutenberg ve Vikikaynak'tan indirilir ve cihazda dosya olarak saklanır (`path_provider`); internetsiz okunur.
   - Sayfalı okuyucu, yazı boyutu, kalınan yerden devam ve ilerlemenin sayfa sayacına/Okuma Durumu'na/Yıllık Hedef'e otomatik yansıması.
   - Kullanıcının eklediği kitaplarda kendi PDF / EPUB dosyasını yükleyip okuma (EPUB okuyucuda metin olarak, PDF orijinal sayfalarıyla).
   - Okuma metinleri kitap başındaki başlık sayfası, içindekiler ve Gutenberg işaretlerinden genel kurallarla temizlenir; önceden indirilmiş kopyalar da ilk açılışta düzelir.
 - **Seed:** 31 telifi bitmiş ve dijital okunabilir kitap: 29 Gutenberg + 2 Vikikaynak (Kürk Mantolu Madonna, Nutuk). ISBN, baskı başlığı, sayfa sayısı ve kapaklar Open Library'de, Gutenberg numaraları kaynağında doğrulandı. 20 alıntı metinde birebir doğrulandı. 4 not, 4 ödünç, 24 kitaplık hedef.
-- Yalnızca onaylı paketler kullanıldı. Aşama 5 için `path_provider`, PDF/EPUB için kullanıcı onayıyla `file_picker`, `archive`, `pdfrx` eklendi (hepsi PROJECT.md 6.1'de). Ağır `setState` yok, `build` metotları ≤ 40 satır, renk/metin/kullanıcı metni kodda gömülü değil.
+- Yalnızca onaylı paketler kullanıldı. Aşama 5 için `path_provider`, PDF/EPUB için kullanıcı onayıyla `file_picker`, `archive`, `pdfrx`, okuyucudaki çeviri için önce `google_mlkit_translation` ve `google_mlkit_language_id` eklendi, sonra iOS simülatörü için bu paketler kaldırılıp yerine uygulamanın kendi yerel köprüsü yazıldı (Android'de Gradle ile Google ML Kit, iOS'ta Apple Translation + NaturalLanguage), ödünç iade hatırlatması için `flutter_local_notifications` ve `timezone` eklendi (hepsi PROJECT.md 6.1'de). Ağır `setState` yok, `build` metotları ≤ 40 satır, renk/metin/kullanıcı metni kodda gömülü değil.
 - Özel ikon (SVG → PNG), 6 hazır avatar, yerel açılış ekranı, ad "Kitalog".
+- **Bildirimler (Android / iOS, internetsiz):** İade hatırlatması (bir gün önce ve iade günü 10:00), günlük okuma hatırlatması (seçilen saatte, varsayılan 21:00; o gün okuduysan gelmez, art arda okunan günlerde seri başlığı) ve yarım kalan kitap hatırlatması (14 gün ilerleme yoksa bir kez). Okuma hatırlatmaları varsayılan kapalı; Android'de ayrı kanalda.
 - Giriş / Kayıt ekranlarında uygulamaya özel çizilmiş, animasyonlu arka plan: sayfaları çevrilen açık kitaptan uçuşan harfler, göz kırpan yıldızlar ve lamba ışığı (dış görsel yok, telif sorunu yok).
 
 **Son sonuçlar**
-- `flutter analyze`: 0 uyarı, 0 hata. `flutter test`: 366 test, hepsi geçti.
-- Android debug APK ve iOS simülatör derlemesi başarılı. Uygulama iOS simülatöründe çalıştırıldı; gerçek ağla indirme ve çevrimdışı açma doğrulandı.
+- `flutter analyze`: 0 uyarı, 0 hata. `flutter test`: 620 test, hepsi geçti.
+- Android debug APK, iOS simülatör derlemesi ve gerçek iPhone için imzasız iOS derlemesi başarılı. Uygulama iOS simülatöründe yeniden çalışıyor (okuyucudaki çeviri orada gizli; Apple simülatörde çeviriyi kapatıyor). Gerçek ağla indirme ve çevrimdışı açma simülatörde daha önce doğrulandı.
+- iOS en düşük sürümü 18.0.
 
 **Ertelenen / yapılmayan işler**
+- **Gerçek iPhone'da iade ve okuma hatırlatmaları denemesi (kullanıcı notu, sonra yapılacak):** izin penceresi, seçilen saatte bildirim, dokununca Kitap Detay / Okuyucu, Ayarlar anahtarları. Ayrıntı: "Hatırlatmaya Dokununca Kitap Detay" kaydının açık konuları.
 - Gerçek cihazda (fiziksel Android/iOS), macOS/Windows/Linux masaüstünde ve web'de çalıştırma yapılmadı. Yalnızca Android/iOS derlemesi ve iOS simülatörü denendi.
 - Web'de çevrimdışı okuma yok: metin oturum boyunca bellekte tutuluyor, çünkü `path_provider` web'de dosya klasörü sunmuyor.
 - Galeri/kamera ile profil resmi seçimi ve PDF/EPUB için sistemin dosya seçme penceresi elle denenmedi (testler sahte seçicilerle yapıldı; PDF/EPUB görüntüleme simülatörde gerçek dosyalarla doğrulandı).

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kitalog/core/models/book_genre.dart';
+import 'package:kitalog/core/models/book_model.dart';
 import 'package:kitalog/core/models/reading_status.dart';
 import 'package:kitalog/features/reading_goal/controllers/reading_goal_controller.dart';
 import 'package:kitalog/features/reading_goal/models/reading_goal_state.dart';
@@ -83,6 +84,32 @@ void main() {
     expect(controller.state.value.totalPagesRead, 0);
     expect(controller.state.value.genreCounts, isEmpty);
     expect(controller.state.value.maxMonthly, 0);
+    controller.dispose();
+  });
+
+  test('biten kitaplar kullanıcı kategorisine göre ayrı sayılır', () async {
+    final deps = await createTestDependencies();
+    final library = deps.libraryController;
+    await library.load();
+    final controller = ReadingGoalController(library: library);
+    final before = controller.state.value;
+    final mizah = await library.addCustomGenre('Mizah');
+    final now = DateTime.now();
+    await library.addBook(BookModel(
+      id: 'k1',
+      title: 'Gülmece',
+      pageCount: 100,
+      currentPage: 100,
+      customGenreId: mizah.id,
+      status: ReadingStatus.finished,
+      finishedAt: now,
+      addedAt: now,
+    ));
+    final goal = controller.state.value;
+    expect(goal.customGenreCounts[mizah.id], 1);
+    expect(goal.customGenres.single.name, 'Mizah');
+    expect(goal.genreCounts[BookGenre.other], before.genreCounts[BookGenre.other], reason: '"Diğer"e sayılmaz');
+    expect(ReadingGoalState.fromJson(goal.toJson()).customGenreCounts, {mizah.id: 1});
     controller.dispose();
   });
 }

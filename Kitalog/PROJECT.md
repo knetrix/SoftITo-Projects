@@ -42,7 +42,7 @@ Genel Kullanıcılar, Öğrenciler veya İlgili Alan Profesyonelleri.
 | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `shared_preferences`                          | Kullanıcı, Kitap, Alıntı, Not, Hedef ve Ayar Verilerinin Kalıcı Saklanması                                                  |
 | `flutter_localizations` + `intl` (SDK)        | Türkçe/İngilizce Çoklu Dil (ARB + `gen-l10n`), Tarih Formatları                                                             |
-| `image_picker`                                | Ayarlar'da Galeriden/Kameradan Profil Resmi Yükleme                                                                         |
+| `image_picker`                                | Ayarlar'da Galeriden/Kameradan Profil Resmi, Manuel Kitap Eklemede Kapak Resmi Yükleme                                      |
 | `http`                                        | Open Library API ile ISBN/Başlık Araması                                                                                    |
 | `crypto`                                      | Şifrenin Düz Metin Yerine SHA-256 Hash Olarak Saklanması                                                                    |
 | Open Library API                              | `https://openlibrary.org/search.json?q=` ve `https://openlibrary.org/isbn/<ISBN>.json` (Ücretsiz, API Anahtarı Gerektirmez) |
@@ -53,6 +53,10 @@ Genel Kullanıcılar, Öğrenciler veya İlgili Alan Profesyonelleri.
 | `file_picker`                                 | Kullanıcının Kendi PDF / EPUB Dosyasını Cihazdan Seçmesi                                                                    |
 | `archive`                                     | EPUB (Zip) Dosyasının Açılıp Bölümlerinin Okuyucu Metnine Çevrilmesi (Saf Dart)                                            |
 | `pdfrx`                                       | Kullanıcının PDF Dosyasının Orijinal Sayfa Düzeniyle Gösterilmesi (PDFium)                                                  |
+| Google ML Kit (Android, Gradle: `com.google.mlkit:translate`, `com.google.mlkit:language-id`) | Android'de Okuyucudaki İngilizce ↔ Türkçe Cihaz Üstü Çeviri ve Yüklenen PDF / EPUB'un Dil Tanıması (Dil Paketi Bir Kez İndirilir, Sonra Çevrimdışı). Dart Paketi Değil, Uygulamanın Kendi Yerel Köprüsünden (`kitalog/translation`) Çağrılır |
+| Apple `Translation` + `NaturalLanguage` (iOS 18+, Sistem Kütüphanesi) | iOS'ta Aynı Çeviri ve Dil Tanıma; Dil Paketini Sistem İndirir ve Onayını Kendi Penceresinde Sorar. Apple Çeviriyi Simülatörde Kapattığı için iOS Simülatöründe Çeviri Gizlenir |
+| `flutter_local_notifications`                 | Ödünç Verilen Kitapların İade Hatırlatması ve Okuma Hatırlatmaları: Cihaz Üstü Zamanlanmış Bildirim (Yalnızca Android / iOS; Sunucu Gerekmez)       |
+| `timezone`                                    | `flutter_local_notifications`'ın Zamanlama API'sinin İstediği `TZDateTime` (Tek Seferlik Bildirim UTC Anıyla Kurulur; Günlük Okuma Hatırlatması da Tekrar Eden Değil, 7 Günlük Tek Seferlik Bildirimlerle Kurulur)      |
 | `flutter_launcher_icons` (`dev_dependencies`) | Uygulama İkonunun Tüm Platformlar için Üretilmesi (Uygulamaya Dahil Olmaz, Sadece Geliştirme Aracı)                         |
 | `flutter_native_splash` (`dev_dependencies`)  | İşletim Sisteminin Gösterdiği Yerel Açılış Ekranı (Flutter Motoru Yüklenirken Beyaz Ekran Yerine Logo)                      |
 
@@ -69,23 +73,28 @@ Uygulama Açılışı (Splash / Oturum Kontrolü)
                                      ├─ Sekme 1: Kitaplığım (Raf Görünümü)
                                      │     ├─ FAB ► Yeni Kitap Ekle (ISBN / Arama / Manuel)
                                      │     └─ Kitaba Dokun ► Kitap Detay & Alıntı ► Dijital Okuyucu
-                                     ├─ Sekme 2: Okuma Durumu (Okunuyor / Okunacak / Bitti)
+                                     ├─ Sekme 2: Okuma Durumu (Okunacak / Okunuyor / Bitti)
                                      │     └─ Kitaba Dokun ► Kitap Detay & Alıntı ► Dijital Okuyucu
-                                     ├─ Sekme 3: Yıllık Okuma Hedefi Paneli
+                                     ├─ Sekme 3: Ödünç Takibi (Ödünçte / Geçmiş)
+                                     │     ├─ FAB ► Ödünç Verilecek Kitabı Seç ► Ödünç Ver
+                                     │     └─ Kitaba Dokun ► Kitap Detay & Alıntı
+                                     ├─ Sekme 4: Yıllık Okuma Hedefi Paneli
                                      └─ Sağ Üst ⚙ ► Ayarlar (Profil, Tema, Dil, Hesap Bilgileri, Çıkış)
 ```
 
 
 
 - [x] Sayfa 0 – Splash / Oturum Kontrolü: Yerel Açılış Ekranıyla (Bkz. 6.5) Aynı Zemin ve Logoyu Kullanır, Böylece Geçiş Kesintisiz Görünür. Kayıtlı Oturum Varsa Ana Kabuğa, Yoksa Kayıt Ekranına Yönlendirir. İlk Açılışta Örnek Kitap Verisini (Seed) Yükler.
-- [x] Sayfa 1 – Kayıt &amp; Giriş: E-Posta, Telefon, Şifre (+ Şifre Tekrar) ile Kayıt; Mevcut Kullanıcı için E-Posta + Şifre ile Giriş (Bkz. 6.4).
-- [x] Sayfa 2 – Kitaplığım (Raf Görünümü): Kitap Kapaklarının Raf/Grid Düzeninde Listelenmesi, Tür Etiketine ve Okuma Durumuna Göre Filtre, Başlık/Yazar Araması, Ödünç Verilen Kitaplarda Rozet.
-- [x] Sayfa 3 – Yeni Kitap Ekle: ISBN ile Arama, Başlık/Yazar ile Arama (Open Library), Sonuç Bulunamazsa Manuel Form (Başlık, Yazar, Sayfa Sayısı, Tür, Kapak URL, Durum).
-- [x] Sayfa 4 – Okuma Durumu: Okunuyor / Okunacak / Bitti Sekmeleri; Okunuyor Kartlarında İlerleme Yüzdesi ve Hızlı Sayfa Sayacı (+/-).
-- [x] Sayfa 5 – Kitap Detay &amp; Alıntı: Kapak, Künye, Tür Etiketi, Sayfa Sayacı &amp; İlerleme Çubuğu, Durum Değiştirme, Puan (1-5) &amp; Şahsi İnceleme, Alıntılar (Sayfa No ile, Favori İşaretleme), Notlar, Ödünç Verme Bilgisi (Kime, Ne Zaman, İade Tarihi).
-- [x] Sayfa 6 – Yıllık Okuma Hedefi Paneli: Yıllık Hedef Kitap Sayısı Belirleme, İlerleme Çubuğu (Biten / Hedef), Aylık Biten Kitap Dağılımı, Toplam Okunan Sayfa, Türlere Göre Dağılım.
-- [x] Sayfa 7 – Ayarlar: Profil Resmi &amp; Kullanıcı Özeti, Tema, Dil, E-Posta / Telefon / Şifre Güncelleme, Çıkış Yap (Bkz. 6.4).
-- [x] Sayfa 8 – Dijital Okuyucu: Kitabın Telifi Bitmiş Dijital Metninin İndirilip Çevrimdışı Okunması (Türkçe Eserler Vikikaynak, Dünya Klasikleri Project Gutenberg), Sayfalı Okuma, Yazı Boyutu, Kalınan Yerin Saklanması, Okuma İlerlemesinin Sayfa Sayacına Otomatik Yansıması. Kullanıcının Eklediği (Dijital Sürümü Olmayan) Kitaplarda Kendi PDF / EPUB Dosyasını Yükleyip Okuması: EPUB Okuyucuda Metin Olarak, PDF Orijinal Sayfalarıyla Açılır; Dosya Yalnızca Cihazda Saklanır, DRM'li Dosyalar Açılmaz.
+- [x] Sayfa 1 – Kayıt &amp; Giriş: E-Posta, Telefon, Şifre (+ Şifre Tekrar) ile Kayıt; Mevcut Kullanıcı için E-Posta + Şifre ile Giriş (Bkz. 6.4). Girişte "Şifremi Unuttum" (GEÇİCİ, Yerel): Kayıtlı E-Posta + Telefon Eşleşirse Yeni Şifre Belirlenir (5 Hatalı Denemede 30 sn Bekleme); Tamamlanınca Girişe E-Posta Dolu Dönülür. İleride Firebase Auth Tarzı Bir Servise Geçilince Yalnızca `AuthController`'daki Doğrulama / Sıfırlama Yöntemleri Değişir.
+- [x] Sayfa 2 – Kitaplığım (Raf Görünümü): Kitap Kapaklarının Raf/Grid Düzeninde Listelenmesi, Başlık/Yazar Araması ve Hemen Sağındaki "Filtreler" Düğmesiyle Açılan Panel: Biçim (Fiziksel / Dijital) ve Tür (Kullanıcı Kategorileri Dahil) Filtreleri Birden Fazla Seçilebilir (Okuma Durumuna Göre Ayırma "Okuma Durumu", Ödünçteki Kitapların Takibi "Ödünç Takibi" Sekmesindedir) (Grup İçinde "Veya", Gruplar Arası "Ve"); Seçili Filtre Sayısı Düğmede Rozetle, Seçimler Aramanın Altında Tek Dokunuşla Kaldırılabilen Çipler Olarak Görünür, Kapakta Biçim Rozetleri: Fiziksel Kopya Varsa "Fiziksel" (Kopya Ödünçteyse Onun Yerine "Ödünçte"), Dijital Sürüm Varsa "Dijital"; Yalnızca Dijital Olan Kitapta Sadece "Dijital".
+- [x] Sayfa 3 – Yeni Kitap Ekle: ISBN ile Arama, Başlık/Yazar ile Arama (Open Library), Sonuç Bulunamazsa Manuel Form (Başlık, Yazar, Sayfa Sayısı, Tür, Kapak, Durum, "Bu Kitap Bende Fiziksel Olarak Var" Seçeneği). Kitabın Türü Listede Yoksa Tür Alanının Yanındaki "Yeni Kategori Ekle" ile Ad ve Renk Seçilerek Hızlıca Kategori Eklenir ve Seçili Gelir (Ad Benzersizdir; Yerleşik Türlerle de Çakışamaz). Kapak URL ile veya Cihazdan (Galeri / Kamera) Resim Seçilerek Eklenir; Cihazdan Seçilen Resim Küçültülüp `coverUrl` İçinde `data:image/...;base64` Olarak Saklanır.
+- [x] Sayfa 4 – Okuma Durumu: Soldan Sağa Okunacak / Okunuyor / Bitti Sekmeleri (Açılışta Okunuyor Seçili); Okunuyor Kartlarında İlerleme Çubuğu, Sayfa ve Yüzde. Sayfa, Karta Dokununca Açılan Kitap Detay'ın Okuma İlerlemesi'nden Değiştirilir.
+- [x] Sayfa 5 – Kitap Detay &amp; Alıntı: Kapak, Künye, Tür Etiketi, Sayfa Sayacı &amp; İlerleme Çubuğu, Durum Değiştirme, Puan (1-5) &amp; Şahsi İnceleme, Alıntılar (Sayfa No ile, Favori İşaretleme), Notlar, Ödünç Verme Bilgisi (Kime, Ne Zaman, İade Tarihi; Yalnızca Fiziksel Kopyası Olan Kitapta Görünür).
+- [x] Sayfa 6 – Yıllık Okuma Hedefi Paneli: Yıllık Hedef Kitap Sayısı Belirleme, İlerleme Çubuğu (Biten / Hedef), Aylık Biten Kitap Dağılımı, Toplam Okunan Sayfa, Türlere (Kullanıcı Kategorileri Dahil) Göre Dağılım.
+- [x] Sayfa 7 – Ayarlar: Profil Resmi &amp; Kullanıcı Özeti, Tema, Dil, Bildirimler ("İade hatırlatmaları", "Günlük okuma hatırlatması" ve "Yarım kalan kitaplar" Anahtarları ile "Okuma hatırlatması saati" (Sistemin Saat Seçicisi; Okuma Anahtarlarından Biri Açıkken Etkin); Kapatınca O Türün Zamanlanmış Hatırlatmaları Silinir, Açınca Bildirim İzni İstenir, İzin Yoksa Telefon Ayarlarına Yönlendiren Mesaj; Yalnızca Android / iOS'ta Görünür. Ayrıntı: Sayfa 10), E-Posta / Telefon / Şifre Güncelleme, Çıkış Yap (Bkz. 6.4).
+- [x] Sayfa 9 – Ödünç Takibi (Sekme 3): Üstte Özet (Ödünçte / Gecikmiş / İadesi Yaklaşan – Bugün ile 3 Gün Arası), Altında "Ödünçte" ve "Geçmiş" Sekmeleri. Ödünçte: Fiziksel Kopyası Ödünç Verilmiş Kitaplar En Acil Olan Başta (Gecikenler, Sonra İade Günü Yaklaşanlar, En Sonda İade Tarihi Olmayanlar); Kartta Kime, Veriliş Tarihi ve Kaç Gündür Ödünçte Olduğu, İade Tarihi ve Durum Etiketi ("X Gün Gecikti" / "Bugün İade Edilmeli" / "İadeye X Gün Kaldı" / "İade Tarihi Yok"), "Düzenle" (Kime ve İade Tarihi; Veriliş Tarihi Korunur) ve Onaylı "İade Alındı". Geçmiş: İadesi Alınan Ödünçler En Son İade Başta (Kime, Veriliş – İade Tarihi, Süre, Geç İade Etiketi). FAB "Ödünç Ver" Yalnızca Fiziksel Kopyası Olan ve Ödünçte Olmayan Kitapları Aramalı Bir Panelde Listeler. İade Günü Gecikme Sayılmaz, Ertesi Gün Gecikmedir. Gecikmiş Ödünç Varsa Alt Çubuktaki "Ödünç" Sekmesinde Sayı Rozeti Görünür. Kitap Detay'daki Ödünç Bölümü Aynı Veriyi Kullanır; Oradan İade Alınan Kitap da Geçmişe Eklenir. İade Hatırlatması: İade Tarihi Olan Her Ödünç için İade Gününden Bir Gün Önce ("Yarın iade günü") ve İade Günü ("Bugün iade günü") Saat 10:00'da Cihaz Bildirimi Zamanlanır (Ödünç Verildiği Gün "Yarın" Hatırlatması Kurulmaz; Android Esnek Zamanlamayla 10:00-11:00 Arasında Gösterir). Ödünç Verme / Düzenleme / İade ve Dil Değişikliğinde Plan Yeniden Kurulur; Bildirim İzni Açılışta Değil, Kullanıcı İlk Kez İade Tarihli Bir Ödünç Kaydettiğinde İstenir. Hatırlatmaya Dokununca (Uygulama Açıkken, Arka Plandayken veya Kapalıyken) İlgili Kitabın Kitap Detay'ı Açılır; Oturum Kapalıysa Girişten Sonra Açılır, Kitap Silinmişse Yok Sayılır. Ayarlar'daki "İade hatırlatmaları" Anahtarı Kapalıyken Hiç Hatırlatma Kurulmaz. Web ve Masaüstünde Hatırlatma Yoktur.
+- [x] Sayfa 8 – Dijital Okuyucu: Kitabın Telifi Bitmiş Dijital Metninin İndirilip Çevrimdışı Okunması (Türkçe Eserler Vikikaynak, Dünya Klasikleri Project Gutenberg), Sayfalı Okuma, Yazı Boyutu, Kalınan Yerin Saklanması, Okuma İlerlemesinin Sayfa Sayacına Otomatik Yansıması. Okuyucunun Sayfa Sayısı Her Zaman Kitabın Sayfa Sayısına (`BookModel.pageCount`) Eşittir: Metin Kitabın Sayfa Sayısı Kadar Sayfaya Bölünür, Okuyucudaki "Sayfa N" Sayaçtaki N ile Aynıdır; PDF'te, Sayfa Sayısı Bilinmeyen Kitapta ve Bu Sayıya Bölünemeyecek Kadar Kısa Metinde Kitabın Sayfa Sayısı Okuyucunun Sayfalarına Eşitlenir. Kullanıcı PDF / EPUB Yüklediğinde (veya Dosyayı Değiştirdiğinde) Kitabın Sayfa Sayısı Hemen Dosyanınkine Eşitlenir, İlerleme Yüzdesi Korunur: PDF'te Gerçek Sayfa Sayısı, EPUB'da Dosyadaki Basılı Sayfa Listesi (`page-list` / NCX `pageList`), Yoksa Okuyucunun Sayfa Sayısı. Okuyucu Yalnızca "Okunuyor" Durumundaki Kitapta Sayaçtaki Sayfadan Açılır; "Okunacak" ve "Bitti" Durumundaki Kitaplar Her Zaman İlk Sayfadan Açılır. Okurken Seçilen Metin, Seçim Menüsündeki "Alıntı Olarak Kaydet" ile Okuyucudaki Sayfa Numarasıyla Kaydedilir ve Kitap Detay'daki Alıntılar Bölümüne Otomatik Eklenir (Aynı Sayfadaki Aynı Metin Tekrar Eklenmez; PDF Kopyalamaya İzin Vermiyorsa Düğme Gösterilmez). Kullanıcının Eklediği (Dijital Sürümü Olmayan) Kitaplarda Kendi PDF / EPUB Dosyasını Yükleyip Okuması: EPUB Okuyucuda Metin Olarak, PDF Orijinal Sayfalarıyla Açılır; Dosya Yalnızca Cihazda Saklanır, DRM'li Dosyalar Açılmaz. İngilizce Kitaplar Türkçeye, Türkçe Kitaplar İngilizceye Cihaz Üstünde (Android'de Google ML Kit, iOS'ta Apple Translation) Çevrilir: Metin Okuyucuda Üst Çubuktaki Çeviri Menüsünden Orijinal / Çeviri / Orijinal ve Çeviri Alt Alta Görünümü Seçilir (Sayfa Numarası Değişmez, Satır ve Paragraf Yapısı Korunur, Sonraki Sayfa Önceden Hazırlanır); Metinde ve PDF'te Seçilen Metin, Seçim Menüsündeki "Çevir" ile Alttan Açılan Pencerede Çevrilir ("Kopyala", "Alıntı Olarak Kaydet"). İlk Çeviriden Önce Dil Paketinin İndirilmesi için Onay İstenir (Android'de Uygulamanın Penceresi, ~30 MB; iOS'ta Sistemin Kendi Penceresi); Sonra Çeviri İnternetsiz Çalışır. Çevrilen Satırlar Kitaba Ait Önbellek Dosyasında Saklanır (Dosya Değişince / Silinince Temizlenir). Yüklenen Dosyanın Dili Metinden Otomatik Tanınır; Dili İngilizce veya Türkçe Değilse ya da Platform Desteklemiyorsa (Web, Masaüstü, iOS Simülatörü) Çeviri Gösterilmez.
+- [x] Sayfa 10 – Okuma Hatırlatmaları (Ayarlar > Bildirimler; İkisi de Varsayılan Kapalı, Saat Varsayılan 21:00): **Günlük Okuma Hatırlatması:** Önümüzdeki 7 Gün için Her Gün Seçilen Saatte Tek Seferlik Bildirim Kurulur; Plan Her Açılışta ve Her Değişiklikte İleri Kaydırılır (Uygulamayı Uzun Süre Açmayan Kullanıcıya Sonsuza Kadar Bildirim Gitmez). Metin "Okunuyor" Durumundaki En Son İlerlenen Kitaba Göre Üretilir ("“Kitap” kitabında N. sayfadasın. 10 dakika okumaya ne dersin?"); Okunan Kitap Yoksa Genel Davet. O Gün Sayfa İlerlemesi Kaydedildiyse O Günün Daveti Kalkar. Dün ve Öncesinde Art Arda En Az 2 Gün Okunduysa Başlık Seri Olur ("N gündür okuyorsun, seriyi bozma!"). **Yarım Kalan Kitaplar:** "Okunuyor" Kitapta Son İlerlemeden (Kayıt Yoksa Başlama Gününden) 14 Gün Sonra Seçilen Saatte Bir Kez Hatırlatılır; Aynı Günün Günlük Davetinin Yerini Alır. **Dokununca:** Kitabın Dijital Sürümü Varsa Okuyucu (Geri Gelince Kitap Detay), Yoksa Kitap Detay; Okunan Kitap Yoksa Okuma Durumu Sekmesi. Okuma Hatırlatmaları Android'de Ayrı Bir Kanaldadır ("Okuma hatırlatmaları"), İade Hatırlatmalarından Bağımsız Kapatılabilir. Web ve Masaüstünde Hatırlatma Yoktur.
 
 ### 6.3. Veri Modeli ve Bileşen Tasarımı
 
@@ -109,13 +118,19 @@ Tüm Modeller `@immutable`, Tüm Alanlar `final`'dır ve `copyWith`, `fromJson`,
 | Model              | Alanlar                                                                                                                                                                                                | Not                                                                                                                                                                                        |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `UserModel`        | `id`, `email`, `phone`, `passwordHash`, `avatarType`, `avatarValue` (Hazır Avatar Anahtarı veya Dosya Yolu), `createdAt`                                                                               | Şifre Asla Düz Metin Saklanmaz.                                                                                                                                                            |
-| `BookModel`        | `id`, `isbn?`, `title`, `authors` (`List<String>`), `coverUrl?`, `pageCount`, `currentPage`, `genre`, `status`, `rating?` (1-5), `review?`, `isOwned`, `loan?`, `startedAt?`, `finishedAt?`, `addedAt`, `digitalEdition?` | `progress` (= `currentPage / pageCount`, 0.0-1.0) Hesaplanan Getter'dır, Saklanmaz. `currentPage` 0 ile `pageCount` Arasında Sınırlanır; `pageCount`'a Ulaşınca Durum `finished` Önerilir. |
-| `LoanModel`        | `borrowerName`, `lentAt`, `dueAt?`                                                                                                                                                                     | `BookModel.loan` Doluysa Kitap "Ödünçte" Sayılır.                                                                                                                                          |
+| `BookModel`        | `id`, `isbn?`, `title`, `authors` (`List<String>`), `coverUrl?`, `pageCount`, `currentPage`, `genre`, `customGenreId?`, `status`, `rating?` (1-5), `review?`, `isOwned`, `loan?`, `startedAt?`, `finishedAt?`, `addedAt`, `digitalEdition?` | `progress` (= `currentPage / pageCount`, 0.0-1.0) Hesaplanan Getter'dır, Saklanmaz. `currentPage` 0 ile `pageCount` Arasında Sınırlanır; `pageCount`'a Ulaşıldığı Anda (Kitap Detay, Okuma Durumu veya Okuyucu) "Bitti Olarak İşaretle" Düğmesinin Açtığı "Kitabı Bitirdin mi?" Onayı Kendiliğinden Açılır; Zaten Son Sayfadayken İleri Gitmek Öneriyi Yinelemez. `isOwned` Fiziksel Kopyanın Olduğunu Belirtir; Ödünç Yalnızca Fiziksel Kopya İçindir (`isLent` = `isOwned` ve `loan` Dolu). |
+| `LoanModel`        | `borrowerName`, `lentAt`, `dueAt?`                                                                                                                                                                     | `BookModel.loan` Doluysa Kitap "Ödünçte" Sayılır. `daysUntilDue`, `isOverdue`, `daysOut` Takvim Günüyle Hesaplanan Getter/Metotlardır (Saat Yok Sayılır; İade Günü Gecikme Değildir).                                                                                                                                          |
+| `LoanRecordModel`  | `id`, `bookId`, `borrowerName`, `lentAt`, `dueAt?`, `returnedAt`                                                                                                                                       | İadesi Alınmış Ödünç (Ödünç Geçmişi). Kitap İade Alınınca `BookModel.loan` Buraya Taşınır; `daysOut` ve `wasLate` Hesaplanır. Kitap Silinince Geçmişi de Silinir.                         |
 | `QuoteModel`       | `id`, `bookId`, `text`, `page?`, `isFavorite`, `createdAt`                                                                                                                                             |                                                                                                                                                                                            |
 | `NoteModel`        | `id`, `bookId`, `content`, `createdAt`, `updatedAt`                                                                                                                                                    |                                                                                                                                                                                            |
 | `ReadingGoalModel` | `year`, `targetBookCount`                                                                                                                                                                              | Biten Kitap Sayısı `BookModel.finishedAt` Yılından Hesaplanır.                                                                                                                             |
-| `AppSettingsModel` | `themeMode` (Varsayılan `dark`), `localeCode` (Varsayılan `tr`), `readerTextScale` (Varsayılan `1.0`)                                                                                                  |                                                                                                                                                                                            |
-| `DigitalEditionModel` | `source` (`DigitalSource`), `sourceId` (Gutenberg Numarası, Vikikaynak Sayfa Başlığı veya Yüklenen Dosyanın Adı), `languageCode`, `format`                                                                                       | `BookModel.digitalEdition` Doluysa Kitap Dijital Olarak Okunabilir.                                                                                                                         |
+| `AppSettingsModel` | `themeMode` (Varsayılan `dark`), `localeCode` (Varsayılan `tr`), `readerTextScale` (Varsayılan `1.0`), `loanRemindersEnabled` (Varsayılan `true`), `readingRemindersEnabled` / `stalledBookRemindersEnabled` (Varsayılan `false`), `readingReminderMinutes` (Gece Yarısından İtibaren Dakika, Varsayılan `1260` = 21:00)                                                                                                  |                                                                                                                                                                                            |
+| `DigitalEditionModel` | `source` (`DigitalSource`), `sourceId` (Gutenberg Numarası, Vikikaynak Sayfa Başlığı veya Yüklenen Dosyanın Adı), `languageCode`, `format`                                                                                       | `BookModel.digitalEdition` Doluysa Kitap Dijital Olarak Okunabilir. `languageCode` Okuyucudaki Çevirinin Yönünü Belirler (`en` → `tr`, `tr` → `en`); Yüklenen Dosyada Metinden Tanınır, Tanınamazsa Boş Kalır. |
+| `LoanReminderModel` | `bookId`, `kind` (`dueTomorrow` / `dueToday`), `scheduledAt` | Zamanlanan İade Hatırlatması; Saklanmaz, Ödünçlerden Hesaplanır (`LoanReminderController.plan`). Metin Zamanlanırken Uygulama Diline Göre Üretilir. |
+| `ReadingLogEntryModel` | `bookId`, `day` (Takvim Günü), `pages` | Günlük Okuma Kaydı: Kitapta Sayfa İlerleyince (Kitap Detay veya Okuyucu) O Günün Kaydına Eklenir, Geri Gitmek Sayılmaz. 400 Günden Eskisi Silinir; Kitap Silinince Korunur (Seri Bozulmasın). |
+| `ReadingReminderModel` | `kind` (`daily` / `streak` / `stalled`), `scheduledAt`, `bookId?`, `streakDays` | Zamanlanan Okuma Hatırlatması; Saklanmaz, Kitaplar + Okuma Kaydı + Ayarlardan Hesaplanır (`ReadingReminderController.plan`). |
+| `NotificationTargetModel` | `kind` (`book` / `read` / `readingStatus`), `bookId?` | Bildirimin `payload`'ı (`book:<id>`, `read:<id>`, `readingStatus`); Önceki Sürümün Düz Kitap Kimliği Kitap Detay Sayılır. |
+| `CustomGenreModel` | `id`, `name`, `colorIndex` (`AppColors.customGenrePalette` Sırası), `createdAt` | Kullanıcının Eklediği Kategori. `BookModel.customGenreId` Doluysa Etiket ve Renk Buradan Gelir, `genre` `other` Kalır; Kategori Bulunamazsa Kitap Yerleşik Türüne Düşer. |
 | `DigitalCopyModel` | `bookId`, `fileName`, `charCount`, `downloadedAt`, `lastOffset`, `format`, `byteSize`, `textVersion`                                                                                                                                     | Cihaza İndirilmiş Metin; `lastOffset` Kalınan Yerin Karakter Konumudur. Metnin Kendisi `path_provider` ile Dosyada Tutulur.                                                                  |
 
 
@@ -134,6 +149,9 @@ Tüm Modeller `@immutable`, Tüm Alanlar `final`'dır ve `copyWith`, `fromJson`,
 | `kitalog.seeded`   | Örnek Veri Yüklendi mi (`bool`) |
 | `kitalog.seedVersion` | Yüklü Örnek Verinin Sürümü (`int`) |
 | `kitalog.digital`  | `List<DigitalCopyModel>` JSON   |
+| `kitalog.genres`   | `List<CustomGenreModel>` JSON   |
+| `kitalog.loanHistory` | `List<LoanRecordModel>` JSON |
+| `kitalog.readingLog` | `List<ReadingLogEntryModel>` JSON |
 
 
 **Katmanlı Veri Akışı**
@@ -144,8 +162,10 @@ View / Widget ──(Aksiyon)──► Controller ──► Repository ──►
       └──(ValueListenableBuilder)┴── ValueNotifier<State>
 ```
 
-- `BookRepository`, `QuoteRepository`, `NoteRepository`, `GoalRepository`, `AuthRepository`, `SettingsRepository`, `BookSearchRepository`, `DigitalBookRepository` → `lib/core/repositories/`
-- Uygulama Geneli Paylaşılan Controller'lar (`AuthController`, `LibraryController`, `SettingsController`) `AppScope` Üzerinden Sağlanır; Ekrana Özel Controller'lar (Örn: `AddBookController`) View İçinde Oluşturulup `dispose` Edilir.
+- `BookRepository`, `QuoteRepository`, `NoteRepository`, `GoalRepository`, `GenreRepository`, `LoanHistoryRepository`, `ReadingLogRepository`, `AuthRepository`, `SettingsRepository`, `BookSearchRepository`, `DigitalBookRepository`, `TranslationRepository` → `lib/core/repositories/`
+- Bildirim Motoru `ReminderEngine` Arayüzünün Arkasındadır (`lib/core/repositories/reminders/`): Uygulama `flutter_local_notifications`'ı, Testler Sahte Motoru Kullanır. Bildirimler Gruplara Ayrılır (`ReminderGroup.loans` Kimlik 1-10000, `ReminderGroup.reading` 10001-20000; Her Grubun Kendi Android Kanalı Var); Bir Grubun Planı Yeniden Kurulurken (`replaceGroup`) Diğerine Dokunulmaz. `NotificationController` (`main.dart` Başlatır, `AppScope` Paylaşır) Motoru Bir Kez Hazırlar, Ardından `LoanReminderController` (İade) ve `ReadingReminderController` (Günlük Okuma, Seri, Yarım Kalan Kitap) Planlarını Başlatır; İkisi de Kitaplar Yüklenene Kadar Bekler, Plan Değişmediyse Bildirimlere Dokunmaz (Okuma Planında Yalnızca Metin Değiştiyse, Ör. Sayfa Çevirmek, 2 sn Bekleyip Bir Kez Kurulur). Dokunulan Bildirimin Hedefi `pendingTarget` ile Ana Kabuğa İletilir, Ana Kabuk Hedefi Açar.
+- Çeviri Motoru `TranslationEngine` Arayüzünün Arkasındadır (`lib/core/repositories/translation/`): Uygulama `NativeTranslationEngine`'i (Yerel Köprü `kitalog/translation`: Android `TranslationChannel.kt` → Google ML Kit, iOS `TranslationChannel.swift` → Apple Translation + NaturalLanguage), Testler Sahte Motoru Kullanır; Motor `main.dart`'ta Yerel Tarafa Sorularak Seçilir, Desteklenmiyorsa Çeviri Gizlenir. Çeviri Önbelleği `<kitap>.<kaynak>-<hedef>.json` Dosyasında (`path_provider`), Satırın Özetiyle Tutulur.
+- Uygulama Geneli Paylaşılan Controller'lar (`AuthController`, `LibraryController`, `SettingsController`, `NotificationController`) `AppScope` Üzerinden Sağlanır; Ekrana Özel Controller'lar (Örn: `AddBookController`) View İçinde Oluşturulup `dispose` Edilir.
 
 **Ortak Bileşenler (`lib/core/widgets/`)**
 
@@ -154,6 +174,7 @@ View / Widget ──(Aksiyon)──► Controller ──► Repository ──►
 - `ReadingProgressBar` (Yüzde ve Sayfa Bilgisiyle İlerleme Çubuğu)
 - `RatingStars` (1-5 Puan Gösterimi / Seçimi)
 - `EmptyStateView` (Boş Liste Mesajı)
+- `LoanDialog` (Ödünç Verme / Düzenleme Penceresi; Kitap Detay ve Ödünç Takibi Ortak Kullanır)
 
 ### 6.4 Yan Özellikler
 
@@ -176,7 +197,7 @@ View / Widget ──(Aksiyon)──► Controller ──► Repository ──►
 
 
 - Hata Mesajları Çoklu Dil Dosyalarından (ARB) Gelir; `AutovalidateMode.onUserInteraction` Kullanılır.
-- Şifre Güncellemede Mevcut Şifre Doğrulanır. E-Posta Değişikliği Giriş Bilgisini de Günceller.
+- Şifre Güncellemede Mevcut Şifre Doğrulanır. Şifremi Unuttum'da Yeni Şifre de Aynı Validator'larla Doğrulanır. E-Posta Değişikliği Giriş Bilgisini de Günceller.
 - Hazır Avatarlar `assets/avatars/` Altında Tutulur; Yüklenen Resim `image_picker` ile Seçilip Uygulama Dizinine Kopyalanır ve Yolu `UserModel.avatarValue`'ya Yazılır.
 - Tema ve Dil Seçimi `SettingsController` Üzerinden Anında Uygulanır (`MaterialApp` `ValueListenableBuilder` ile Sarılır) ve Kalıcı Saklanır.
 - Ayarlar Ekranında Ek Olarak "Çıkış Yap" Bulunur (Oturumu Kapatır, Veriler Silinmez, Giriş Ekranına Döner).
@@ -192,7 +213,7 @@ View / Widget ──(Aksiyon)──► Controller ──► Repository ──►
 - Kaynağından İndirilmesi Çok Uzun Süren Çok Parçalı Eserlerin (Örn: Nutuk) Metni `assets/books/` Altında Uygulamayla Birlikte Paketlenir; Bu Kitaplar İnternet Olmadan da Anında İndirilip Okunur.
 - Örnek Veri Sürümü `kitalog.seedVersion` ile Tutulur; Sürüm Değiştiğinde Yalnızca Örnek Kitaplar (id'si `seed-` ile Başlayanlar) Yenilenir, Kullanıcının Eklediği Kitaplar Korunur.
 - Her Kitabın Gerçek ISBN'i ve Open Library Kapak URL'i Bulunur (`https://covers.openlibrary.org/b/isbn/<ISBN>-L.jpg`). ISBN'ler Kodlama Aşamasında Doğrulanmalıdır, Uydurma ISBN YASAKTIR.
-- Kitaplar 3 Okuma Durumuna Dağıtılır; Okunanlara Puan &amp; İnceleme, Okunuyor Olanlara Farklı İlerleme Yüzdeleri, En Az 3 Kitaba Ödünç Bilgisi, Toplam En Az 15 Gerçek Alıntı (Sayfa No ile; Alıntılar Dijital Metinde Birebir Doğrulanır) ve Birkaç Not Eklenir.
+- Kitaplar 3 Okuma Durumuna Dağıtılır; Okunanlara Puan &amp; İnceleme, Okunuyor Olanlara Farklı İlerleme Yüzdeleri, En Az 3 Kitaba Ödünç Bilgisi (Biri Gecikmiş), En Az 3 İadesi Alınmış Ödünç Kaydı (Biri Geç İade), Toplam En Az 15 Gerçek Alıntı (Sayfa No ile; Alıntılar Dijital Metinde Birebir Doğrulanır) ve Birkaç Not Eklenir.
 - Bu Yılın Okuma Hedefi Örnek Olarak 24 Kitap Tanımlanır; Biten Kitapların `finishedAt` Tarihleri Yıl İçine Yayılır.
 - Kapak Resmi Yüklenemezse (İnternet Yok / 404) `BookCoverImage` Tür Renginde Başlık Yazılı Yer Tutucu Gösterir.
 
@@ -278,10 +299,11 @@ lib/
         home_shell/                 # NavigationBar + Ayarlar Butonu
         library/                    # Kitaplığım Raf Görünümü
         add_book/                   # ISBN / Arama / Manuel Ekleme
-        reading_status/             # Okunuyor / Okunacak / Bitti
+        reading_status/             # Okunacak / Okunuyor / Bitti
         book_detail/                # Detay, Alıntı, Not, İnceleme, Ödünç
         reading_goal/               # Yıllık Okuma Hedefi Paneli
         settings/                   # Profil, Tema, Dil, Hesap
+        loans/                      # Ödünç Takibi (Ödünçte / Geçmiş, Ödünç Ver)
         reader/                     # Dijital Okuyucu (Çevrimdışı)
             controllers/
             models/
@@ -353,11 +375,13 @@ dart run flutter_launcher_icons
 dart run flutter_native_splash:create
 ```
 
-- **Projeyi Çalıştırma (iOS Simulator)**
+- **Projeyi Çalıştırma**
+
+> Uygulama Android Emülatöründe, iOS Simülatöründe ve Gerçek Cihazlarda Çalışır. Apple Cihaz Üstü Çeviriyi Simülatörde Kapattığı için iOS Simülatöründe Okuyucudaki Çeviri Gizlenir; Çeviriyi Denemek için Android Emülatörü (Örn: `flutter emulators --launch Pixel_8`) veya Gerçek iPhone Kullanılır. iOS En Düşük Sürümü 18.0'dır (Apple Translation Şartı).
 
 ```bash
 flutter devices
-flutter run -d E8204135-65EB-435D-812A-B84397808992 (flutter devices Çıktısına Göre Burası Değişebilir)
+flutter run -d <cihaz-id> (flutter devices Çıktısına Göre: iOS Simülatörü, Gerçek iPhone veya Android Emülatörü, Örn: emulator-5554)
 ```
 
 ## 10. Ajanın Çıktı ve Yanıt Verme Standartları

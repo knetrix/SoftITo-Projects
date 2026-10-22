@@ -5,6 +5,7 @@ import 'package:kitalog/features/auth/views/register_view.dart';
 import 'package:kitalog/features/book_detail/views/book_detail_view.dart';
 import 'package:kitalog/features/home_shell/views/home_shell_view.dart';
 import 'package:kitalog/features/library/views/library_view.dart';
+import 'package:kitalog/features/loans/views/loans_view.dart';
 import 'package:kitalog/features/reader/views/reader_view.dart';
 import 'package:kitalog/features/reading_goal/views/reading_goal_view.dart';
 import 'package:kitalog/features/reading_status/views/reading_status_view.dart';
@@ -27,9 +28,10 @@ Future<AppDependencies> _deps() async {
 final _screens = <String, Widget Function()>{
   'Kayıt': () => const RegisterView(),
   'Ana kabuk': () => const HomeShellView(
-    pages: [LibraryView(), ReadingStatusView(), ReadingGoalView()],
+    pages: [LibraryView(), ReadingStatusView(), LoansView(), ReadingGoalView()],
   ),
   'Okuma durumu': () => const Scaffold(body: ReadingStatusView()),
+  'Ödünç takibi': () => const Scaffold(body: LoansView()),
   'Kitap detayı': () => const BookDetailView(bookId: 'seed-9781435131828'),
   'Ayarlar': () => const SettingsView(),
   'Okuyucu': () => const ReaderView(bookId: 'seed-9781435131828'),

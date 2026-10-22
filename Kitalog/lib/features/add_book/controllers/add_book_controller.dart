@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/controllers/library_controller.dart';
+import '../../../core/models/book_genre.dart';
 import '../../../core/models/book_model.dart';
+import '../../../core/models/custom_genre_model.dart';
 import '../../../core/models/book_search_result.dart';
 import '../../../core/models/reading_status.dart';
 import '../../../core/models/view_status.dart';
@@ -79,6 +81,11 @@ class AddBookController {
     );
   }
 
+  /// Formdan hızlıca yeni kategori ekler; aynı adda kategori varsa o döner.
+  Future<CustomGenreModel> createGenre(NewGenreInput input) {
+    return _library.addCustomGenre(input.name, colorIndex: input.colorIndex);
+  }
+
   Future<void> save(BookDraft draft) async {
     final isbn = draft.isbn;
     final duplicate =
@@ -102,7 +109,8 @@ class AddBookController {
           : draft.coverUrl,
       pageCount: pages,
       currentPage: status == ReadingStatus.finished ? pages : 0,
-      genre: draft.genre,
+      genre: draft.customGenreId == null ? draft.genre : BookGenre.other,
+      customGenreId: draft.customGenreId,
       status: status,
       isOwned: draft.isOwned,
       startedAt: status == ReadingStatus.toRead ? null : now,

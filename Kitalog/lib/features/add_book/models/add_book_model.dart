@@ -7,6 +7,9 @@ import '../../../core/models/view_status.dart';
 
 enum AddBookMode { search, manual }
 
+/// Yeni kategori penceresinden dönen ad ve renk sırası.
+typedef NewGenreInput = ({String name, int colorIndex});
+
 /// Hata mesajı metin olarak değil anahtar olarak tutulur; view `context.l10n` ile çevirir.
 enum AddBookError {
   emptyQuery,
@@ -26,6 +29,9 @@ class BookDraft {
   final String? isbn;
   final String? coverUrl;
   final BookGenre genre;
+
+  /// Kullanıcı kategorisi seçildiyse onun kimliği (tür o zaman `other`).
+  final String? customGenreId;
   final ReadingStatus status;
   final bool isOwned;
 
@@ -36,6 +42,7 @@ class BookDraft {
     this.isbn,
     this.coverUrl,
     this.genre = BookGenre.other,
+    this.customGenreId,
     this.status = ReadingStatus.toRead,
     this.isOwned = true,
   });
@@ -47,6 +54,7 @@ class BookDraft {
     String? isbn,
     String? coverUrl,
     BookGenre? genre,
+    String? customGenreId,
     ReadingStatus? status,
     bool? isOwned,
   }) {
@@ -57,6 +65,7 @@ class BookDraft {
       isbn: isbn ?? this.isbn,
       coverUrl: coverUrl ?? this.coverUrl,
       genre: genre ?? this.genre,
+      customGenreId: customGenreId ?? this.customGenreId,
       status: status ?? this.status,
       isOwned: isOwned ?? this.isOwned,
     );
@@ -72,6 +81,7 @@ class BookDraft {
       isbn: json['isbn'] as String?,
       coverUrl: json['coverUrl'] as String?,
       genre: BookGenre.fromName(json['genre'] as String?),
+      customGenreId: json['customGenreId'] as String?,
       status: ReadingStatus.fromName(json['status'] as String?),
       isOwned: json['isOwned'] as bool? ?? true,
     );
@@ -85,6 +95,7 @@ class BookDraft {
       'isbn': isbn,
       'coverUrl': coverUrl,
       'genre': genre.name,
+      'customGenreId': customGenreId,
       'status': status.name,
       'isOwned': isOwned,
     };

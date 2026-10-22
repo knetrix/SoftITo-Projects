@@ -8,7 +8,10 @@ class AuthFormModel {
   final ViewStatus status;
   final AuthError? error;
 
-  const AuthFormModel({this.status = ViewStatus.initial, this.error});
+  /// Giriş formunda önceden doldurulacak e-posta (ör. şifre sıfırlandıktan sonra).
+  final String? prefillEmail;
+
+  const AuthFormModel({this.status = ViewStatus.initial, this.error, this.prefillEmail});
 
   bool get isLoading => status == ViewStatus.loading;
   bool get isSuccess => status == ViewStatus.success;
@@ -17,10 +20,12 @@ class AuthFormModel {
     ViewStatus? status,
     AuthError? error,
     bool clearError = false,
+    String? prefillEmail,
   }) {
     return AuthFormModel(
       status: status ?? this.status,
       error: clearError ? null : (error ?? this.error),
+      prefillEmail: prefillEmail ?? this.prefillEmail,
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/extensions/context_extensions.dart';
+import '../../../core/extensions/genre_extensions.dart';
 import '../../../core/models/book_model.dart';
 import '../../../core/models/reading_status.dart';
 import '../../../core/widgets/genre_chip.dart';
@@ -31,7 +32,7 @@ class SimpleBookCardWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GenreChip(genre: book.genre),
+          GenreChip(genre: book.genre, custom: context.customGenreOf(book)),
           const SizedBox(height: AppSizes.spaceS),
           if (book.status == ReadingStatus.finished)
             _FinishedInfo(book: book)

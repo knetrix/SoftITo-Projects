@@ -14,6 +14,7 @@ import '../storage/local_storage_service.dart';
 import '../utils/epub_text_extractor.dart';
 import '../utils/reading_text_cleaner.dart';
 import '../utils/text_cleaner.dart';
+import '../utils/text_paginator.dart';
 import 'digital_sources/gutenberg_source.dart';
 import 'digital_sources/source_http.dart';
 import 'digital_sources/wikisource_source.dart';
@@ -27,8 +28,12 @@ class DigitalBookRepository {
     required this._gutenberg,
     required this._wikisource,
     required this._loadAsset,
+    Future<int> Function(Uint8List bytes)? countPdfPages,
+    Future<String> Function(Uint8List bytes)? samplePdfText,
     DateTime Function()? clock,
-  }) : _clock = clock ?? DateTime.now;
+  }) : _countPdfPages = countPdfPages ?? _unknownPdfPages,
+       _samplePdfText = samplePdfText ?? _noPdfText,
+       _clock = clock ?? DateTime.now;
 
   final LocalStorageService _storage;
   final DigitalFileStorage _files;
@@ -37,7 +42,19 @@ class DigitalBookRepository {
 
   /// Paketlenmiş metni okur (uygulamada `rootBundle.loadString`).
   final Future<String> Function(String assetPath) _loadAsset;
+
+  /// PDF'in sayfa sayısını okur (uygulamada `PdfPageCounter.count`); 0 bilinmiyor demektir.
+  final Future<int> Function(Uint8List bytes) _countPdfPages;
+  /// PDF'ten dil tanıma için örnek metin okur (uygulamada `PdfTextSampler.sample`).
+  final Future<String> Function(Uint8List bytes) _samplePdfText;
   final DateTime Function() _clock;
+
+  static Future<int> _unknownPdfPages(Uint8List _) async => 0;
+
+  static Future<String> _noPdfText(Uint8List _) async => '';
+
+  /// Dil tanıma için kitabın dijital kopyasından alınan örnek metin.
+  static const int sampleChars = 3000;
 
   /// `false` ise (web) metin yalnızca oturum boyunca tutulur.
   bool get supportsOffline => _files.isPersistent;
@@ -131,7 +148,10 @@ class DigitalBookRepository {
 
   /// Kullanıcının seçtiği PDF / EPUB dosyasını kitaba bağlar ve cihaza kaydeder.
   /// EPUB metne çevrilip okuyucuda sayfalanır; PDF olduğu gibi saklanır.
-  Future<({DigitalEditionModel edition, DigitalCopyModel copy})> importFile(
+  /// `pageCount` dosyanın sayfa sayısıdır (kitabın sayfa sayısı buna eşitlenir):
+  /// PDF'te gerçek sayfa sayısı (okunamazsa 0), EPUB'da dosyadaki basılı sayfa
+  /// listesi, yoksa okuyucunun sayfa sayısı.
+  Future<({DigitalEditionModel edition, DigitalCopyModel copy, int pageCount})> importFile(
     BookModel book, {
     required String fileName,
     required Uint8List bytes,
@@ -141,17 +161,25 @@ class DigitalBookRepository {
     }
     final format = detectFormat(fileName, bytes);
     final DigitalCopyModel copy;
+    final int pageCount;
     if (format == DigitalFormat.pdf) {
+      pageCount = await _countPdfPages(bytes);
       copy = await _store(
         book.id,
         DigitalFormat.pdf,
         DigitalFileStorage.fileNameFor(book.id, extension: 'pdf'),
         (name) => _files.writeBytes(name, bytes),
-        length: 0,
+        length: pageCount,
         byteSize: bytes.length,
       );
     } else {
-      final text = _prepare(EpubTextExtractor.extract(bytes), book.genre);
+      final epub = EpubTextExtractor.read(bytes);
+      final text = _prepare(epub.text, book.genre);
+      final printed = epub.pageCount ?? 0;
+      // Basılı sayfa listesi metne kelime bölmeden uymuyorsa okuyucunun sayfalaması esas alınır.
+      pageCount = TextPaginator.fitsPageCount(text, printed)
+          ? printed
+          : TextPaginator.paginate(text).length;
       copy = await _store(
         book.id,
         DigitalFormat.text,
@@ -167,7 +195,7 @@ class DigitalBookRepository {
       languageCode: '',
       format: copy.format,
     );
-    return (edition: edition, copy: copy);
+    return (edition: edition, copy: copy, pageCount: pageCount);
   }
 
   Future<DigitalCopyModel> _store(
@@ -226,6 +254,22 @@ class DigitalBookRepository {
     final bytes = await _files.readBytes(copy.fileName);
     if (bytes == null) await _removeCopy(bookId);
     return bytes;
+  }
+
+  /// Kitabın dilini tanımak için cihazdaki kopyadan örnek metin; kopya yoksa
+  /// veya metin okunamıyorsa (taranmış PDF) boş döner. Metinde baştaki
+  /// önsöz / künye etkisini azaltmak için onda birlik kısım atlanır.
+  Future<String> sampleText(String bookId) async {
+    final copy = await copyOf(bookId);
+    if (copy == null) return '';
+    if (copy.format == DigitalFormat.pdf) {
+      final bytes = await _files.readBytes(copy.fileName);
+      return bytes == null ? '' : _samplePdfText(bytes);
+    }
+    final text = await _files.read(copy.fileName) ?? '';
+    final start = text.length > sampleChars * 2 ? text.length ~/ 10 : 0;
+    final end = (start + sampleChars).clamp(0, text.length);
+    return text.substring(start, end);
   }
 
   /// PDF'in sayfa sayısı ilk açılışta öğrenilip kaydedilir.

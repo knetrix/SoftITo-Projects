@@ -14,14 +14,12 @@ class StatusBookListWidget extends StatelessWidget {
     required this.status,
     required this.books,
     required this.onBookTap,
-    required this.onChangePage,
     required this.onStartReading,
   });
 
   final ReadingStatus status;
   final List<BookModel> books;
   final ValueChanged<BookModel> onBookTap;
-  final void Function(BookModel book, int delta) onChangePage;
   final ValueChanged<BookModel> onStartReading;
 
   @override
@@ -37,7 +35,6 @@ class StatusBookListWidget extends StatelessWidget {
           return ReadingBookCardWidget(
             book: book,
             onTap: () => onBookTap(book),
-            onChangePage: (delta) => onChangePage(book, delta),
           );
         }
         return SimpleBookCardWidget(

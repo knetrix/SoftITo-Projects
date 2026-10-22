@@ -4,11 +4,15 @@ import '../../../core/constants/app_sizes.dart';
 import '../../../core/di/app_scope.dart';
 import '../../../core/extensions/context_extensions.dart';
 import '../controllers/add_book_controller.dart';
+import '../controllers/cover_picker.dart';
 import '../models/add_book_model.dart';
 import '../widgets/add_book_body_widget.dart';
 
 class AddBookView extends StatefulWidget {
-  const AddBookView({super.key});
+  const AddBookView({super.key, this.coverPicker});
+
+  /// Testte sahte seçici verilebilir; yoksa galeri / kamera (`image_picker`).
+  final CoverPicker? coverPicker;
 
   @override
   State<AddBookView> createState() => _AddBookViewState();
@@ -16,6 +20,7 @@ class AddBookView extends StatefulWidget {
 
 class _AddBookViewState extends State<AddBookView> {
   AddBookController? _controller;
+  late final CoverPicker _coverPicker = widget.coverPicker ?? ImagePickerCoverPicker();
 
   @override
   void didChangeDependencies() {
@@ -66,6 +71,9 @@ class _AddBookViewState extends State<AddBookView> {
               onRetry: controller.retry,
               onSelect: controller.selectResult,
               onSave: controller.save,
+              coverPicker: _coverPicker,
+              customGenres: AppScope.of(context).libraryController.customGenres,
+              onCreateGenre: controller.createGenre,
             ),
           ),
         ),

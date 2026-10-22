@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kitalog/features/library/widgets/loan_badge_widget.dart';
+import 'package:kitalog/features/library/widgets/book_badges_widget.dart';
 
 import '../../helpers/pump_app.dart';
 import '../../helpers/test_dependencies.dart';
@@ -22,8 +22,10 @@ void main() {
     expect(find.text('Kitaplığım'), findsWidgets);
     expect(find.text('Pride and Prejudice'), findsWidgets);
     expect(find.byType(FloatingActionButton), findsOneWidget);
-    expect(find.widgetWithText(ChoiceChip, 'Roman'), findsOneWidget);
-    expect(find.byType(LoanBadgeWidget), findsWidgets);
+    expect(find.byTooltip('Filtreler'), findsOneWidget);
+    expect(find.widgetWithText(ChoiceChip, 'Roman'), findsNothing, reason: 'filtreler panelde');
+    expect(find.byType(BookBadgesWidget), findsWidgets);
+    expect(find.text('Ödünçte'), findsWidgets);
   });
 
   testWidgets('arama kutusu listeyi süzer, sonuç yoksa boş durum görünür', (tester) async {
@@ -38,11 +40,51 @@ void main() {
     expect(find.text('Sonuç bulunamadı'), findsOneWidget);
   });
 
-  testWidgets('tür çipi seçilince yalnızca o türdeki kitaplar kalır', (tester) async {
-    await _openLibrary(tester);
-    await tester.tap(find.widgetWithText(ChoiceChip, 'Roman'));
+  Finder sheetChip(String label) =>
+      find.descendant(of: find.byType(BottomSheet), matching: find.widgetWithText(FilterChip, label));
+
+  // Kısa ekranda panel kaydırılır; çip alttaki "kitabı göster" düğmesinin arkasında kalmasın.
+  Future<void> tapSheetChip(WidgetTester tester, String label) async {
+    await tester.ensureVisible(sheetChip(label));
     await tester.pumpAndSettle();
-    expect(find.text('Kürk Mantolu Madonna'), findsWidgets);
-    expect(find.text('Cosmos'), findsNothing);
+    await tester.tap(sheetChip(label));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('filtre panelinde birden fazla filtre seçilir; seçimler çip olarak görünür ve kaldırılır', (tester) async {
+    await _openLibrary(tester);
+    await tester.tap(find.byTooltip('Filtreler'));
+    await tester.pumpAndSettle();
+    expect(find.text('Okuma durumu'), findsNothing, reason: 'okuma durumu "Okuma Durumu" sekmesinde');
+    expect(sheetChip('Okunuyor'), findsNothing);
+    expect(find.text('Biçim'), findsOneWidget);
+    expect(sheetChip('Fiziksel'), findsOneWidget);
+    expect(sheetChip('Dijital'), findsOneWidget);
+    expect(sheetChip('Ödünçte'), findsNothing, reason: 'ödünçteki kitaplar "Ödünç Takibi" sekmesinde');
+
+    await tapSheetChip(tester, 'Bilim');
+    await tapSheetChip(tester, 'Felsefe');
+    await tapSheetChip(tester, 'Fiziksel');
+    expect(find.textContaining('kitabı göster'), findsOneWidget);
+    await tester.tap(find.textContaining('kitabı göster'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomSheet), findsNothing);
+
+    // Fiziksel kopyası olan bilim / felsefe kitapları; The Republic yalnızca dijital.
+    expect(find.text('Meditations'), findsWidgets);
+    expect(find.text('The Republic'), findsNothing);
+    expect(find.text('Pride and Prejudice'), findsNothing);
+    expect(find.byTooltip('Filtreler (3 seçili)'), findsOneWidget);
+    expect(find.widgetWithText(InputChip, 'Bilim'), findsOneWidget);
+
+    await tester.tap(find.descendant(of: find.widgetWithText(InputChip, 'Fiziksel'), matching: find.byTooltip('Filtreyi kaldır')));
+    await tester.pumpAndSettle();
+    expect(find.text('The Republic'), findsWidgets);
+    expect(find.byTooltip('Filtreler (2 seçili)'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(TextButton, 'Temizle'));
+    await tester.pumpAndSettle();
+    expect(find.byType(InputChip), findsNothing);
+    expect(find.byTooltip('Filtreler'), findsOneWidget);
   });
 }

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../../core/controllers/library_controller.dart';
 import '../../../core/repositories/digital_book_repository.dart';
 import '../../../core/repositories/digital_sources/source_http.dart';
+import '../../../core/repositories/translation_repository.dart';
 import '../models/digital_edition_actions.dart';
 import '../models/digital_edition_state.dart';
 import 'book_file_picker.dart';
@@ -13,12 +14,14 @@ class DigitalEditionController {
   DigitalEditionController({
     required this._library,
     required this._digital,
+    required this._translation,
     required this._picker,
     required this.bookId,
   });
 
   final LibraryController _library;
   final DigitalBookRepository _digital;
+  final TranslationRepository _translation;
   final BookFilePicker _picker;
   final String bookId;
 
@@ -53,6 +56,9 @@ class DigitalEditionController {
   }
 
   /// Seçilen PDF / EPUB kitaba bağlanır; önceki dosya varsa yerine geçer.
+  /// Kitabın sayfa sayısı dosyanınkine eşitlenir (Okuma İlerlemesi hemen
+  /// güncellenir, ilerleme yüzdesi korunur). Dosyanın dili okuyucudaki çeviri
+  /// için metinden otomatik tanınır; önceki dosyanın çeviri önbelleği silinir.
   Future<void> importFile() async {
     if (state.value.isBusy) return;
     final picked = await _picker.pick();
@@ -61,7 +67,11 @@ class DigitalEditionController {
     state.value = state.value.copyWith(isImporting: true, clearError: true);
     try {
       final result = await _digital.importFile(book, fileName: picked.name, bytes: picked.bytes);
-      await _library.updateBook(book.copyWith(digitalEdition: result.edition));
+      await _translation.clearCache(bookId);
+      final language = await _translation.detectLanguage(await _digital.sampleText(bookId));
+      final edition = result.edition.copyWith(languageCode: language);
+      await _library.updateBook(book.copyWith(digitalEdition: edition));
+      await _library.alignPageCount(bookId, result.pageCount);
       state.value = DigitalEditionState(copy: result.copy);
     } on DigitalBookException catch (e) {
       state.value = state.value.copyWith(isImporting: false, error: e.failure);
@@ -72,6 +82,7 @@ class DigitalEditionController {
   /// kitabın dosya bağlantısı da kaldırılır (bölüm yeniden "Dosya yükle"ye döner).
   Future<void> deleteCopy() async {
     await _digital.delete(bookId);
+    await _translation.clearCache(bookId);
     final book = _library.bookById(bookId);
     if (book != null && (book.digitalEdition?.isLocalFile ?? false)) {
       await _library.updateBook(book.copyWith(clearDigitalEdition: true));

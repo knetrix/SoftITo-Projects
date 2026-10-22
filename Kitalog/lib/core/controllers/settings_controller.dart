@@ -34,6 +34,31 @@ class SettingsController {
     state.value = next;
   }
 
+  Future<void> setLoanRemindersEnabled(bool enabled) async {
+    final next = state.value.copyWith(loanRemindersEnabled: enabled);
+    await _repository.save(next);
+    state.value = next;
+  }
+
+  Future<void> setReadingRemindersEnabled(bool enabled) async {
+    final next = state.value.copyWith(readingRemindersEnabled: enabled);
+    await _repository.save(next);
+    state.value = next;
+  }
+
+  Future<void> setStalledBookRemindersEnabled(bool enabled) async {
+    final next = state.value.copyWith(stalledBookRemindersEnabled: enabled);
+    await _repository.save(next);
+    state.value = next;
+  }
+
+  /// Okuma hatırlatmalarının saati (gece yarısından itibaren dakika).
+  Future<void> setReadingReminderMinutes(int minutes) async {
+    final next = state.value.copyWith(readingReminderMinutes: minutes);
+    await _repository.save(next);
+    state.value = next;
+  }
+
   void dispose() {
     state.dispose();
   }

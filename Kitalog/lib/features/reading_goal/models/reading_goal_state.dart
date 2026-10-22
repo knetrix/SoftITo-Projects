@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/models/book_genre.dart';
+import '../../../core/models/custom_genre_model.dart';
 
 /// Yıllık hedef panelinin UI state'i. Biten kitap sayısı ve dağılımlar saklanmaz;
 /// `BookModel.finishedAt` yılından hesaplanır.
@@ -13,7 +14,14 @@ class ReadingGoalState {
 
   /// Ocak..Aralık için biten kitap sayıları (12 eleman).
   final List<int> monthlyFinished;
+  /// Yerleşik türlere göre biten kitaplar (kullanıcı kategorili kitaplar hariç).
   final Map<BookGenre, int> genreCounts;
+
+  /// Kullanıcı kategorilerine (`CustomGenreModel.id`) göre biten kitaplar.
+  final Map<String, int> customGenreCounts;
+
+  /// [customGenreCounts] anahtarlarının adı ve rengi için kategoriler (saklanmaz).
+  final List<CustomGenreModel> customGenres;
 
   const ReadingGoalState({
     required this.year,
@@ -22,6 +30,8 @@ class ReadingGoalState {
     this.totalPagesRead = 0,
     this.monthlyFinished = const [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     this.genreCounts = const {},
+    this.customGenreCounts = const {},
+    this.customGenres = const [],
   });
 
   double get progress => targetBookCount > 0
@@ -43,6 +53,8 @@ class ReadingGoalState {
     int? totalPagesRead,
     List<int>? monthlyFinished,
     Map<BookGenre, int>? genreCounts,
+    Map<String, int>? customGenreCounts,
+    List<CustomGenreModel>? customGenres,
   }) {
     return ReadingGoalState(
       year: year ?? this.year,
@@ -51,6 +63,8 @@ class ReadingGoalState {
       totalPagesRead: totalPagesRead ?? this.totalPagesRead,
       monthlyFinished: monthlyFinished ?? this.monthlyFinished,
       genreCounts: genreCounts ?? this.genreCounts,
+      customGenreCounts: customGenreCounts ?? this.customGenreCounts,
+      customGenres: customGenres ?? this.customGenres,
     );
   }
 
@@ -69,6 +83,10 @@ class ReadingGoalState {
           .map((e) => e as int)
           .toList(),
       genreCounts: genres,
+      customGenreCounts: {
+        for (final e in (json['customGenreCounts'] as Map<String, dynamic>? ?? const {}).entries)
+          e.key: e.value as int,
+      },
     );
   }
 
@@ -80,6 +98,7 @@ class ReadingGoalState {
       'totalPagesRead': totalPagesRead,
       'monthlyFinished': monthlyFinished,
       'genreCounts': {for (final e in genreCounts.entries) e.key.name: e.value},
+      'customGenreCounts': customGenreCounts,
     };
   }
 }

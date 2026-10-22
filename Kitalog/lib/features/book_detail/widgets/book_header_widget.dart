@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_sizes.dart';
 import '../../../core/extensions/context_extensions.dart';
+import '../../../core/extensions/genre_extensions.dart';
 import '../../../core/models/book_model.dart';
 import '../../../core/widgets/book_cover_image.dart';
 import '../../../core/widgets/genre_chip.dart';
@@ -25,6 +26,7 @@ class BookHeaderWidget extends StatelessWidget {
             child: BookCoverImage(
               title: book.title,
               genre: book.genre,
+              custom: context.customGenreOf(book),
               coverUrl: book.coverUrl,
               borderRadius: AppSizes.radiusM,
             ),
@@ -42,7 +44,7 @@ class BookHeaderWidget extends StatelessWidget {
                 style: context.textTheme.bodyMedium,
               ),
               const SizedBox(height: AppSizes.spaceM),
-              GenreChip(genre: book.genre),
+              GenreChip(genre: book.genre, custom: context.customGenreOf(book)),
               const SizedBox(height: AppSizes.spaceM),
               BookMetaInfoWidget(book: book),
             ],

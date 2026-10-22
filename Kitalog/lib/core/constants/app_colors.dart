@@ -42,6 +42,19 @@ abstract final class AppColors {
   static const Color genreChildren = Color(0xFF8FBF5A);
   static const Color genreOther = Color(0xFF8C93A0);
 
+  /// Kullanıcının eklediği kategorilerin seçilebilir renkleri. Yerleşik tür
+  /// renklerinden ayırt edilir ve [onGenre] yazı rengiyle okunaklıdır.
+  static const List<Color> customGenrePalette = [
+    Color(0xFFE5B84F),
+    Color(0xFF4DB6C9),
+    Color(0xFFB98ACF),
+    Color(0xFF9CC97A),
+    Color(0xFFE07C7C),
+    Color(0xFF7FA6D9),
+    Color(0xFFD9A07A),
+    Color(0xFF6FC2A0),
+  ];
+
   /// Tür renklerinin üzerindeki yazı rengi.
   static const Color onGenre = Color(0xFF14161B);
 

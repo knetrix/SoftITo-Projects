@@ -6,6 +6,7 @@ import '../../../core/routing/app_routes.dart';
 import '../controllers/avatar_picker.dart';
 import '../controllers/settings_screen_controller.dart';
 import '../models/settings_screen_model.dart';
+import '../widgets/notification_section_widget.dart';
 import '../widgets/settings_body_widget.dart';
 
 class SettingsView extends StatefulWidget {
@@ -45,6 +46,36 @@ class _SettingsViewState extends State<SettingsView> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
+  /// Bir hatırlatma anahtarını açar / kapatır; açarken bildirim izni verilmezse
+  /// kullanıcıya telefon ayarlarından açabileceği söylenir.
+  Future<void> _toggle(Future<bool> Function(bool enabled) setEnabled, bool enabled) async {
+    final granted = await setEnabled(enabled);
+    if (granted || !mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.settingsLoanRemindersDenied)));
+  }
+
+  /// Okuma hatırlatmalarının saatini sistemin saat seçicisiyle değiştirir.
+  Future<void> _pickReadingTime() async {
+    final reminders = AppScope.of(context).notificationController.readingReminders;
+    final minutes = AppScope.of(context).settingsController.state.value.readingReminderMinutes;
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
+    );
+    if (picked != null) await reminders.setTime(picked.hour * 60 + picked.minute);
+  }
+
+  NotificationActions? _notificationActions(AppScope scope) {
+    final notifications = scope.notificationController;
+    if (!notifications.isSupported) return null;
+    return (
+      onLoanReminders: (enabled) => _toggle(notifications.loanReminders.setEnabled, enabled),
+      onReadingReminders: (enabled) => _toggle(notifications.readingReminders.setDailyEnabled, enabled),
+      onStalledReminders: (enabled) => _toggle(notifications.readingReminders.setStalledEnabled, enabled),
+      onPickReadingTime: _pickReadingTime,
+    );
+  }
+
   Future<void> _logout() async {
     final navigator = Navigator.of(context);
     await _controller!.logout();
@@ -78,6 +109,7 @@ class _SettingsViewState extends State<SettingsView> {
             cameraAvailable: controller.cameraAvailable,
             onThemeChanged: scope.settingsController.setThemeMode,
             onLocaleChanged: scope.settingsController.setLocaleCode,
+            notifications: _notificationActions(scope),
             onPresetAvatar: controller.selectPresetAvatar,
             onPickAvatar: controller.pickCustomAvatar,
             onRemoveAvatar: controller.removeAvatar,

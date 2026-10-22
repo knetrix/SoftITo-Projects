@@ -21,8 +21,17 @@ abstract final class AppSizes {
   static const double coverAspectRatio = 2 / 3;
   static const double gridMaxCrossAxisExtent = 160;
   static const double shelfCoverWidth = 72;
+  static const double loanCoverWidth = 56;
+  static const double loanHistoryCoverWidth = 44;
+
+  /// Kayan eylem düğmesi (FAB) olan listelerde son öğe düğmenin altında kalmasın diye alt boşluk.
+  static const double fabClearance = 96;
   static const double splashLogo = 120;
   static const double maxFormWidth = 480;
+
+  /// Doldurulmuş tek satırlı metin alanının (Material 3) yüksekliği; yanına
+  /// konan düğmeler bu yükseklikle hizalanır.
+  static const double searchFieldHeight = 56;
 
   /// Okuyucuda satır uzunluğu rahat okunacak genişlikte tutulur.
   static const double readerMaxWidth = 680;

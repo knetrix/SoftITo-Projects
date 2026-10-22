@@ -3,8 +3,18 @@ import 'package:flutter/foundation.dart';
 import '../models/avatar_type.dart';
 import '../models/user_model.dart';
 import '../repositories/auth_repository.dart';
+import '../utils/validators.dart';
 
-enum AuthError { invalidCredentials, wrongCurrentPassword }
+enum AuthError {
+  invalidCredentials,
+  wrongCurrentPassword,
+
+  /// Şifremi unuttum: e-posta / telefon kayıtlı bilgilerle eşleşmedi.
+  recoveryMismatch,
+
+  /// Şifremi unuttum: üst üste çok fazla hatalı deneme; kısa süre beklenmeli.
+  tooManyAttempts,
+}
 
 @immutable
 class AuthState {
@@ -16,9 +26,17 @@ class AuthState {
 
 /// Kullanıcı ve oturum durumunu tutan paylaşılan controller.
 class AuthController {
-  AuthController({required this._repository});
+  AuthController({required this._repository, DateTime Function()? clock})
+    : _clock = clock ?? DateTime.now;
 
   final AuthRepository _repository;
+  final DateTime Function() _clock;
+
+  /// Şifremi unuttum: bu kadar hatalı denemeden sonra [recoveryLockout] beklenir.
+  static const int maxRecoveryAttempts = 5;
+  static const Duration recoveryLockout = Duration(seconds: 30);
+  int _failedRecoveryAttempts = 0;
+  DateTime? _recoveryLockedUntil;
   final ValueNotifier<AuthState> state = ValueNotifier<AuthState>(
     const AuthState(),
   );
@@ -93,6 +111,53 @@ class AuthController {
     await _update(
       (u) => u.copyWith(passwordHash: AuthRepository.hashPassword(newPassword)),
     );
+    return null;
+  }
+
+  // ---- Şifremi unuttum (GEÇİCİ, yerel) ------------------------------------
+  // Sunucu olmadığı için sıfırlama e-postası gönderilemez; kimlik, kayıtlı
+  // e-posta + telefonun eşleşmesiyle doğrulanır. İleride Firebase Auth tarzı
+  // bir servise geçilince yalnızca bu iki yöntem değişir (ör. doğrulama yerine
+  // `sendPasswordResetEmail`); arayüz bu yöntemlerin arkasındaki yöntemi bilmez.
+
+  /// Kayıtlı e-posta ve telefon eşleşiyorsa `null` döner. Hangi alanın yanlış
+  /// olduğu söylenmez. [maxRecoveryAttempts] hatalı denemeden sonra
+  /// [recoveryLockout] boyunca `tooManyAttempts` döner.
+  Future<AuthError?> verifyRecovery({required String email, required String phone}) async {
+    final lockedUntil = _recoveryLockedUntil;
+    if (lockedUntil != null && _clock().isBefore(lockedUntil)) return AuthError.tooManyAttempts;
+    final user = await _repository.getUser();
+    final ok =
+        user != null &&
+        user.email == Validators.normalizeEmail(email) &&
+        user.phone == Validators.digitsOnly(phone);
+    if (ok) {
+      _failedRecoveryAttempts = 0;
+      _recoveryLockedUntil = null;
+      return null;
+    }
+    if (++_failedRecoveryAttempts >= maxRecoveryAttempts) {
+      _failedRecoveryAttempts = 0;
+      _recoveryLockedUntil = _clock().add(recoveryLockout);
+    }
+    return AuthError.recoveryMismatch;
+  }
+
+  /// Bilgileri yeniden doğrular ve şifreyi değiştirir. Oturum açılmaz;
+  /// kullanıcı yeni şifresiyle giriş yapar. Kitap verileri etkilenmez.
+  Future<AuthError?> resetPassword({
+    required String email,
+    required String phone,
+    required String newPassword,
+  }) async {
+    final error = await verifyRecovery(email: email, phone: phone);
+    if (error != null) return error;
+    final current = await _repository.getUser();
+    if (current == null) return AuthError.recoveryMismatch;
+    final next = current.copyWith(passwordHash: AuthRepository.hashPassword(newPassword));
+    await _repository.saveUser(next);
+    await _repository.setSessionActive(false);
+    state.value = AuthState(user: next);
     return null;
   }
 

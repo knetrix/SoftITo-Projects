@@ -9,4 +9,7 @@ abstract final class StorageKeys {
   static const String seeded = 'kitalog.seeded';
   static const String seedVersion = 'kitalog.seedVersion';
   static const String digital = 'kitalog.digital';
+  static const String genres = 'kitalog.genres';
+  static const String loanHistory = 'kitalog.loanHistory';
+  static const String readingLog = 'kitalog.readingLog';
 }

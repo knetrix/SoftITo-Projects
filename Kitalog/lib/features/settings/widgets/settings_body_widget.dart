@@ -8,6 +8,7 @@ import '../controllers/avatar_picker.dart';
 import 'account_section_widget.dart';
 import 'appearance_section_widget.dart';
 import 'avatar_options_sheet.dart';
+import 'notification_section_widget.dart';
 import 'profile_summary_widget.dart';
 
 /// Ayarlar ekranının kaydırılabilir gövdesi.
@@ -20,6 +21,7 @@ class SettingsBodyWidget extends StatelessWidget {
     required this.cameraAvailable,
     required this.onThemeChanged,
     required this.onLocaleChanged,
+    this.notifications,
     required this.onPresetAvatar,
     required this.onPickAvatar,
     required this.onRemoveAvatar,
@@ -36,6 +38,9 @@ class SettingsBodyWidget extends StatelessWidget {
   final bool cameraAvailable;
   final ValueChanged<ThemeMode> onThemeChanged;
   final ValueChanged<String> onLocaleChanged;
+
+  /// `null` ise (bildirim desteklenmeyen platform) Bildirimler bölümü gösterilmez.
+  final NotificationActions? notifications;
   final ValueChanged<String> onPresetAvatar;
   final ValueChanged<AvatarSource> onPickAvatar;
   final VoidCallback onRemoveAvatar;
@@ -84,6 +89,7 @@ class SettingsBodyWidget extends StatelessWidget {
             onThemeChanged: onThemeChanged,
             onLocaleChanged: onLocaleChanged,
           ),
+          if (notifications case final actions?) NotificationSectionWidget(settings: settings, actions: actions),
           if (current != null)
             AccountSectionWidget(
               user: current,

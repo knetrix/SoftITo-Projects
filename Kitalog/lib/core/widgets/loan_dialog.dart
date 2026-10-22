@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/extensions/context_extensions.dart';
-import '../../../core/extensions/validation_extensions.dart';
-import '../../../core/models/loan_model.dart';
-import '../../../core/utils/validators.dart';
+import '../extensions/context_extensions.dart';
+import '../extensions/validation_extensions.dart';
+import '../models/loan_model.dart';
+import '../utils/validators.dart';
 
 /// Ödünç verme: kime, ne zaman (bugün), iade tarihi (isteğe bağlı).
+/// [initial] verilirse mevcut ödünç düzenlenir: kime ve iade tarihi
+/// değiştirilebilir, veriliş tarihi korunur.
 class LoanDialog extends StatefulWidget {
-  const LoanDialog({super.key});
+  const LoanDialog({super.key, this.initial});
 
-  static Future<LoanModel?> show(BuildContext context) {
+  final LoanModel? initial;
+
+  static Future<LoanModel?> show(BuildContext context, {LoanModel? initial}) {
     return showDialog<LoanModel>(
       context: context,
-      builder: (_) => const LoanDialog(),
+      builder: (_) => LoanDialog(initial: initial),
     );
   }
 
@@ -22,8 +26,8 @@ class LoanDialog extends StatefulWidget {
 
 class _LoanDialogState extends State<LoanDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _borrower = TextEditingController();
-  DateTime? _dueAt;
+  late final _borrower = TextEditingController(text: widget.initial?.borrowerName);
+  late DateTime? _dueAt = widget.initial?.dueAt;
 
   @override
   void dispose() {
@@ -33,11 +37,19 @@ class _LoanDialogState extends State<LoanDialog> {
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
+    // Düzenlemede iade tarihi veriliş gününden önce olamaz (geçmiş bir gün
+    // seçilebilir); yeni ödünçte bugünden başlar.
+    final lentAt = widget.initial?.lentAt ?? now;
+    final firstDate = DateTime(lentAt.year, lentAt.month, lentAt.day);
+    final lastDate = now.add(const Duration(days: 365 * 3));
+    var initialDate = _dueAt ?? now.add(const Duration(days: 14));
+    if (initialDate.isBefore(firstDate)) initialDate = firstDate;
+    if (initialDate.isAfter(lastDate)) initialDate = lastDate;
     final picked = await showDatePicker(
       context: context,
-      initialDate: _dueAt ?? now.add(const Duration(days: 14)),
-      firstDate: now,
-      lastDate: now.add(const Duration(days: 365 * 3)),
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
     );
     if (picked != null) setState(() => _dueAt = picked);
   }
@@ -47,7 +59,7 @@ class _LoanDialogState extends State<LoanDialog> {
     Navigator.of(context).pop(
       LoanModel(
         borrowerName: _borrower.text.trim(),
-        lentAt: DateTime.now(),
+        lentAt: widget.initial?.lentAt ?? DateTime.now(),
         dueAt: _dueAt,
       ),
     );
@@ -57,7 +69,7 @@ class _LoanDialogState extends State<LoanDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return AlertDialog(
-      title: Text(l10n.loanLend),
+      title: Text(widget.initial == null ? l10n.loanLend : l10n.loansEditTitle),
       content: Form(
         key: _formKey,
         child: Column(
@@ -65,7 +77,7 @@ class _LoanDialogState extends State<LoanDialog> {
           children: [
             TextFormField(
               controller: _borrower,
-              autofocus: true,
+              autofocus: widget.initial == null,
               textCapitalization: TextCapitalization.words,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration: InputDecoration(labelText: l10n.loanBorrower),

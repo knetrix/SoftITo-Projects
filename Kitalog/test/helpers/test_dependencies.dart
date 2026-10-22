@@ -1,5 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:http/http.dart' as http;
 import 'package:kitalog/core/di/app_dependencies.dart';
+import 'package:kitalog/core/repositories/reminders/reminder_engine.dart';
+import 'package:kitalog/core/repositories/translation/translation_engine.dart';
 import 'package:kitalog/core/storage/digital_file_storage.dart';
 import 'package:kitalog/core/storage/local_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +13,13 @@ Future<AppDependencies> createTestDependencies([
   Map<String, Object> initialValues = const {},
   http.Client? httpClient,
   DigitalFileStorage? digitalFiles,
+  // PDFium testlerde çalışmaz; PDF sayfa sayısı sahte sayaçtan gelir.
+  Future<int> Function(Uint8List bytes)? countPdfPages,
+  // Yerel çeviri motoru testlerde çalışmaz; çeviri testleri sahte motor verir, diğerlerinde çeviri kapalıdır.
+  TranslationEngine? translationEngine,
+  Future<String> Function(Uint8List bytes)? samplePdfText,
+  // Yerel bildirim eklentisi testlerde çalışmaz; hatırlatma testleri sahte motor verir.
+  ReminderEngine? reminderEngine,
 ]) async {
   SharedPreferences.setMockInitialValues(initialValues);
   final storage = await LocalStorageService.create();
@@ -20,6 +31,10 @@ Future<AppDependencies> createTestDependencies([
     sourceMinInterval: Duration.zero,
     // Sonsuz arka plan animasyonu `pumpAndSettle`ı bitirmez.
     animateDecorations: false,
+    countPdfPages: countPdfPages ?? (_) async => 0,
+    samplePdfText: samplePdfText ?? (_) async => '',
+    translationEngine: translationEngine ?? const UnsupportedTranslationEngine(),
+    reminderEngine: reminderEngine ?? const UnsupportedReminderEngine(),
   );
 }
 

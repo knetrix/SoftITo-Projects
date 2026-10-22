@@ -15,6 +15,10 @@ class BookModel {
   final int pageCount;
   final int currentPage;
   final BookGenre genre;
+
+  /// Kullanıcının eklediği kategori (`CustomGenreModel.id`); doluysa etiket ve
+  /// renk buradan gelir, [genre] ise `other` olarak kalır.
+  final String? customGenreId;
   final ReadingStatus status;
   final int? rating;
   final String? review;
@@ -36,6 +40,7 @@ class BookModel {
     this.pageCount = 0,
     this.currentPage = 0,
     this.genre = BookGenre.other,
+    this.customGenreId,
     this.status = ReadingStatus.toRead,
     this.rating,
     this.review,
@@ -53,7 +58,9 @@ class BookModel {
 
   int get progressPercent => (progress * 100).round();
 
-  bool get isLent => loan != null;
+  /// Ödünç yalnızca fiziksel kopya için anlamlıdır: fiziksel kopyası olmayan
+  /// kitapta (eski bir kayıtta kalmış olsa bile) ödünç bilgisi yok sayılır.
+  bool get isLent => isOwned && loan != null;
 
   bool get hasDigitalEdition => digitalEdition != null;
 
@@ -69,6 +76,8 @@ class BookModel {
     int? pageCount,
     int? currentPage,
     BookGenre? genre,
+    String? customGenreId,
+    bool clearCustomGenreId = false,
     ReadingStatus? status,
     int? rating,
     bool clearRating = false,
@@ -99,6 +108,7 @@ class BookModel {
       pageCount: nextPageCount,
       currentPage: nextCurrent,
       genre: genre ?? this.genre,
+      customGenreId: clearCustomGenreId ? null : (customGenreId ?? this.customGenreId),
       status: status ?? this.status,
       rating: clearRating ? null : (rating ?? this.rating),
       review: clearReview ? null : (review ?? this.review),
@@ -126,6 +136,7 @@ class BookModel {
       pageCount: json['pageCount'] as int? ?? 0,
       currentPage: json['currentPage'] as int? ?? 0,
       genre: BookGenre.fromName(json['genre'] as String?),
+      customGenreId: json['customGenreId'] as String?,
       status: ReadingStatus.fromName(json['status'] as String?),
       rating: json['rating'] as int?,
       review: json['review'] as String?,
@@ -149,6 +160,7 @@ class BookModel {
       'pageCount': pageCount,
       'currentPage': currentPage,
       'genre': genre.name,
+      'customGenreId': customGenreId,
       'status': status.name,
       'rating': rating,
       'review': review,

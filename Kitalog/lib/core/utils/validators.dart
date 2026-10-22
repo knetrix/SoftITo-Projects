@@ -1,3 +1,4 @@
+import '../models/custom_genre_model.dart';
 import 'isbn_utils.dart';
 
 /// Doğrulama sonuçları; metne çevirme `ValidationErrorX.message` ile yapılır.
@@ -13,6 +14,8 @@ enum ValidationError {
   pageCountInvalid,
   urlInvalid,
   isbnInvalid,
+  genreNameTooLong,
+  genreNameTaken,
 }
 
 /// Kayıt ve Ayarlar ekranlarında AYNI validator'lar kullanılır.
@@ -63,6 +66,17 @@ abstract final class Validators {
     if (!_lower.hasMatch(password)) return ValidationError.passwordNoLowercase;
     if (!_digit.hasMatch(password)) return ValidationError.passwordNoDigit;
     return null;
+  }
+
+  /// Yeni kategori adı: boş olamaz, en fazla `CustomGenreModel.maxNameLength`
+  /// karakter, [takenNames] (yerleşik tür etiketleri ve mevcut kategoriler)
+  /// içinde büyük/küçük harf farkı gözetmeden bulunmamalı.
+  static ValidationError? genreName(String? value, Iterable<String> takenNames) {
+    final name = CustomGenreModel.cleanName(value ?? '');
+    if (name.isEmpty) return ValidationError.required;
+    if (name.length > CustomGenreModel.maxNameLength) return ValidationError.genreNameTooLong;
+    final key = CustomGenreModel.nameKey(name);
+    return takenNames.any((n) => CustomGenreModel.nameKey(n) == key) ? ValidationError.genreNameTaken : null;
   }
 
   /// 1 veya daha büyük tam sayı (sayfa sayısı için).

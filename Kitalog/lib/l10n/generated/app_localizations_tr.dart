@@ -175,6 +175,46 @@ class AppLocalizationsTr extends AppLocalizations {
   String get linkNoAccount => 'Hesabın yok mu? Kayıt ol';
 
   @override
+  String get linkForgotPassword => 'Şifremi unuttum';
+
+  @override
+  String get forgotTitle => 'Şifreni Sıfırla';
+
+  @override
+  String get forgotVerifyInfo =>
+      'Kayıt olurken kullandığın e-posta adresini ve telefon numarasını gir.';
+
+  @override
+  String get forgotVerifyButton => 'Devam';
+
+  @override
+  String get forgotBackToLogin => 'Girişe dön';
+
+  @override
+  String forgotNewPasswordInfo(String email) {
+    return '$email hesabı doğrulandı. Yeni şifreni belirle.';
+  }
+
+  @override
+  String get forgotResetButton => 'Şifreyi Güncelle';
+
+  @override
+  String get forgotBack => 'Geri';
+
+  @override
+  String get forgotSuccess =>
+      'Şifren güncellendi. Yeni şifrenle giriş yapabilirsin.';
+
+  @override
+  String get errorRecoveryMismatch =>
+      'E-posta veya telefon kayıtlı bilgilerle eşleşmedi.';
+
+  @override
+  String errorTooManyAttempts(int seconds) {
+    return 'Çok fazla hatalı deneme yaptın. $seconds saniye sonra tekrar dene.';
+  }
+
+  @override
   String get errorInvalidCredentials => 'E-posta veya şifre hatalı.';
 
   @override
@@ -190,6 +230,17 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navGoal => 'Hedef';
 
   @override
+  String get navLoans => 'Ödünç';
+
+  @override
+  String navLoansOverdue(int count) {
+    return 'Ödünç: $count gecikmiş iade';
+  }
+
+  @override
+  String get loansTitle => 'Ödünç Takibi';
+
+  @override
   String get libraryTitle => 'Kitaplığım';
 
   @override
@@ -202,7 +253,67 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsTitle => 'Ayarlar';
 
   @override
-  String get libraryFilterAll => 'Tümü';
+  String get settingsNotificationsTitle => 'Bildirimler';
+
+  @override
+  String get settingsLoanReminders => 'İade hatırlatmaları';
+
+  @override
+  String get settingsLoanRemindersHint =>
+      'Ödünç verdiğin kitabın iade gününden bir gün önce ve iade günü saat 10:00\'da bildirim gönderir.';
+
+  @override
+  String get settingsLoanRemindersDenied =>
+      'Bildirim izni kapalı. Hatırlatmaları görmek için telefonun ayarlarından Kitalog bildirimlerini aç.';
+
+  @override
+  String get settingsReadingReminders => 'Günlük okuma hatırlatması';
+
+  @override
+  String get settingsReadingRemindersHint =>
+      'Her gün seçtiğin saatte okumaya davet eder; o gün okuduysan bildirim gelmez. Art arda okuduğun günlerde serini hatırlatır.';
+
+  @override
+  String get settingsStalledReminders => 'Yarım kalan kitaplar';
+
+  @override
+  String settingsStalledRemindersHint(int days) {
+    return '“Okunuyor” durumundaki bir kitapta $days gün ilerleme olmazsa seçtiğin saatte bir kez hatırlatır.';
+  }
+
+  @override
+  String get settingsReadingReminderTime => 'Okuma hatırlatması saati';
+
+  @override
+  String get libraryFilters => 'Filtreler';
+
+  @override
+  String libraryFiltersActive(int count) {
+    return 'Filtreler ($count seçili)';
+  }
+
+  @override
+  String get libraryFilterFormat => 'Biçim';
+
+  @override
+  String get libraryFilterGenre => 'Tür';
+
+  @override
+  String get libraryFilterClear => 'Temizle';
+
+  @override
+  String get libraryFilterRemove => 'Filtreyi kaldır';
+
+  @override
+  String libraryShowResults(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count kitabı göster',
+      zero: 'Eşleşen kitap yok',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get librarySearchHint => 'Başlık veya yazar ara';
@@ -223,6 +334,12 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get libraryNoResultsMessage =>
       'Arama veya filtreleri değiştirmeyi dene.';
+
+  @override
+  String get physicalBadge => 'Fiziksel';
+
+  @override
+  String get digitalBadge => 'Dijital';
 
   @override
   String get loanedBadge => 'Ödünçte';
@@ -247,10 +364,10 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get bookOwned => 'Kitaplığımda';
+  String get bookOwned => 'Fiziksel kopyası bende';
 
   @override
-  String get bookNotOwned => 'Kitaplığımda değil';
+  String get bookNotOwned => 'Fiziksel kopyası yok';
 
   @override
   String get pageCounterTitle => 'Okuma İlerlemesi';
@@ -283,7 +400,8 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get finishSuggestion => 'Son sayfaya ulaştın. Kitabı bitirdin mi?';
+  String get finishReachedMessage =>
+      'Son sayfaya ulaştın. Kitap \"Bitti\" olarak işaretlenecek ve bu yılın okuma hedefine sayılacak.';
 
   @override
   String get markFinished => 'Bitti olarak işaretle';
@@ -398,6 +516,166 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loanReturn => 'İade alındı';
+
+  @override
+  String get loansTabActive => 'Ödünçte';
+
+  @override
+  String get loansTabHistory => 'Geçmiş';
+
+  @override
+  String get loansSummaryActive => 'Ödünçte';
+
+  @override
+  String get loansSummaryOverdue => 'Gecikmiş';
+
+  @override
+  String get loansSummaryDueSoon => 'İadesi yaklaşan';
+
+  @override
+  String loansDaysOut(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gündür ödünçte',
+      zero: 'bugün verildi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get loansDueNone => 'İade tarihi yok';
+
+  @override
+  String get loansDueToday => 'Bugün iade edilmeli';
+
+  @override
+  String loansDueIn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'İadeye $count gün kaldı',
+      one: 'Yarın iade edilmeli',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String loansOverdueBy(int count) {
+    return '$count gün gecikti';
+  }
+
+  @override
+  String get loansEdit => 'Düzenle';
+
+  @override
+  String get loansEditTitle => 'Ödünç Bilgisini Düzenle';
+
+  @override
+  String get loansReturnConfirmTitle => 'İade alındı mı?';
+
+  @override
+  String loansReturnConfirmMessage(String title, String name) {
+    return '“$title”, $name kişisinden geri alındı olarak işaretlenecek ve ödünç geçmişine eklenecek.';
+  }
+
+  @override
+  String get loansPickBookTitle => 'Ödünç verilecek kitabı seç';
+
+  @override
+  String get loansNoLendableTitle => 'Ödünç verilebilecek kitap yok';
+
+  @override
+  String get loansNoLendableMessage =>
+      'Fiziksel kopyası sende olan ve şu an ödünçte olmayan kitaplar burada listelenir.';
+
+  @override
+  String get loansEmptyActiveTitle => 'Ödünçte kitap yok';
+
+  @override
+  String get loansEmptyActiveMessage =>
+      'Fiziksel bir kitabını ödünç verdiğinde kime verdiğini ve iade tarihini burada takip edebilirsin.';
+
+  @override
+  String get loansEmptyHistoryTitle => 'Ödünç geçmişi boş';
+
+  @override
+  String get loansEmptyHistoryMessage =>
+      'İadesini aldığın kitaplar burada listelenir.';
+
+  @override
+  String loansHistoryPeriod(String lent, String returned) {
+    return '$lent – $returned';
+  }
+
+  @override
+  String loansHistoryDuration(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gün',
+      zero: 'aynı gün',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get loansReturnedLate => 'Geç iade edildi';
+
+  @override
+  String get loanReminderChannelName => 'Ödünç hatırlatmaları';
+
+  @override
+  String get loanReminderChannelDescription =>
+      'Ödünç verdiğin kitapların iade günü yaklaşınca hatırlatır.';
+
+  @override
+  String get loanReminderTomorrowTitle => 'Yarın iade günü';
+
+  @override
+  String get loanReminderTodayTitle => 'Bugün iade günü';
+
+  @override
+  String loanReminderBody(String title, String name) {
+    return '$name, “$title” kitabını geri getirmeli.';
+  }
+
+  @override
+  String get readingReminderChannelName => 'Okuma hatırlatmaları';
+
+  @override
+  String get readingReminderChannelDescription =>
+      'Her gün seçtiğin saatte okumaya davet eder ve yarım kalan kitapları hatırlatır.';
+
+  @override
+  String get readingReminderTitle => 'Okuma zamanı';
+
+  @override
+  String readingReminderBody(String title, int page) {
+    return '“$title” kitabında $page. sayfadasın. 10 dakika okumaya ne dersin?';
+  }
+
+  @override
+  String readingReminderBodyStart(String title) {
+    return '“$title” seni bekliyor. 10 dakika okumaya ne dersin?';
+  }
+
+  @override
+  String get readingReminderBodyNoBook =>
+      'Bugün birkaç sayfa okumaya ne dersin? Kitaplığında seni bekleyen kitaplar var.';
+
+  @override
+  String readingReminderStreakTitle(int days) {
+    return '$days gündür okuyorsun, seriyi bozma!';
+  }
+
+  @override
+  String get readingReminderStalledTitle => 'Yarım kalan kitap';
+
+  @override
+  String readingReminderStalledBody(String title, int days) {
+    return '“$title” kitabında $days gündür ilerleme yok. Kaldığın yerden devam etmeye ne dersin?';
+  }
 
   @override
   String get deleteBook => 'Kitabı sil';
@@ -518,6 +796,34 @@ class AppLocalizationsTr extends AppLocalizations {
   String get fieldBookPages => 'Sayfa sayısı';
 
   @override
+  String get genreAdd => 'Yeni kategori ekle';
+
+  @override
+  String get genreNewTitle => 'Yeni kategori';
+
+  @override
+  String get genreNewName => 'Kategori adı';
+
+  @override
+  String get genreNewColor => 'Renk';
+
+  @override
+  String genreColorOption(int number) {
+    return 'Renk $number';
+  }
+
+  @override
+  String get genreNewSave => 'Ekle';
+
+  @override
+  String get errorGenreNameTooLong =>
+      'Kategori adı en fazla 30 karakter olabilir.';
+
+  @override
+  String get errorGenreNameTaken =>
+      'Bu kategori zaten var; listeden seçebilirsin.';
+
+  @override
   String get fieldBookGenre => 'Tür';
 
   @override
@@ -527,10 +833,29 @@ class AppLocalizationsTr extends AppLocalizations {
   String get fieldBookIsbn => 'ISBN (isteğe bağlı)';
 
   @override
+  String get fieldBookCover => 'Kapak';
+
+  @override
+  String get coverFromGallery => 'Galeriden seç';
+
+  @override
+  String get coverFromCamera => 'Fotoğraf çek';
+
+  @override
+  String get coverRemove => 'Resmi kaldır';
+
+  @override
+  String get coverFromDeviceSelected =>
+      'Cihazdan seçilen resim kapak olarak kullanılacak.';
+
+  @override
+  String get coverPickFailed => 'Resim seçilemedi. Lütfen tekrar dene.';
+
+  @override
   String get fieldBookCoverUrl => 'Kapak URL (isteğe bağlı)';
 
   @override
-  String get fieldBookOwned => 'Bu kitap bende var';
+  String get fieldBookOwned => 'Bu kitap bende fiziksel olarak var';
 
   @override
   String goalYearLabel(int year) {
@@ -701,6 +1026,67 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get readerNext => 'Sonraki sayfa';
+
+  @override
+  String get readerQuoteSave => 'Alıntı olarak kaydet';
+
+  @override
+  String get readerQuoteSaved =>
+      'Alıntı kaydedildi; kitap ayrıntılarındaki Alıntılar bölümüne eklendi.';
+
+  @override
+  String get readerQuoteDuplicate => 'Bu alıntı zaten kayıtlı.';
+
+  @override
+  String get readerTranslate => 'Çeviri';
+
+  @override
+  String get readerTranslateSelection => 'Çevir';
+
+  @override
+  String get readerTranslationOriginal => 'Orijinal';
+
+  @override
+  String get readerTranslationTurkish => 'Türkçe çeviri';
+
+  @override
+  String get readerTranslationEnglish => 'İngilizce çeviri';
+
+  @override
+  String get readerTranslationBoth => 'Orijinal ve çeviri alt alta';
+
+  @override
+  String get readerTranslationTranslating => 'Sayfa çevriliyor…';
+
+  @override
+  String get readerTranslationDownloading => 'Çeviri dil paketi indiriliyor…';
+
+  @override
+  String get readerTranslationModelTitle => 'Çeviri dil paketi indirilsin mi?';
+
+  @override
+  String get readerTranslationModelMessage =>
+      'Çeviri cihazında yapılır. Bunun için İngilizce ve Türkçe dil paketlerinin bir kez indirilmesi gerekir (yaklaşık 30 MB). Sonra çeviri internet olmadan da çalışır.';
+
+  @override
+  String get readerTranslationModelDownload => 'İndir';
+
+  @override
+  String get readerTranslationErrorModel =>
+      'Dil paketi indirilemedi. İnternet bağlantını kontrol edip tekrar dene.';
+
+  @override
+  String get readerTranslationErrorTranslate => 'Metin çevrilemedi.';
+
+  @override
+  String get readerTranslationNote =>
+      'Cihazda yapılan otomatik çeviridir; hatalar içerebilir.';
+
+  @override
+  String get readerTranslationCopy => 'Kopyala';
+
+  @override
+  String get readerTranslationCopied => 'Çeviri kopyalandı.';
 
   @override
   String get readerTextSize => 'Yazı boyutu';
