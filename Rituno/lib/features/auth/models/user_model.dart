@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../../../core/constants/app_constants.dart';
 
 @immutable
 class UserModel {
@@ -8,7 +9,6 @@ class UserModel {
   final String phone;
   final String avatarUrl;
   final int totalPoints;
-  final String currentRank;
   final String preferredLanguage;
   final bool isDarkMode;
 
@@ -19,10 +19,12 @@ class UserModel {
     this.phone = '',
     this.avatarUrl = '',
     this.totalPoints = 0,
-    this.currentRank = 'Çaylak (Seviye 1)',
     this.preferredLanguage = 'tr',
     this.isDarkMode = true,
   });
+
+  /// Seviye puandan hesaplanır; rütbe adı ekranda seçili dilde gösterilir.
+  int get level => AppConstants.levelForPoints(totalPoints);
 
   UserModel copyWith({
     String? id,
@@ -31,7 +33,6 @@ class UserModel {
     String? phone,
     String? avatarUrl,
     int? totalPoints,
-    String? currentRank,
     String? preferredLanguage,
     bool? isDarkMode,
   }) {
@@ -42,7 +43,6 @@ class UserModel {
       phone: phone ?? this.phone,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       totalPoints: totalPoints ?? this.totalPoints,
-      currentRank: currentRank ?? this.currentRank,
       preferredLanguage: preferredLanguage ?? this.preferredLanguage,
       isDarkMode: isDarkMode ?? this.isDarkMode,
     );
@@ -56,7 +56,6 @@ class UserModel {
       phone: json['phone'] as String? ?? '',
       avatarUrl: json['avatarUrl'] as String? ?? '',
       totalPoints: json['totalPoints'] as int? ?? 0,
-      currentRank: json['currentRank'] as String? ?? 'Çaylak (Seviye 1)',
       preferredLanguage: json['preferredLanguage'] as String? ?? 'tr',
       isDarkMode: json['isDarkMode'] as bool? ?? true,
     );
@@ -70,7 +69,6 @@ class UserModel {
       'phone': phone,
       'avatarUrl': avatarUrl,
       'totalPoints': totalPoints,
-      'currentRank': currentRank,
       'preferredLanguage': preferredLanguage,
       'isDarkMode': isDarkMode,
     };

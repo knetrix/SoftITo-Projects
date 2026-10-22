@@ -131,7 +131,7 @@ class ProfileView extends StatelessWidget {
     return ProfileSettingTileWidget(
       icon: Icons.military_tech_rounded,
       title: AppStrings.currentRankTile,
-      subtitle: user.currentRank,
+      subtitle: AppStrings.rankTitle(user.level),
     );
   }
 

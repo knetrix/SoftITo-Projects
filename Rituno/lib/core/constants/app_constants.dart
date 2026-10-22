@@ -4,6 +4,15 @@ abstract class AppConstants {
   static const int pointPerCompletion = 15;
   static const int streakBonusMultiplier = 5;
 
+  /// Toplam puana göre seviye (1-5). Rütbe adı dile göre AppStrings.rankTitle ile üretilir.
+  static int levelForPoints(int points) {
+    if (points > 1500) return 5;
+    if (points > 800) return 4;
+    if (points > 400) return 3;
+    if (points > 150) return 2;
+    return 1;
+  }
+
   // Varsayılan Kategoriler
   static const List<String> categories = [
     'Sağlık & Spor',

@@ -94,6 +94,7 @@ class AIService {
       generatedSummary: summary,
       suggestions: suggestions,
       createdAt: AppDateUtils.todayString(),
+      language: AppStrings.currentLanguage,
     );
   }
 }

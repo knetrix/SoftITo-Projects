@@ -61,6 +61,10 @@ class _RutinoAppState extends State<RutinoApp> {
     _statsController = StatisticsController(widget.storageService, widget.aiService);
     _communityController = CommunityController(widget.storageService);
 
+    _profileController.languageNotifier.addListener(() {
+      _statsController.showInsightFor(_profileController.languageNotifier.value);
+    });
+
     _authController.userNotifier.addListener(() {
       _profileController.syncUser(_authController.userNotifier.value);
     });

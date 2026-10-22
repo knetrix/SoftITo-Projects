@@ -63,22 +63,7 @@ class ProfileController {
     if (userNotifier.value == null) return;
     final current = userNotifier.value!;
     final newPoints = (current.totalPoints + points).clamp(0, 999999);
-
-    String rank = current.currentRank;
-    if (newPoints > 1500) {
-      rank = 'Efsane Lider (Seviye 5)';
-    } else if (newPoints > 800) {
-      rank = 'Usta Odakçı (Seviye 4)';
-    } else if (newPoints > 400) {
-      rank = 'İstikrarlı Yolcu (Seviye 3)';
-    } else if (newPoints > 150) {
-      rank = 'Çırak Rutinci (Seviye 2)';
-    }
-
-    final updated = current.copyWith(
-      totalPoints: newPoints,
-      currentRank: rank,
-    );
+    final updated = current.copyWith(totalPoints: newPoints);
     userNotifier.value = updated;
     _storageService.saveUser(updated);
   }

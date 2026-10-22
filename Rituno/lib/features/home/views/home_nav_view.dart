@@ -16,6 +16,7 @@ class HomeNavView extends StatefulWidget {
   final CommunityController communityController;
   final ProfileController profileController;
   final VoidCallback onLogout;
+  final int initialIndex;
 
   const HomeNavView({
     super.key,
@@ -24,6 +25,7 @@ class HomeNavView extends StatefulWidget {
     required this.communityController,
     required this.profileController,
     required this.onLogout,
+    this.initialIndex = 0,
   });
 
   @override
@@ -31,7 +33,7 @@ class HomeNavView extends StatefulWidget {
 }
 
 class _HomeNavViewState extends State<HomeNavView> {
-  int _currentIndex = 0;
+  late int _currentIndex = widget.initialIndex;
 
   @override
   Widget build(BuildContext context) {

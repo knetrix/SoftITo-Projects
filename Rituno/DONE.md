@@ -9,6 +9,9 @@
 | Aşama 4: Test, İyileştirme & iOS Simülatör Teslim | Tamamlandı |
 | Aşama 5: Açık Tema Renkleri, Kontrast & Okunabilirlik İyileştirmesi | Tamamlandı |
 | Aşama 6: Çoklu Dil (TR/EN) Desteği, Dinamik Yerelleştirme & Entegrasyon Testleri | Tamamlandı |
+| Aşama 7: README Dokümantasyonu | Tamamlandı |
+| Aşama 8: README Ekran Görüntüleri (iOS Simülatör) | Tamamlandı |
+| Aşama 9: Rütbe/AI Dil Düzeltmesi, Uygulama İkonu, Açılış Ekranı & Uygulama Adı | Tamamlandı |
 
 ---
 
@@ -347,6 +350,167 @@
 
 ---
 
+## [2026-10-22] Aşama 7 – README Dokümantasyonu
+
+### Yapılanlar
+- Flutter şablonundan kalan varsayılan `README.md`, proje kodu incelenerek Rutino'nun özelliklerini, kurulum komutlarını, mimarisini, testlerini ve bilinen sınırlarını anlatan Türkçe bir dokümana dönüştürüldü.
+- README'deki bilgiler kodla doğrulandı (puan sabitleri, kategori/sıklık listeleri, tohum verileri, yer tutucu bildirim servisi, kural tabanlı AI Koç, şifre doğrulamayan demo girişi).
+
+### Dosyalar
+
+#### Oluşturulan
+- *Bu aşamada oluşturulan dosya bulunmamaktadır.*
+
+#### Güncellenen
+- [README.md](README.md): Rutino'nun özelliklerini, çalıştırma komutlarını, mimarisini, test kapsamını ve bilinen sınırlarını özetleyen proje tanıtım dokümanıdır.
+- [DONE.md](DONE.md): Aşama 7 kaydı, durum tablosu ve final özet eklendi.
+
+#### Silinen
+- *Bu aşamada silinen dosya bulunmamaktadır.*
+
+### Doğrulama
+- Kod değişikliği yapılmadı; `flutter test` çalıştırıldı:
+  ```text
+  00:02 +15: All tests passed!
+  ```
+
+### Alınan Kararlar
+- README, Kitalog README'sinin yapısıyla (Özellikler, Kurulum ve çalıştırma, Mimari, Notlar) uyumlu yazıldı; ekran görüntüsü bulunmadığından görsel tablo eklenmedi.
+- Henüz gerçek olmayan özellikler (AI API entegrasyonu, telefon bildirimleri, şifre doğrulaması, ikon/splash) README'de açıkça "Notlar" altında belirtildi.
+
+### Açık Konular
+- README'ye eklenmek üzere ekran görüntüleri (`docs/screenshots/`) alınabilir.
+
+---
+
+## [2026-10-22] Aşama 8 – README Ekran Görüntüleri (iOS Simülatör)
+
+### Yapılanlar
+- Uygulama iOS Simülatöründe (iPhone 18 Pro) çalıştırılarak 10 ekran görüntüsü alındı: giriş, kayıt, alışkanlıklar, yeni alışkanlık formu, istatistikler, topluluk, profil, açık tema, İngilizce profil ve İngilizce AI Koç analizi.
+- Görüntüler temiz tohum verisiyle, ekranları sırayla açan geçici bir giriş noktası (`tool/screenshot_main.dart`) ile alındı; bu dosya iş bitince silindi.
+- `README.md`, Kitalog README düzenine uygun şekilde ekran görüntüsü tabloları ve ek görüntü bağlantılarıyla güncellendi.
+- `HomeNavView`'e başlangıç sekmesini seçmek için varsayılanı 0 olan `initialIndex` parametresi eklendi.
+
+### Dosyalar
+
+#### Oluşturulan
+- [docs/screenshots/](docs/screenshots/): iOS Simülatöründen alınan 10 ekran görüntüsünü (koyu/açık tema, Türkçe/İngilizce) içerir.
+
+#### Güncellenen
+- [README.md](README.md): Ekran görüntüsü tabloları, ek görüntü bağlantıları ve simülatör notu eklendi.
+- [lib/features/home/views/home_nav_view.dart](lib/features/home/views/home_nav_view.dart): Açılışta gösterilecek sekmeyi belirleyen, varsayılanı 0 olan `initialIndex` parametresini alır.
+- [DONE.md](DONE.md): Aşama 8 kaydı, durum tablosu ve final özet güncellendi.
+
+#### Silinen
+- `tool/screenshot_main.dart`: Ekran görüntüleri için geçici olarak yazılıp silinen giriş noktasıydı.
+
+### Doğrulama
+- **`flutter analyze`:**
+  ```text
+  No issues found! (ran in 2.2s)
+  ```
+- **`flutter test`:**
+  ```text
+  00:02 +15: All tests passed!
+  ```
+- **iOS Simulator:** Tüm ekran görüntüleri tek tek açılıp gözle kontrol edildi.
+
+### Alınan Kararlar
+- Üretim koduna ekran görüntüsü modu eklenmedi; yalnızca varsayılan davranışı değiştirmeyen `initialIndex` parametresi eklendi.
+- Tohumlanan AI Koç analizi Türkçe kaydedildiği için İngilizce AI Koç görüntüsü, İngilizce dilde yeni bir analiz çalıştırılarak alındı.
+
+### Açık Konular
+- İngilizce arayüzde kullanıcının rütbe metni ("Usta Odakçı (Seviye 4)") ve daha önce kaydedilmiş AI Koç özeti Türkçe kalıyor; bu metinler kullanıcı verisinde Türkçe saklanıyor. (Aşama 9'da giderildi.)
+- Seri rozetlerinde "7 Gün" rozetinin simgesi "1" rakamı olarak görünüyor.
+
+---
+
+## [2026-10-22] Aşama 9 – Rütbe/AI Dil Düzeltmesi, Uygulama İkonu, Açılış Ekranı & Uygulama Adı
+
+### Yapılanlar
+- İngilizce arayüzde Türkçe kalan rütbe metni düzeltildi: rütbe artık kullanıcı verisinde metin olarak saklanmıyor, toplam puandan seviye hesaplanıp (`AppConstants.levelForPoints`) seçili dilde adlandırılıyor (`AppStrings.rankTitle`).
+- AI Koç analizlerine üretildikleri dil (`language`) eklendi; istatistik ekranı seçili dilde üretilmiş son analizi gösteriyor, dil değişince kart anında o dile geçiyor. İngilizce örnek analiz de tohumlandı; dil bilgisi olmayan eski kayıtlar Türkçe kabul ediliyor.
+- Profildeki "Mevcut Rutbe & Seviye" yazım hatası "Mevcut Rütbe & Seviye" olarak düzeltildi.
+- Uygulama ikonu SVG olarak tasarlandı (obsidian zemin, indigo ilerleme halkası, beyaz onay işareti, seriyi temsil eden turuncu nokta) ve `rsvg-convert` ile ana ikon, Android ön katman, tek renkli ikon ve açılış logosu PNG'leri üretildi.
+- `flutter_launcher_icons` ile Android (uyarlanabilir + tek renkli) ve iOS ikonları, `flutter_native_splash` ile Android (Android 12+ dahil) ve iOS yerel açılış ekranı oluşturuldu.
+- Uygulama adı tüm platformlarda "Rutino" yapıldı: Android `android:label` ve iOS `CFBundleDisplayName` zaten doğruydu, iOS `CFBundleName` "rutino" → "Rutino" olarak düzeltildi; `pubspec.yaml` açıklaması güncellendi.
+- `flutter_launcher_icons`'ın iOS proje dosyasında bozduğu `ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS` ayarı `YES` değerine geri alındı.
+- Değişen profil ekranları (07, 09) yeniden çekildi ve açılış ekranı görüntüsü (11) eklendi; README güncellendi.
+
+### Dosyalar
+
+#### Oluşturulan
+- [assets/icon/app_icon.svg](assets/icon/app_icon.svg): Obsidian zemin üzerinde indigo ilerleme halkası, beyaz onay işareti ve turuncu seri noktasından oluşan ikonun kaynak tasarımıdır.
+- [assets/icon/app_icon.png](assets/icon/app_icon.png): iOS ve Android'in ana ikonu için kullanılan 1024×1024 PNG'dir.
+- [assets/icon/app_icon_foreground.svg](assets/icon/app_icon_foreground.svg): Android uyarlanabilir ikonun şeffaf zeminli ön katman kaynağıdır.
+- [assets/icon/app_icon_foreground.png](assets/icon/app_icon_foreground.png): Android uyarlanabilir ikonun ön katman PNG'sidir.
+- [assets/icon/app_icon_monochrome.svg](assets/icon/app_icon_monochrome.svg): Android 13+ temalı ikon için tek renkli kaynaktır.
+- [assets/icon/app_icon_monochrome.png](assets/icon/app_icon_monochrome.png): Android 13+ temalı (tek renkli) ikon PNG'sidir.
+- [assets/icon/splash_logo.svg](assets/icon/splash_logo.svg): Açılış ekranında ortada görünen logonun kaynağıdır.
+- [assets/icon/splash_logo.png](assets/icon/splash_logo.png): Android, Android 12+ ve iOS açılış ekranında kullanılan şeffaf zeminli logodur.
+- [android/app/src/main/res/mipmap-anydpi-v26/](android/app/src/main/res/mipmap-anydpi-v26/): Android uyarlanabilir ikonun arka plan, ön katman ve tek renkli katman tanımını içerir.
+- [android/app/src/main/res/values/colors.xml](android/app/src/main/res/values/colors.xml): Uyarlanabilir ikonun obsidian arka plan rengini tanımlar.
+- [android/app/src/main/res/values-v31/](android/app/src/main/res/values-v31/): Android 12+ açılış ekranının arka plan rengini ve logosunu tanımlayan stilleri içerir (`values-night-v31` gece sürümüdür).
+- [android/app/src/main/res/drawable-*/](android/app/src/main/res/): Android açılış ekranı logo ve arka plan görsellerinin yoğunluk bazlı kopyalarıdır.
+- [ios/Runner/Assets.xcassets/LaunchBackground.imageset/](ios/Runner/Assets.xcassets/LaunchBackground.imageset/): iOS açılış ekranının obsidian arka plan rengidir.
+- [docs/screenshots/11-splash.png](docs/screenshots/11-splash.png): iOS simülatöründe alınan açılış ekranı görüntüsüdür.
+
+#### Güncellenen
+- [lib/core/constants/app_constants.dart](lib/core/constants/app_constants.dart): Toplam puandan 1-5 arası seviyeyi hesaplayan `levelForPoints` eklendi.
+- [lib/core/constants/app_strings.dart](lib/core/constants/app_strings.dart): Seviyeye göre TR/EN rütbe adını üreten `rankTitle` eklendi ve "Rütbe" yazımı düzeltildi.
+- [lib/features/auth/models/user_model.dart](lib/features/auth/models/user_model.dart): Dile bağlı `currentRank` metni kaldırıldı, puandan hesaplanan `level` getter'ı eklendi.
+- [lib/features/auth/controllers/auth_controller.dart](lib/features/auth/controllers/auth_controller.dart): Kayıt, giriş ve misafir kullanıcıda sabit Türkçe rütbe atamaları kaldırıldı.
+- [lib/features/profile/controllers/profile_controller.dart](lib/features/profile/controllers/profile_controller.dart): Puan eklerken Türkçe rütbe metni üretme mantığı kaldırıldı; yalnızca puan güncellenir.
+- [lib/features/profile/views/profile_view.dart](lib/features/profile/views/profile_view.dart): Rütbe satırını puandan hesaplanan seviyeyle seçili dilde gösterir.
+- [lib/features/statistics/models/ai_insight_model.dart](lib/features/statistics/models/ai_insight_model.dart): Analizin üretildiği dili tutan `language` alanı eklendi (eski kayıtlar için varsayılan 'tr').
+- [lib/core/services/ai_service.dart](lib/core/services/ai_service.dart): Üretilen analize aktif dili yazar.
+- [lib/core/services/storage_service.dart](lib/core/services/storage_service.dart): İngilizce örnek AI analizi tohumlandı ve kullanıcı tohumundan rütbe metni kaldırıldı.
+- [lib/features/statistics/controllers/statistics_controller.dart](lib/features/statistics/controllers/statistics_controller.dart): `showInsightFor` ile seçili dilde üretilmiş son analizi gösterir.
+- [lib/main.dart](lib/main.dart): Dil değiştiğinde AI Koç kartını yeni dildeki analize geçirir.
+- [test/language_test.dart](test/language_test.dart): Seviye/rütbe çevirisi, dile göre AI analizi seçimi, eski analizlerin dil varsayılanı ve profilde rütbenin anında İngilizceye dönmesi testleri eklendi.
+- [pubspec.yaml](pubspec.yaml): `flutter_launcher_icons` ve `flutter_native_splash` (dev) paketleri, yapılandırma blokları ve uygulama açıklaması eklendi.
+- [pubspec.lock](pubspec.lock): Yeni dev paketlerinin sürümlerini kilitler.
+- [android/app/src/main/res/mipmap-*/ic_launcher.png](android/app/src/main/res/): Android ikonları yeni tasarımla üretildi.
+- [android/app/src/main/res/drawable/launch_background.xml](android/app/src/main/res/drawable/launch_background.xml): Android açılış ekranına obsidian zemin ve logo eklendi (`drawable-v21` sürümüyle birlikte).
+- [android/app/src/main/res/values/styles.xml](android/app/src/main/res/values/styles.xml): Açılış teması `flutter_native_splash` ayarlarıyla güncellendi (`values-night` sürümüyle birlikte).
+- [ios/Runner/Assets.xcassets/AppIcon.appiconset/](ios/Runner/Assets.xcassets/AppIcon.appiconset/): iOS uygulama ikonları yeni tasarımla üretildi.
+- [ios/Runner/Assets.xcassets/LaunchImage.imageset/](ios/Runner/Assets.xcassets/LaunchImage.imageset/): iOS açılış logosu (1x/2x/3x) yeni tasarımla üretildi.
+- [ios/Runner/Base.lproj/LaunchScreen.storyboard](ios/Runner/Base.lproj/LaunchScreen.storyboard): iOS açılış ekranı obsidian zemin ve ortalanmış logoyla yeniden üretildi.
+- [ios/Runner/Info.plist](ios/Runner/Info.plist): `CFBundleName` "Rutino" yapıldı; `flutter_native_splash` durum çubuğu ayarını ekledi ve dosyayı yeniden girintiledi.
+- [ios/Runner.xcodeproj/project.pbxproj](ios/Runner.xcodeproj/project.pbxproj): `flutter_launcher_icons`'ın değiştirdiği asset sembol ayarı `YES` değerine geri alındı; son durumda içerik değişikliği yoktur.
+- [docs/screenshots/07-profile.png](docs/screenshots/07-profile.png): Puandan hesaplanan Türkçe rütbeyle yeniden çekildi (aynı şekilde `09-profile-en.png` İngilizce rütbeyle).
+- [README.md](README.md): Rütbe/AI dil davranışı, ikon ve açılış ekranı, ikon üretim komutları, 18 test ve açılış ekranı görüntüsüyle güncellendi.
+- [DONE.md](DONE.md): Aşama 9 kaydı, durum tablosu ve final özet güncellendi.
+
+#### Silinen
+- `tool/screenshot_main.dart`: Profil ekran görüntülerini yeniden almak için geçici olarak yazılıp silinen giriş noktasıydı.
+
+### Doğrulama
+- **`flutter analyze`:**
+  ```text
+  No issues found! (ran in 2.2s)
+  ```
+- **`flutter test`:**
+  ```text
+  00:02 +18: All tests passed!
+  ```
+- **Derleme:** `flutter build apk --debug` ve `flutter build ios --simulator` başarılı.
+- **iOS Simulator:** Ana ekranda yeni ikon "Rutino" adıyla, açılışta koyu zeminli logo görüldü; profil İngilizcede "Steady Traveler (Level 3)" gösteriyor.
+
+### Alınan Kararlar
+- Rütbe dile bağlı bir metin olarak saklanmak yerine puandan türetilir; böylece hem dil değişimi hem de puan düşüşü rütbeye doğru yansır. Bu yüzden `PROJECT.md`'deki User modelinde geçen `currentRank` alanı modelden kaldırıldı (eski kayıtlardaki alan okunurken yok sayılır).
+- Tohumlanan kullanıcının rütbesi önceden elle "Usta Odakçı (Seviye 4)" yazılmıştı; 680 puan eşiklere göre Seviye 3 olduğundan artık "İstikrarlı Yolcu (Seviye 3)" görünür.
+- Misafir kullanıcıya özel "Deneme Modu" rütbesi kaldırıldı; misafir de puanına göre "Çaylak (Seviye 1)" görünür.
+- AI analizleri çevrilmez; her analiz üretildiği dille saklanır. Seçili dilde analiz yoksa kart boş hâlde "AI ile analiz et" çağrısını gösterir.
+- İkon renkleri `AppColors` ile aynıdır (`darkBackground`, `primary`, `streakFire`); Android ön katmanda `flutter_launcher_icons`'ın eklediği %16 kenar boşluğu hesaba katılarak simge tam boyutta çizildi.
+- Simülatörde açılış ekranı ilk denemede beyaz göründü; sebebin iOS'un eski kurulumdan kalan açılış görüntüsü önbelleği olduğu, uygulama yeniden kurulunca doğru göründüğü doğrulandı (kod sorunu değil).
+
+### Açık Konular
+- Android ikonu ve açılış ekranı yalnızca derleme ve üretilen kaynaklarla doğrulandı; Android emülatöründe görsel olarak denenmedi.
+- Seri rozetlerinde "7 Gün" rozetinin simgesi "1" rakamı olarak görünüyor.
+
+---
+
 ## Final Özet
-- **Genel İlerleme:** %100 (Aşama 0'dan Aşama 6'ya kadar tüm isterler, açık tema kontrastı ve çoklu dil gereksinimleri tamamlandı).
-- **Proje Durumu:** Rutino uygulaması Türkçe ve İngilizce çift dil desteğiyle, açık ve koyu tema uyumluluğuyla, 0 statik analiz uyarısı ve 15 geçen test ile eksiksiz çalışmaktadır.
+- **Genel İlerleme:** %100 (Aşama 0'dan Aşama 9'a kadar tüm isterler, açık tema kontrastı, çoklu dil gereksinimleri, README dokümantasyonu, ekran görüntüleri, uygulama ikonu ve açılış ekranı tamamlandı).
+- **Proje Durumu:** Rutino uygulaması Türkçe ve İngilizce çift dil desteğiyle, açık ve koyu tema uyumluluğuyla, özel uygulama ikonu ve yerel açılış ekranıyla, 0 statik analiz uyarısı ve 18 geçen test ile eksiksiz çalışmaktadır.

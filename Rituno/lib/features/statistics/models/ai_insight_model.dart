@@ -7,6 +7,7 @@ class AIInsightModel {
   final String generatedSummary;
   final List<String> suggestions;
   final String createdAt;
+  final String language; // 'tr' / 'en': özetin üretildiği dil
 
   const AIInsightModel({
     required this.id,
@@ -14,6 +15,7 @@ class AIInsightModel {
     required this.generatedSummary,
     required this.suggestions,
     required this.createdAt,
+    this.language = 'tr',
   });
 
   AIInsightModel copyWith({
@@ -22,6 +24,7 @@ class AIInsightModel {
     String? generatedSummary,
     List<String>? suggestions,
     String? createdAt,
+    String? language,
   }) {
     return AIInsightModel(
       id: id ?? this.id,
@@ -29,6 +32,7 @@ class AIInsightModel {
       generatedSummary: generatedSummary ?? this.generatedSummary,
       suggestions: suggestions ?? this.suggestions,
       createdAt: createdAt ?? this.createdAt,
+      language: language ?? this.language,
     );
   }
 
@@ -42,6 +46,7 @@ class AIInsightModel {
               .toList() ??
           const [],
       createdAt: json['createdAt'] as String? ?? '',
+      language: json['language'] as String? ?? 'tr',
     );
   }
 
@@ -52,6 +57,7 @@ class AIInsightModel {
       'generatedSummary': generatedSummary,
       'suggestions': suggestions,
       'createdAt': createdAt,
+      'language': language,
     };
   }
 }

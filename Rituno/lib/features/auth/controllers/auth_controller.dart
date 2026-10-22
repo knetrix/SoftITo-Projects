@@ -37,7 +37,6 @@ class AuthController {
       name: email.split('@').first.toUpperCase(),
       email: email.trim(),
       totalPoints: 250,
-      currentRank: 'Çaylak (Seviye 1)',
     );
     await _storageService.saveUser(user);
     userNotifier.value = user;
@@ -62,7 +61,6 @@ class AuthController {
       email: email.trim(),
       phone: phone.trim(),
       totalPoints: 100, // Hoş geldin bonusu
-      currentRank: 'Çaylak (Seviye 1)',
     );
 
     await _storageService.saveUser(newUser);
@@ -78,7 +76,6 @@ class AuthController {
       name: 'Misafir Kullanıcı',
       email: 'misafir@rutino.com',
       totalPoints: 50,
-      currentRank: 'Deneme Modu',
     );
     await _storageService.saveUser(guestUser);
     userNotifier.value = guestUser;

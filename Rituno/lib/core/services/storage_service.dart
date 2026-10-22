@@ -123,7 +123,6 @@ class StorageService {
       phone: '+90 555 123 4567',
       avatarUrl: 'assets/avatars/avatar1.png',
       totalPoints: 680,
-      currentRank: 'Usta Odakçı (Seviye 4)',
       preferredLanguage: 'tr',
       isDarkMode: true,
     );
@@ -246,6 +245,19 @@ class StorageService {
             '30 Günlük Kodlama Turnuvası liderliği için sadece 40 puana ihtiyacın var!',
           ],
           createdAt: '2026-10-22',
+        ),
+        const AIInsightModel(
+          id: 'insight-seed-en',
+          userId: 'user-001',
+          generatedSummary:
+              'Congratulations Melih! This week you reached an 85% success rate in your coding and water habits. Short 15-minute evening sessions will help you keep your reading streak alive.',
+          suggestions: [
+            'Add a reminder for 21:00 in the evening.',
+            'Raise your water goal to 3 liters to earn an extra streak bonus.',
+            'You only need 40 points to lead the 30-Day Coding Tournament!',
+          ],
+          createdAt: '2026-10-22',
+          language: 'en',
         ),
       ];
     }

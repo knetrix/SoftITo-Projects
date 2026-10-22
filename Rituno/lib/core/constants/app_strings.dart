@@ -129,7 +129,13 @@ abstract class AppStrings {
   static String get trLanguage => 'Türkçe';
   static String get enLanguage => 'English';
   static String get currentRankTile =>
-      isEnglish ? 'Current Rank & Level' : 'Mevcut Rutbe & Seviye';
+      isEnglish ? 'Current Rank & Level' : 'Mevcut Rütbe & Seviye';
+  static String rankTitle(int level) {
+    const tr = ['Çaylak', 'Çırak Rutinci', 'İstikrarlı Yolcu', 'Usta Odakçı', 'Efsane Lider'];
+    const en = ['Rookie', 'Apprentice', 'Steady Traveler', 'Master of Focus', 'Legendary Leader'];
+    final index = (level - 1).clamp(0, 4);
+    return isEnglish ? '${en[index]} (Level $level)' : '${tr[index]} (Seviye $level)';
+  }
   static String get appVersionTile => isEnglish ? 'App Version' : 'Uygulama Sürümü';
   static String get userNotFound =>
       isEnglish ? 'User session not found.' : 'Kullanıcı oturumu bulunamadı.';

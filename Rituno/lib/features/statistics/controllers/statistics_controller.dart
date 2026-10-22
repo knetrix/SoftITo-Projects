@@ -4,6 +4,7 @@ import '../../habits/models/habit_model.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/ai_service.dart';
 import '../../../core/utils/date_utils.dart';
+import '../../../core/constants/app_strings.dart';
 
 class StatisticsController {
   final StorageService _storageService;
@@ -12,14 +13,13 @@ class StatisticsController {
   final ValueNotifier<bool> isAnalyzingNotifier = ValueNotifier<bool>(false);
 
   StatisticsController(this._storageService, this._aiService) {
-    _loadLatestInsight();
+    showInsightFor(AppStrings.currentLanguage);
   }
 
-  void _loadLatestInsight() {
+  /// Seçili dilde üretilmiş en son analizi gösterir; o dilde analiz yoksa kart boş kalır.
+  void showInsightFor(String language) {
     final insights = _storageService.loadAiInsights();
-    if (insights.isNotEmpty) {
-      insightNotifier.value = insights.first;
-    }
+    insightNotifier.value = insights.where((i) => i.language == language).firstOrNull;
   }
 
   /// Son 7 günün tamamlama oranlarını (0.0 - 1.0) hesaplar

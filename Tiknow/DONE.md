@@ -123,6 +123,12 @@ Tarih: 2026-10-21 · Flutter 3.47.7 · Dart 3.13.5
 ### Adım 8 – Görsel doğrulama
 - Geçici bir önizleme giriş noktası (sonra silindi; analyzer uyarısı veriyordu) ile iOS simülatöründe ekranlar açılıp ekran görüntüsü alındı (sonuçlar Bölüm 4'te).
 
+### Adım 9 – README ve ekran görüntüleri (2026-10-22)
+- Boş `README.md`; özellikler, kurulum, mimari, testler ve bilinen sınırlarla Kitalog README düzeninde yazıldı.
+- iOS simülatöründe (iPhone 18 Pro) 9 ekran görüntüsü alındı ve `docs/screenshots/` altına kaydedildi: kayıt, giriş, harita, araç paneli, ödeme, aktif kiralamalar, ayarlar, aydınlık tema ve İngilizce araç paneli.
+- Görüntüler, temiz veriyle örnek hesap ve iki aktif kiralama (3 Saat paketi + 25 km ekli Tesla Model Y, dakikalık Peugeot 208) oluşturup ekranları sırayla açan geçici `tool/screenshot_main.dart` ile alındı; araç paneli harita üzerinde simgeye dokunma olayı gönderilerek açıldı. Dosya iş bitince silindi, üretim kodu değişmedi.
+- Doğrulama: `flutter analyze` → 0 sorun, `flutter test` → 46 test geçti.
+
 ---
 
 ## 4. Görsel Doğrulama Notları
@@ -148,3 +154,4 @@ dart run flutter_launcher_icons
 - Gerçek GPS, gerçek ödeme ve backend yok (PROJECT.md gereği).
 - Windows/Linux platformları eklenmedi.
 - Android/iOS gerçek cihaz testi yapılmadı; iOS simülatöründe çalıştırıldı.
+- Haritanın üst kısmındaki semt etiketi ("Şişli") durum çubuğunun (saat) altına denk gelebiliyor.

@@ -1,9 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rutino/core/constants/app_constants.dart';
 import 'package:rutino/core/constants/app_strings.dart';
 import 'package:rutino/core/services/storage_service.dart';
 import 'package:rutino/core/services/ai_service.dart';
 import 'package:rutino/features/profile/controllers/profile_controller.dart';
+import 'package:rutino/features/statistics/controllers/statistics_controller.dart';
+import 'package:rutino/features/statistics/models/ai_insight_model.dart';
 import 'package:rutino/main.dart';
 
 void main() {
@@ -62,6 +65,46 @@ void main() {
       final insightTr = await ai.analyzeHabits(userId: 'test', habits: []);
       expect(insightTr.generatedSummary.contains('aktif bir alışkanlığın'), true);
       expect(insightTr.suggestions.first.contains('su içme'), true);
+      expect(insightEn.language, 'en');
+      expect(insightTr.language, 'tr');
+    });
+
+    test('Rütbe puandan hesaplanmalı ve seçili dilde gösterilmeli', () {
+      expect(AppConstants.levelForPoints(0), 1);
+      expect(AppConstants.levelForPoints(151), 2);
+      expect(AppConstants.levelForPoints(680), 3);
+      expect(AppConstants.levelForPoints(801), 4);
+      expect(AppConstants.levelForPoints(1501), 5);
+
+      AppStrings.setLanguage('tr');
+      expect(AppStrings.rankTitle(3), 'İstikrarlı Yolcu (Seviye 3)');
+      AppStrings.setLanguage('en');
+      expect(AppStrings.rankTitle(3), 'Steady Traveler (Level 3)');
+    });
+
+    test('AI Koç yalnızca seçili dilde üretilmiş analizi göstermeli', () async {
+      SharedPreferences.setMockInitialValues({});
+      final storage = await StorageService.getInstance();
+      final stats = StatisticsController(storage, AIService());
+
+      expect(stats.insightNotifier.value?.language, 'tr');
+      stats.showInsightFor('en');
+      expect(stats.insightNotifier.value?.language, 'en');
+      expect(stats.insightNotifier.value?.generatedSummary.contains('Congratulations'), true);
+
+      stats.dispose();
+    });
+
+    test('Dil bilgisi olmayan eski AI analizleri Türkçe kabul edilmeli', () {
+      final legacy = AIInsightModel.fromJson({
+        'id': 'old',
+        'userId': 'u',
+        'generatedSummary': 'Eski özet',
+        'suggestions': <String>[],
+        'createdAt': '2026-10-01',
+      });
+      expect(legacy.language, 'tr');
+      expect(AIInsightModel.fromJson(legacy.copyWith(language: 'en').toJson()).language, 'en');
     });
   });
 
@@ -90,6 +133,9 @@ void main() {
       await tester.tap(find.text('Profil'));
       await tester.pumpAndSettle();
 
+      // Rütbe Türkçe gösterilmeli
+      expect(find.text('İstikrarlı Yolcu (Seviye 3)'), findsOneWidget);
+
       // Dil ayarı satırına tıkla
       await tester.tap(find.text('Uygulama Dili'));
       await tester.pumpAndSettle();
@@ -105,6 +151,7 @@ void main() {
       expect(find.text('Statistics'), findsOneWidget);
       expect(find.text('Community'), findsOneWidget);
       expect(find.text('Profile'), findsOneWidget);
+      expect(find.text('Steady Traveler (Level 3)'), findsOneWidget);
 
       // Alışkanlıklar sekmesine geri dön ve başlığı kontrol et
       await tester.tap(find.text('Habits'));
