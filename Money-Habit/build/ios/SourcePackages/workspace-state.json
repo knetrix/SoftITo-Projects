@@ -1,0 +1,55 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "flutterframework",
+          "kind" : "fileSystem",
+          "location" : "/Users/knetrix/Desktop/MAIN/Kurslar/SoftITo/GithubRepo/SoftITo-Projects/Money-Habit/ios/Flutter/ephemeral/Packages/.packages/FlutterFramework",
+          "name" : "FlutterFramework"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/knetrix/Desktop/MAIN/Kurslar/SoftITo/GithubRepo/SoftITo-Projects/Money-Habit/ios/Flutter/ephemeral/Packages/.packages/FlutterFramework"
+        },
+        "subpath" : "flutterframework"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "image_picker_ios-0.8.13+13",
+          "kind" : "fileSystem",
+          "location" : "/Users/knetrix/Desktop/MAIN/Kurslar/SoftITo/GithubRepo/SoftITo-Projects/Money-Habit/ios/Flutter/ephemeral/Packages/.packages/image_picker_ios-0.8.13+13",
+          "name" : "image_picker_ios"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/knetrix/Desktop/MAIN/Kurslar/SoftITo/GithubRepo/SoftITo-Projects/Money-Habit/ios/Flutter/ephemeral/Packages/.packages/image_picker_ios-0.8.13+13"
+        },
+        "subpath" : "image_picker_ios-0.8.13+13"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "shared_preferences_foundation-2.5.7",
+          "kind" : "fileSystem",
+          "location" : "/Users/knetrix/Desktop/MAIN/Kurslar/SoftITo/GithubRepo/SoftITo-Projects/Money-Habit/ios/Flutter/ephemeral/Packages/.packages/shared_preferences_foundation-2.5.7",
+          "name" : "shared_preferences_foundation"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/knetrix/Desktop/MAIN/Kurslar/SoftITo/GithubRepo/SoftITo-Projects/Money-Habit/ios/Flutter/ephemeral/Packages/.packages/shared_preferences_foundation-2.5.7"
+        },
+        "subpath" : "shared_preferences_foundation-2.5.7"
+      }
+    ],
+    "prebuilts" : [
+
+    ]
+  },
+  "version" : 7
+}
