@@ -1,0 +1,279 @@
+rules_version = '2';
+
+// 7v7 güvenlik kuralları — ücretsiz Spark planı, Cloud Functions yok.
+// Kullanıcılar arası yazmalar istemcide tek batch/transaction ile yapılır;
+// bu kurallar her yazmayı 7V7_HANDOFF.md §6.3 / §6.4'e göre doğrular.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- yardımcılar ----------
+    function signedIn() { return request.auth != null; }
+    function me() { return request.auth.uid; }
+    function pair(a, b) { return a < b ? a + '_' + b : b + '_' + a; }
+    function isFriend(a, b) { return exists(/databases/$(database)/documents/friendships/$(pair(a, b))); }
+    function changedOnly(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+    function inviteAfter(id) { return getAfter(/databases/$(database)/documents/invites/$(id)).data; }
+    function apptAfter(id) { return getAfter(/databases/$(database)/documents/appointments/$(id)).data; }
+    // Hesap silme (KVKK / App Store 5.1.1(v)): kullanıcı önce kendi herkese açık
+    // profilini siler; bu durumdayken taraf olduğu davet, kilit, arkadaşlık,
+    // sohbet ve randevu üyeliklerini kaldırabilir. Normal kullanımda bu
+    // yetkiler kapalıdır (ör. reddeden kişiye yeniden davet kuralı korunur).
+    function leaving() { return !exists(/databases/$(database)/documents/users/$(me())); }
+    function contactPath(uid) { return /databases/$(database)/documents/users/$(uid)/private/contact; }
+
+    // ---------- users ----------
+    // Herkese açık profil: e-posta / telefon burada OLAMAZ (bkz. private/contact).
+    match /users/{uid} {
+      function publicOnly() {
+        return request.resource.data.keys().hasOnly(['firstName', 'lastName', 'city',
+             'position', 'settings', 'createdAt']);
+      }
+      allow read: if signedIn();
+      // Profil yalnızca yeni iletişim belgesiyle birlikte (kayıt batch'i) oluşur.
+      allow create: if signedIn() && me() == uid && publicOnly()
+        && !exists(contactPath(uid)) && existsAfter(contactPath(uid));
+      allow update: if signedIn() && me() == uid && publicOnly()
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['createdAt']);
+      allow delete: if signedIn() && me() == uid;
+
+      // ---------- iletişim bilgileri: yalnızca sahibi ----------
+      match /private/{doc} {
+        allow read: if signedIn() && me() == uid;
+        allow create: if signedIn() && me() == uid && doc == 'contact'
+          && request.resource.data.keys().hasOnly(['email', 'phone', 'phoneNormalized', 'createdAt'])
+          && request.resource.data.email == request.auth.token.email
+          && request.resource.data.phoneNormalized is string
+          && request.resource.data.phoneNormalized.matches('5[0-9]{9}')
+          && request.resource.data.createdAt == request.time
+          && getAfter(/databases/$(database)/documents/phoneIndex/$(request.resource.data.phoneNormalized)).data.uid == me();
+        allow update: if false;
+        allow delete: if signedIn() && me() == uid;
+      }
+
+      // ---------- bildirimler ----------
+      match /notifications/{nid} {
+        function shape() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['type', 'relatedId', 'isRead', 'createdAt'])
+            && d.isRead == false && d.createdAt == request.time;
+        }
+        // Başkasının yazabileceği bildirimler (§6.2 kimlik tablosu).
+        function crossUser() {
+          let d = request.resource.data;
+          return signedIn() && me() != uid && shape() && (
+            (d.type == 'invite' && nid == 'invite_' + d.relatedId
+              && inviteAfter(d.relatedId).senderId == me()
+              && inviteAfter(d.relatedId).receiverId == uid
+              && inviteAfter(d.relatedId).status == 'pending')
+            || ((d.type == 'inviteAccepted' || d.type == 'inviteRejected')
+              && nid == 'resp_' + d.relatedId
+              && inviteAfter(d.relatedId).receiverId == me()
+              && inviteAfter(d.relatedId).senderId == uid
+              && inviteAfter(d.relatedId).status
+                   == (d.type == 'inviteAccepted' ? 'accepted' : 'rejected'))
+            || (d.type == 'matchSaved' && nid == 'match_' + d.relatedId
+              && apptAfter(d.relatedId).ownerId == me()
+              && uid in apptAfter(d.relatedId).memberIds)
+            || (d.type == 'message' && nid == 'msg_' + d.relatedId
+              && d.relatedId == pair(me(), uid) && isFriend(me(), uid))
+          );
+        }
+        allow read: if signedIn() && me() == uid;
+        allow create: if crossUser();
+        allow update: if (signedIn() && me() == uid && changedOnly(['isRead']))
+          || crossUser();
+        // Hesabını silen kullanıcının başkalarına bıraktığı bildirimler: belge
+        // içeriğine bakılmaz (yoksa da silme geçer; yarım kalan silme yinelenebilir).
+        function leaverOwns() {
+          let parts = nid.split('_');
+          return leaving() && parts.size() >= 2 && (
+            (parts[0] == 'msg' && parts.size() == 3 && me() in parts && uid in parts)
+            || (parts[0] == 'resp'
+                && get(/databases/$(database)/documents/invites/$(parts[1])).data.receiverId == me()
+                && get(/databases/$(database)/documents/invites/$(parts[1])).data.senderId == uid)
+            || (parts[0] == 'match'
+                && get(/databases/$(database)/documents/appointments/$(parts[1])).data.ownerId == me()
+                && uid in get(/databases/$(database)/documents/appointments/$(parts[1])).data.memberIds)
+          );
+        }
+        allow delete: if signedIn() && (me() == uid
+          || leaverOwns()
+          || (resource.data.type == 'invite'
+              && nid == 'invite_' + resource.data.relatedId
+              && get(/databases/$(database)/documents/invites/$(resource.data.relatedId)).data.senderId == me()));
+      }
+    }
+
+    // ---------- telefon dizini: yalnızca telefon tekilliği ----------
+    // Belge zaten varsa kayıt batch'indeki yazma güncelleme sayılır ve
+    // reddedilir. Kimse başkasının kaydını okuyamaz (telefon → kişi eşlemesi yok).
+    match /phoneIndex/{tel} {
+      allow get: if signedIn() && resource.data.uid == me();
+      allow list: if false;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == me()
+        && getAfter(contactPath(me())).data.phoneNormalized == tel;
+      allow update: if false;
+      allow delete: if signedIn() && resource.data.uid == me();
+    }
+
+    // ---------- taslaklar ----------
+    match /drafts/{uid} {
+      allow read, write: if signedIn() && me() == uid;
+    }
+
+    // ---------- randevular ----------
+    match /appointments/{id} {
+      // memberIds[i] her biri sahiple arkadaş olmalı (arkadaşlık yalnızca
+      // kabul edilmiş davetle oluşur). Kurallarda döngü yok: tek tek açıldı.
+      function memberOk(i) {
+        let m = request.resource.data.memberIds;
+        return m.size() <= i || (m[i] != me() && isFriend(me(), m[i]));
+      }
+      allow get: if signedIn() && (resource == null || me() in resource.data.memberIds);
+      allow list: if signedIn() && me() in resource.data.memberIds;
+      allow create: if signedIn()
+        && request.resource.data.ownerId == me()
+        && request.resource.data.isSample == false
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.memberIds.size() >= 1
+        && request.resource.data.memberIds.size() <= 7
+        && request.resource.data.memberIds[0] == me()
+        && memberOk(1) && memberOk(2) && memberOk(3)
+        && memberOk(4) && memberOk(5) && memberOk(6);
+      // Hesabını silen davetli yalnızca kendini üyelerden çıkarır.
+      allow update: if signedIn() && leaving()
+        && me() in resource.data.memberIds && me() != resource.data.ownerId
+        && changedOnly(['memberIds'])
+        && request.resource.data.memberIds == resource.data.memberIds.removeAll([me()]);
+      allow delete: if signedIn() && resource.data.ownerId == me();
+    }
+
+    // ---------- davetler ----------
+    match /invites/{id} {
+      function isParty() {
+        return me() == resource.data.senderId || me() == resource.data.receiverId;
+      }
+      function lockAfter(s, r) { return getAfter(/databases/$(database)/documents/inviteLocks/$(s + '_' + r)).data; }
+      function senderUpdate() {
+        let d = request.resource.data;
+        let o = resource.data;
+        return o.senderId == me() && (
+          // §5.2-1: bekleyen davetin mevkisi / anlık görüntüsü taşınır.
+          (o.status == 'pending' && changedOnly(['offeredSlot', 'players', 'formation',
+              'city', 'district', 'stadium', 'matchTime']))
+          // §6.3 "Kabulü taslağa işle".
+          || (o.status == 'accepted' && changedOnly(['appliedToDraft'])
+              && d.appliedToDraft == true)
+          // §6.3 "Maçı kaydet": randevuya bağla.
+          || (o.status == 'accepted' && changedOnly(['appointmentId'])
+              && d.appointmentId != null
+              && apptAfter(d.appointmentId).ownerId == me()
+              && o.receiverId in apptAfter(d.appointmentId).memberIds)
+          // §6.3 "Randevuyu sil": bağlantıyı kaldır.
+          || (o.status == 'accepted' && changedOnly(['appointmentId'])
+              && d.appointmentId == null && o.appointmentId != null
+              && !existsAfter(/databases/$(database)/documents/appointments/$(o.appointmentId)))
+        );
+      }
+      function receiverUpdate() {
+        let d = request.resource.data;
+        let o = resource.data;
+        return o.receiverId == me() && o.status == 'pending'
+          && d.respondedAt == request.time
+          && ((d.status == 'accepted' && changedOnly(['status', 'respondedAt', 'players'])
+                && d.players.size() <= 7)
+              || (d.status == 'rejected' && changedOnly(['status', 'respondedAt'])));
+      }
+      allow get: if signedIn() && (resource == null || isParty());
+      allow list: if signedIn() && isParty();
+      allow create: if signedIn()
+        && request.resource.data.senderId == me()
+        && request.resource.data.receiverId != me()
+        && request.resource.data.status == 'pending'
+        && request.resource.data.appointmentId == null
+        && request.resource.data.appliedToDraft == false
+        && request.resource.data.respondedAt == null
+        && request.resource.data.createdAt == request.time
+        && exists(/databases/$(database)/documents/users/$(request.resource.data.receiverId))
+        && lockAfter(me(), request.resource.data.receiverId).inviteId == id
+        && lockAfter(me(), request.resource.data.receiverId).state == 'pending';
+      allow update: if signedIn() && (senderUpdate() || receiverUpdate());
+      allow delete: if signedIn() && (
+        (resource.data.senderId == me() && resource.data.status == 'pending')
+        || (isParty() && leaving()));
+    }
+
+    // ---------- davet kilitleri: gönderen→alıcı çifti başına tek kilit ----------
+    match /inviteLocks/{lid} {
+      function s() { return lid.split('_')[0]; }
+      function r() { return lid.split('_')[1]; }
+      function newLockOk() {
+        let d = request.resource.data;
+        return s() == me() && d.keys().hasOnly(['inviteId', 'state']) && d.state == 'pending'
+          && inviteAfter(d.inviteId).senderId == me()
+          && inviteAfter(d.inviteId).receiverId == r();
+      }
+      allow get: if signedIn() && (me() == s() || me() == r());
+      allow list: if false;
+      // Kilit yoksa yeni davet; reddedilmişse yalnızca arkadaşlar yeniden davet eder.
+      allow create: if signedIn() && newLockOk();
+      allow update: if signedIn() && (
+        (newLockOk() && resource.data.state == 'rejected' && isFriend(s(), r()))
+        || (me() == r() && request.resource.data.state == 'rejected'
+            && request.resource.data.inviteId == resource.data.inviteId
+            && inviteAfter(resource.data.inviteId).status == 'rejected'));
+      allow delete: if signedIn() && (
+        (me() == s() && resource.data.state == 'pending'
+          && !existsAfter(/databases/$(database)/documents/invites/$(resource.data.inviteId)))
+        || (me() == r() && inviteAfter(resource.data.inviteId).status == 'accepted')
+        || ((me() == s() || me() == r()) && leaving()));
+    }
+
+    // ---------- arkadaşlıklar ----------
+    match /friendships/{fid} {
+      allow get: if signedIn() && me() in fid.split('_');
+      allow list: if signedIn() && me() in resource.data.userIds;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['userIds', 'inviteId', 'createdAt'])
+        && request.resource.data.userIds == fid.split('_')
+        && request.resource.data.createdAt == request.time
+        && inviteAfter(request.resource.data.inviteId).status == 'accepted'
+        && inviteAfter(request.resource.data.inviteId).receiverId == me()
+        && pair(inviteAfter(request.resource.data.inviteId).senderId, me()) == fid;
+      allow update: if false;
+      allow delete: if signedIn() && me() in fid.split('_') && leaving();
+    }
+
+    // ---------- sohbetler: üyelik belge kimliğinden (yeni sohbet belgesi yokken de) ----------
+    match /chats/{cid} {
+      function member() { return signedIn() && me() in cid.split('_'); }
+      allow get: if member();
+      allow list: if signedIn() && me() in resource.data.userIds;
+      allow create, update: if member()
+        && exists(/databases/$(database)/documents/friendships/$(cid))
+        && request.resource.data.keys().hasOnly(['userIds', 'lastMessage', 'updatedAt'])
+        && request.resource.data.userIds == cid.split('_')
+        && request.resource.data.lastMessage.senderId == me()
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if member() && leaving();
+
+      match /messages/{mid} {
+        allow read: if member();
+        allow create: if member()
+          && exists(/databases/$(database)/documents/friendships/$(cid))
+          && request.resource.data.keys().hasOnly(['senderId', 'text', 'createdAt'])
+          && request.resource.data.senderId == me()
+          && request.resource.data.text is string
+          && request.resource.data.text.size() >= 1
+          && request.resource.data.text.size() <= 1000
+          && request.resource.data.createdAt == request.time;
+        allow update: if false;
+        allow delete: if member() && leaving();
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "auth": {
+    "providers": {
+      "emailPassword": true
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    },
+    "singleProjectMode": true
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "sevenv7-hali-saha",
+          "appId": "1:757199149977:android:5996f3ce0ac86b23f51108",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "sevenv7-hali-saha",
+          "appId": "1:757199149977:ios:7522f06bcd8b1986f51108",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "sevenv7-hali-saha",
+          "configurations": {
+            "android": "1:757199149977:android:5996f3ce0ac86b23f51108",
+            "ios": "1:757199149977:ios:7522f06bcd8b1986f51108"
+          }
+        }
+      }
+    }
+  }
+}

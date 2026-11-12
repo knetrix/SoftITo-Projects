@@ -1,0 +1,879 @@
+{
+  "_note": "7v7 prototipinden çıkarılan demo verisi. Zamanlar \"createdMinutesAgo\" olarak verilir; seed betiği bunları yükleme anına göre Timestamp e çevirir. password alanı yalnızca Firebase Auth hesabı oluşturmak içindir, Firestore a yazılmaz. Kimlik (uid) değerleri sabittir: u0 demo hesabı, u1-u9 test kullanıcıları. Spark planı: Cloud Functions yoktur. Bildirim kimlikleri belirlenimcidir (invite_{inviteId}, resp_{inviteId}, match_{appointmentId}, msg_{chatId}, rem_{appointmentId}); inviteLocks gönderen→alıcı çifti başına kilittir; phoneIndex seed.js tarafından users'tan üretilir (bkz. 7V7_HANDOFF.md §6).",
+  "users": {
+    "u0": {
+      "firstName": "Kerem",
+      "lastName": "Aksoy",
+      "email": "kerem@7v7.app",
+      "password": "demo12345",
+      "phone": "0532 418 27 90",
+      "city": "İzmir",
+      "position": "mid",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    },
+    "u1": {
+      "firstName": "Selim",
+      "lastName": "Kaya",
+      "email": "selim@7v7.app",
+      "password": "demo12345",
+      "phone": "0533 210 44 18",
+      "city": "İstanbul",
+      "position": "mid",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    },
+    "u2": {
+      "firstName": "Burak",
+      "lastName": "Demir",
+      "email": "burak@7v7.app",
+      "password": "demo12345",
+      "phone": "0535 702 11 63",
+      "city": "İzmir",
+      "position": "att",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    },
+    "u3": {
+      "firstName": "Kaan",
+      "lastName": "Öztürk",
+      "email": "kaan@7v7.app",
+      "password": "demo12345",
+      "phone": "0536 448 90 27",
+      "city": "İzmir",
+      "position": "def",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    },
+    "u4": {
+      "firstName": "Ozan",
+      "lastName": "Çelik",
+      "email": "ozan@7v7.app",
+      "password": "demo12345",
+      "phone": "0537 115 62 84",
+      "city": "Ankara",
+      "position": "gk",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    },
+    "u5": {
+      "firstName": "Mert",
+      "lastName": "Aydın",
+      "email": "mert@7v7.app",
+      "password": "demo12345",
+      "phone": "0538 903 27 51",
+      "city": "İzmir",
+      "position": "att",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    },
+    "u6": {
+      "firstName": "Emir",
+      "lastName": "Şahin",
+      "email": "emir@7v7.app",
+      "password": "demo12345",
+      "phone": "0539 641 08 35",
+      "city": "Bursa",
+      "position": "def",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    },
+    "u7": {
+      "firstName": "Emre",
+      "lastName": "Yıldız",
+      "email": "emre@7v7.app",
+      "password": "demo12345",
+      "phone": "0541 287 53 96",
+      "city": "İzmir",
+      "position": "gk",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    },
+    "u8": {
+      "firstName": "Cem",
+      "lastName": "Arslan",
+      "email": "cem@7v7.app",
+      "password": "demo12345",
+      "phone": "0542 376 19 40",
+      "city": "Antalya",
+      "position": "mid",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    },
+    "u9": {
+      "firstName": "Yusuf",
+      "lastName": "Koç",
+      "email": "yusuf@7v7.app",
+      "password": "demo12345",
+      "phone": "0543 520 74 12",
+      "city": "Ankara",
+      "position": "att",
+      "settings": {
+        "themeMode": "light",
+        "locale": "tr"
+      }
+    }
+  },
+  "drafts": {
+    "u0": {
+      "formation": "2-3-1",
+      "city": "İzmir",
+      "district": "Bornova",
+      "stadium": "Bornova Halı Saha",
+      "matchTime": "21:00",
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Emre",
+          "lastName": "Yıldız"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Tolga",
+          "lastName": "Eren"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Burak",
+          "lastName": "Demir"
+        },
+        {
+          "slot": "m3",
+          "firstName": "Arda",
+          "lastName": "Kılıç"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Mert",
+          "lastName": "Aydın"
+        }
+      ]
+    },
+    "u1": {
+      "formation": "3-1-2",
+      "city": "İstanbul",
+      "district": "Kadıköy",
+      "stadium": "Kadıköy Arena",
+      "matchTime": "20:00",
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Hakan",
+          "lastName": "Uçar"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Umut",
+          "lastName": "Kara"
+        },
+        {
+          "slot": "d2",
+          "firstName": "Barış",
+          "lastName": "Tan"
+        },
+        {
+          "slot": "d3",
+          "firstName": "Onur",
+          "lastName": "Er"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Selim",
+          "lastName": "Kaya"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Efe",
+          "lastName": "Gül"
+        }
+      ]
+    },
+    "u5": {
+      "formation": "3-3",
+      "city": "İzmir",
+      "district": "Buca",
+      "stadium": "Buca Halı Saha",
+      "matchTime": "22:00",
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Ozan",
+          "lastName": "Çelik"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Rıza",
+          "lastName": "Kurt"
+        },
+        {
+          "slot": "d3",
+          "firstName": "Kerem",
+          "lastName": "Aksoy"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Mert",
+          "lastName": "Aydın"
+        },
+        {
+          "slot": "a2",
+          "firstName": "Batu",
+          "lastName": "Gür"
+        }
+      ]
+    }
+  },
+  "appointments": {
+    "a1": {
+      "ownerId": "u0",
+      "formation": "2-3-1",
+      "city": "İzmir",
+      "district": "Bornova",
+      "stadium": "Bornova Arena",
+      "matchTime": "21:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Emre",
+          "lastName": "Yıldız"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Kaan",
+          "lastName": "Öztürk"
+        },
+        {
+          "slot": "d2",
+          "firstName": "Tolga",
+          "lastName": "Eren"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Burak",
+          "lastName": "Demir"
+        },
+        {
+          "slot": "m2",
+          "firstName": "Sinan",
+          "lastName": "Acar"
+        },
+        {
+          "slot": "m3",
+          "firstName": "Arda",
+          "lastName": "Kılıç"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Mert",
+          "lastName": "Aydın"
+        }
+      ],
+      "isSample": true,
+      "imageAsset": "assets/images/pitch_a1.jpg",
+      "memberIds": [
+        "u0"
+      ],
+      "createdMinutesAgo": 1561
+    },
+    "a2": {
+      "ownerId": "u0",
+      "formation": "3-1-2",
+      "city": "İstanbul",
+      "district": "Kadıköy",
+      "stadium": "Kadıköy Halı Saha",
+      "matchTime": "20:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Hakan",
+          "lastName": "Uçar"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Umut",
+          "lastName": "Kara"
+        },
+        {
+          "slot": "d2",
+          "firstName": "Barış",
+          "lastName": "Tan"
+        },
+        {
+          "slot": "d3",
+          "firstName": "Onur",
+          "lastName": "Er"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Selim",
+          "lastName": "Kaya"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Efe",
+          "lastName": "Gül"
+        },
+        {
+          "slot": "a2",
+          "firstName": "Cem",
+          "lastName": "Arslan"
+        }
+      ],
+      "isSample": true,
+      "imageAsset": "assets/images/pitch_a2.jpg",
+      "memberIds": [
+        "u0"
+      ],
+      "createdMinutesAgo": 3001
+    },
+    "a3": {
+      "ownerId": "u0",
+      "formation": "3-3",
+      "city": "Ankara",
+      "district": "Çankaya",
+      "stadium": "Gol Park Çankaya",
+      "matchTime": "10:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Ozan",
+          "lastName": "Çelik"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Yiğit",
+          "lastName": "Ak"
+        },
+        {
+          "slot": "d2",
+          "firstName": "Serkan",
+          "lastName": "Bal"
+        },
+        {
+          "slot": "d3",
+          "firstName": "Tuna",
+          "lastName": "Erdem"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Yusuf",
+          "lastName": "Koç"
+        },
+        {
+          "slot": "a2",
+          "firstName": "Kerem",
+          "lastName": "Aksoy"
+        },
+        {
+          "slot": "a3",
+          "firstName": "Arda",
+          "lastName": "Sevim"
+        }
+      ],
+      "isSample": true,
+      "imageAsset": "assets/images/pitch_a3.jpg",
+      "memberIds": [
+        "u0"
+      ],
+      "createdMinutesAgo": 5881
+    },
+    "e1": {
+      "ownerId": "u7",
+      "formation": "3-2-1",
+      "city": "İzmir",
+      "district": "Karşıyaka",
+      "stadium": "Karşıyaka Arena",
+      "matchTime": "19:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Emre",
+          "lastName": "Yıldız"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Kaan",
+          "lastName": "Öztürk"
+        },
+        {
+          "slot": "d2",
+          "firstName": "Can",
+          "lastName": "Tekin"
+        },
+        {
+          "slot": "d3",
+          "firstName": "Oğuz",
+          "lastName": "Şen"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Kerem",
+          "lastName": "Aksoy"
+        },
+        {
+          "slot": "m2",
+          "firstName": "Volkan",
+          "lastName": "Ay"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Sarp",
+          "lastName": "Uz"
+        }
+      ],
+      "isSample": false,
+      "imageAsset": null,
+      "memberIds": [
+        "u7",
+        "u0"
+      ],
+      "createdMinutesAgo": 61
+    }
+  },
+  "invites": {
+    "i1": {
+      "senderId": "u1",
+      "receiverId": "u0",
+      "formation": "3-1-2",
+      "city": "İstanbul",
+      "district": "Kadıköy",
+      "stadium": "Kadıköy Arena",
+      "matchTime": "20:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Hakan",
+          "lastName": "Uçar"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Umut",
+          "lastName": "Kara"
+        },
+        {
+          "slot": "d2",
+          "firstName": "Barış",
+          "lastName": "Tan"
+        },
+        {
+          "slot": "d3",
+          "firstName": "Onur",
+          "lastName": "Er"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Selim",
+          "lastName": "Kaya"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Efe",
+          "lastName": "Gül"
+        }
+      ],
+      "offeredSlot": "a2",
+      "status": "pending",
+      "appointmentId": null,
+      "createdMinutesAgo": 26,
+      "appliedToDraft": false
+    },
+    "o1": {
+      "senderId": "u0",
+      "receiverId": "u2",
+      "formation": "2-3-1",
+      "city": "İzmir",
+      "district": "Bornova",
+      "stadium": "Bornova Halı Saha",
+      "matchTime": "21:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Emre",
+          "lastName": "Yıldız"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Tolga",
+          "lastName": "Eren"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Burak",
+          "lastName": "Demir"
+        },
+        {
+          "slot": "m3",
+          "firstName": "Arda",
+          "lastName": "Kılıç"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Mert",
+          "lastName": "Aydın"
+        }
+      ],
+      "offeredSlot": "m1",
+      "status": "accepted",
+      "appointmentId": null,
+      "createdMinutesAgo": 301,
+      "appliedToDraft": true
+    },
+    "o2": {
+      "senderId": "u0",
+      "receiverId": "u3",
+      "formation": "2-3-1",
+      "city": "İzmir",
+      "district": "Bornova",
+      "stadium": "Bornova Halı Saha",
+      "matchTime": "21:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Emre",
+          "lastName": "Yıldız"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Tolga",
+          "lastName": "Eren"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Burak",
+          "lastName": "Demir"
+        },
+        {
+          "slot": "m3",
+          "firstName": "Arda",
+          "lastName": "Kılıç"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Mert",
+          "lastName": "Aydın"
+        }
+      ],
+      "offeredSlot": "d2",
+      "status": "rejected",
+      "appointmentId": null,
+      "createdMinutesAgo": 241,
+      "appliedToDraft": false
+    },
+    "i2": {
+      "senderId": "u7",
+      "receiverId": "u0",
+      "formation": "3-2-1",
+      "city": "İzmir",
+      "district": "Karşıyaka",
+      "stadium": "Karşıyaka Arena",
+      "matchTime": "19:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Emre",
+          "lastName": "Yıldız"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Kaan",
+          "lastName": "Öztürk"
+        },
+        {
+          "slot": "d2",
+          "firstName": "Can",
+          "lastName": "Tekin"
+        },
+        {
+          "slot": "d3",
+          "firstName": "Oğuz",
+          "lastName": "Şen"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Kerem",
+          "lastName": "Aksoy"
+        },
+        {
+          "slot": "m2",
+          "firstName": "Volkan",
+          "lastName": "Ay"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Sarp",
+          "lastName": "Uz"
+        }
+      ],
+      "offeredSlot": "m1",
+      "status": "accepted",
+      "appointmentId": "e1",
+      "createdMinutesAgo": 501,
+      "appliedToDraft": true
+    },
+    "i3": {
+      "senderId": "u5",
+      "receiverId": "u0",
+      "formation": "3-3",
+      "city": "İzmir",
+      "district": "Buca",
+      "stadium": "Buca Halı Saha",
+      "matchTime": "22:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Ozan",
+          "lastName": "Çelik"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Rıza",
+          "lastName": "Kurt"
+        },
+        {
+          "slot": "d3",
+          "firstName": "Kerem",
+          "lastName": "Aksoy"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Mert",
+          "lastName": "Aydın"
+        },
+        {
+          "slot": "a2",
+          "firstName": "Batu",
+          "lastName": "Gür"
+        }
+      ],
+      "offeredSlot": "d3",
+      "status": "accepted",
+      "appointmentId": null,
+      "createdMinutesAgo": 401,
+      "appliedToDraft": true
+    },
+    "o3": {
+      "senderId": "u0",
+      "receiverId": "u6",
+      "formation": "2-3-1",
+      "city": "İzmir",
+      "district": "Bornova",
+      "stadium": "Bornova Halı Saha",
+      "matchTime": "21:00",
+      "durationMinutes": 60,
+      "players": [
+        {
+          "slot": "gk",
+          "firstName": "Emre",
+          "lastName": "Yıldız"
+        },
+        {
+          "slot": "d1",
+          "firstName": "Tolga",
+          "lastName": "Eren"
+        },
+        {
+          "slot": "m1",
+          "firstName": "Burak",
+          "lastName": "Demir"
+        },
+        {
+          "slot": "m3",
+          "firstName": "Arda",
+          "lastName": "Kılıç"
+        },
+        {
+          "slot": "a1",
+          "firstName": "Mert",
+          "lastName": "Aydın"
+        }
+      ],
+      "offeredSlot": "d2",
+      "status": "pending",
+      "appointmentId": null,
+      "createdMinutesAgo": 91,
+      "appliedToDraft": false
+    }
+  },
+  "inviteLocks": {
+    "u1_u0": {
+      "inviteId": "i1",
+      "state": "pending"
+    },
+    "u0_u6": {
+      "inviteId": "o3",
+      "state": "pending"
+    },
+    "u0_u3": {
+      "inviteId": "o2",
+      "state": "rejected"
+    }
+  },
+  "friendships": {
+    "u0_u2": {
+      "userIds": [
+        "u0",
+        "u2"
+      ],
+      "inviteId": "o1"
+    },
+    "u0_u7": {
+      "userIds": [
+        "u0",
+        "u7"
+      ],
+      "inviteId": "i2"
+    },
+    "u0_u5": {
+      "userIds": [
+        "u0",
+        "u5"
+      ],
+      "inviteId": "i3"
+    }
+  },
+  "chats": {
+    "u0_u2": {
+      "userIds": [
+        "u0",
+        "u2"
+      ],
+      "messages": [
+        {
+          "id": "m1",
+          "senderId": "u2",
+          "text": "Perşembe 21:00 Bornova Halı Saha tamam mı?",
+          "createdMinutesAgo": 191
+        },
+        {
+          "id": "m2",
+          "senderId": "u0",
+          "text": "Tamam, kadroyu kurdum. Sen orta sahadasın.",
+          "createdMinutesAgo": 171
+        },
+        {
+          "id": "m3",
+          "senderId": "u2",
+          "text": "Süper. Yelekleri ben getiriyorum.",
+          "createdMinutesAgo": 36
+        }
+      ]
+    },
+    "u0_u7": {
+      "userIds": [
+        "u0",
+        "u7"
+      ],
+      "messages": [
+        {
+          "id": "m4",
+          "senderId": "u0",
+          "text": "Bu hafta yine kaleye geçer misin?",
+          "createdMinutesAgo": 1321
+        },
+        {
+          "id": "m5",
+          "senderId": "u7",
+          "text": "Geçerim, eldivenler bende.",
+          "createdMinutesAgo": 1261
+        }
+      ]
+    },
+    "u0_u5": {
+      "userIds": [
+        "u0",
+        "u5"
+      ],
+      "messages": [
+        {
+          "id": "m6",
+          "senderId": "u5",
+          "text": "Kadıköy maçında bir kişi eksik varsa haber ver.",
+          "createdMinutesAgo": 4201
+        }
+      ]
+    }
+  },
+  "notifications": {
+    "u0": [
+      {
+        "id": "invite_i1",
+        "type": "invite",
+        "relatedId": "i1",
+        "isRead": false,
+        "createdMinutesAgo": 26
+      },
+      {
+        "id": "rem_a1",
+        "type": "reminder",
+        "relatedId": "a1",
+        "isRead": false,
+        "createdMinutesAgo": 81
+      },
+      {
+        "id": "msg_u0_u2",
+        "type": "message",
+        "relatedId": "u0_u2",
+        "isRead": true,
+        "createdMinutesAgo": 36
+      },
+      {
+        "id": "resp_o2",
+        "type": "inviteRejected",
+        "relatedId": "o2",
+        "isRead": false,
+        "createdMinutesAgo": 241
+      },
+      {
+        "id": "resp_o1",
+        "type": "inviteAccepted",
+        "relatedId": "o1",
+        "isRead": true,
+        "createdMinutesAgo": 301
+      }
+    ],
+    "u1": [],
+    "u2": [],
+    "u3": [],
+    "u4": [],
+    "u5": [],
+    "u6": [
+      {
+        "id": "invite_o3",
+        "type": "invite",
+        "relatedId": "o3",
+        "isRead": false,
+        "createdMinutesAgo": 91
+      }
+    ],
+    "u7": [],
+    "u8": [],
+    "u9": []
+  }
+}
