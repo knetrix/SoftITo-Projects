@@ -1,0 +1,705 @@
+{
+  "@@locale": "tr",
+  "scrWelcome": "Hoş geldin",
+  "scrSignin": "Giriş",
+  "scrSignup": "Hesap oluştur",
+  "scrTeam": "Takım Kur",
+  "scrAppointments": "Randevularım",
+  "scrAppointmentDetail": "Randevu ayrıntısı",
+  "scrProfile": "Profil",
+  "scrSocial": "Sohbet ve Arkadaşlar",
+  "scrChat": "Mesajlaşma",
+  "scrNotifications": "Bildirimler",
+  "signedIn": "{name} olarak giriş yapıldı",
+  "@signedIn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "signedOut": "Çıkış yapıldı",
+  "eName": "En az 2 karakter gir.",
+  "eEmail": "Geçerli bir e-posta adresi yaz.",
+  "ePassword": "Şifreni yaz.",
+  "ePwlen": "En az 8 karakter kullan.",
+  "eNoacct": "Bu e-postayla kayıtlı hesap yok.",
+  "eWrongpw": "Şifre yanlış. Tekrar dene ya da şifreni yenile.",
+  "eExists": "Bu e-postayla zaten bir hesap var. Giriş yap.",
+  "ePhoneExists": "Bu telefon numarasıyla zaten bir hesap var. Giriş yap.",
+  "undo": "Geri al",
+  "cancel": "Vazgeç",
+  "theme": "Tema",
+  "light": "Açık mod",
+  "dark": "Karanlık mod",
+  "language": "Dil",
+  "onbH": "Yedi kişilik kadronu sahaya diz.",
+  "onbP": "Dizilişi seç, yelekleri dağıt, sahayı ve saati ayarla.",
+  "onbF1": "5 diziliş, kaleci her zaman sabit",
+  "onbF2": "81 ilde örnek saha ve saat seçimi",
+  "onbF3": "Takım arkadaşlarınla sohbet",
+  "onbStart": "Başla",
+  "onbHave": "Hesabım var, giriş yap",
+  "imgWelcome": "Sahada yığılmış file yelekler, en üstte turuncu kaleci yeleği ve yanında top",
+  "imgSignin": "Katlanmış yeşil ve turuncu yelekler, yanında antrenman hunileri",
+  "imgPitch": "Halı sahanın örnek görseli",
+  "imgEmptyAppts": "Boş halı sahada kalenin önünde duran top",
+  "imgEmptyChats": "Saha kenarındaki bankta su şişeleri ve katlanmış turuncu yelek",
+  "onbArt": "2-3-1 dizilişinde sahaya dizilmiş yedi numaralı yelek",
+  "siH": "Giriş yap",
+  "siP": "Kadronu kaldığın yerden kurmaya devam et.",
+  "fPw": "Şifre",
+  "showPw": "Şifreyi göster",
+  "hidePw": "Şifreyi gizle",
+  "forgot": "Şifremi unuttum",
+  "siBtn": "Giriş yap",
+  "siBusy": "Giriş yapılıyor…",
+  "noAcct": "Hesabın yok mu?",
+  "toSignup": "Hesap oluştur",
+  "fpH": "Şifreni yenile",
+  "fpP": "Hesabının e-posta adresini yaz, şifre yenileme bağlantısını gönderelim.",
+  "fEmail": "E-posta",
+  "fNewpw": "Yeni şifre",
+  "fpBtn": "Bağlantıyı gönder",
+  "fpBusy": "Gönderiliyor…",
+  "suH": "Hesap oluştur",
+  "suP": "Kadronu kurmak için birkaç bilgi yeter.",
+  "fFirst": "Ad",
+  "fLast": "Soyad",
+  "fPhone": "Telefon numarası",
+  "pwHint": "En az 8 karakter",
+  "suBtn": "Hesap oluştur",
+  "suBusy": "Hesap oluşturuluyor…",
+  "agreeTermsA": "Kullanıcı Sözleşmesi",
+  "agreeKvkkA": "KVKK Aydınlatma Metni",
+  "agreeSuffix": "okudum ve anladım.",
+  "chkTerms": "Kullanıcı Sözleşmesini okudum ve anladım",
+  "chkKvkk": "KVKK metnini okudum ve anladım",
+  "eFirst": "Adını yaz.",
+  "eLast": "Soyadını yaz.",
+  "ePhone": "Telefon numaranı 05XX XXX XX XX biçiminde yaz.",
+  "eTerms": "Devam etmek için sözleşmeyi onayla.",
+  "eKvkk": "Devam etmek için KVKK metnini onayla.",
+  "hasAcct": "Zaten hesabın var mı?",
+  "toSignin": "Giriş yap",
+  "accountCreated": "Hesap oluşturuldu. Şimdi giriş yap.",
+  "legalNote": "Örnek metin. Yayından önce hukuk uzmanı tarafından hazırlanacak.",
+  "termsP1": "7v7, halı saha takımı ve maç organizasyonu kurmana yardım eden bir uygulamadır. Bu sürüm bir prototiptir.",
+  "termsP2": "Uygulamada gösterilen saha adları örnektir. Bu sürümde gerçek rezervasyon ya da ödeme yapılmaz.",
+  "termsP3": "Başka kullanıcılara saygılı davranmayı ve sohbetlerde hakaret içeren içerik paylaşmamayı kabul edersin.",
+  "kvkkP1": "Ad, soyad, e-posta ve telefon bilgin hesabını oluşturmak için kullanılır.",
+  "kvkkP2": "Bu prototipte bilgilerin yalnızca uygulamanın çalışması için Firebase'de saklanır.",
+  "kvkkP3": "Verilerinin silinmesini istediğin an talep edebilirsin.",
+  "legalOk": "Okudum, onaylıyorum",
+  "tabTeam": "Takım Kur",
+  "tabAppts": "Randevularım",
+  "tabProfile": "Profil",
+  "tabSocial": "Sohbet",
+  "notifBtn": "Bildirimler",
+  "notifUnread": "{n} okunmamış",
+  "@notifUnread": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "back": "Geri",
+  "locCity": "İl",
+  "locDistrict": "İlçe",
+  "locStadium": "Saha",
+  "pick": "Seç",
+  "required": "Gerekli",
+  "matchTime": "Maç saati",
+  "oneHour": "1 saat",
+  "squad": "Kadro",
+  "squadN": "{n}/7 oyuncu",
+  "@squadN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "formationBtn": "Diziliş {f}",
+  "@formationBtn": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "formationNone": "Diziliş seç",
+  "saveTeam": "Takımı kaydet",
+  "pickFormationFirst": "Kadroyu dizmek için önce diziliş seç.",
+  "missing": "Eksik:",
+  "mFormation": "diziliş",
+  "mPlayers": "{n} oyuncu",
+  "@mPlayers": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "mCity": "il",
+  "mDistrict": "ilçe",
+  "mStadium": "saha",
+  "mTime": "maç saati",
+  "posGk": "Kaleci",
+  "posDef": "Defans",
+  "posMid": "Orta Saha",
+  "posAtt": "Hücum",
+  "addPlayerTo": "{pos} mevkisine oyuncu ekle",
+  "@addPlayerTo": {
+    "placeholders": {
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "editPlayer": "{name}, {pos}. Düzenle",
+  "@editPlayer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "fpTitle": "Diziliş seç",
+  "fpSub": "Kaleci her dizilişte sabit. Toplam 7 oyuncu.",
+  "fdD": "{n} defans",
+  "@fdD": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "fdM": "{n} orta saha",
+  "@fdM": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "fdA": "{n} hücum",
+  "@fdA": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "movedOne": "{name} yeni dizilişte {pos} mevkisine geçti",
+  "@movedOne": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "movedMany": "Yeni dizilişte yer değiştirenler: {names}",
+  "@movedMany": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "formationSet": "Diziliş {f} olarak ayarlandı",
+  "@formationSet": {
+    "placeholders": {
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "fLastOpt": "Soyad (isteğe bağlı)",
+  "ppSave": "Oyuncuyu kaydet",
+  "ppRemove": "Oyuncuyu çıkar",
+  "ePfirst": "Oyuncunun adını yaz.",
+  "eDup": "{name} zaten {pos} mevkisinde. Aynı kişiyi iki mevkiye yazamazsın, farklı bir oyuncu gir.",
+  "@eDup": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "playerSaved": "{name}, {pos} mevkisine eklendi",
+  "@playerSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "playerUpdated": "{name} güncellendi",
+  "@playerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playerRemoved": "{name} kadrodan çıkarıldı",
+  "@playerRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cpTitle": "İl seç",
+  "cpSearch": "İl ara",
+  "cpSub": "Türkiye'nin 81 ili",
+  "noCity": "\"{q}\" ile eşleşen il yok.",
+  "@noCity": {
+    "placeholders": {
+      "q": {
+        "type": "String"
+      }
+    }
+  },
+  "cityChanged": "İl değişti. İlçe ve sahayı yeniden seç.",
+  "dpTitle": "İlçe seç",
+  "dpNeed": "İlçeleri görmek için önce il seç.",
+  "dpSample": "Örnek ilçe listesi",
+  "spTitle": "Halı saha seç",
+  "spNeed": "Sahaları görmek için önce ilçe seç.",
+  "spSample": "Örnek saha adları. Gerçek rezervasyon yapılmaz.",
+  "tpTitle": "Maç saati seç",
+  "tpSub": "Her maç 1 saat sürer.",
+  "savedAppt": "Randevu kaydedildi",
+  "apH": "Randevularım",
+  "sampleTag": "Örnek",
+  "guestTag": "Davetli",
+  "buildingTag": "Kadro kuruluyor",
+  "organizer": "Organizatör",
+  "nSaved": "{name} maçı kaydetti, saat {time}",
+  "@nSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "newMatch": "Yeni maç kur",
+  "apSearch": "Saha, ilçe veya oyuncu ara",
+  "fAll": "Tümü",
+  "fDay": "Gündüz",
+  "fEve": "Akşam",
+  "nAppts": "{n} randevu",
+  "@nAppts": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "playersN": "{n} oyuncu",
+  "@playersN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "apEmptyT": "Henüz randevu yok",
+  "apEmptyD": "Takım Kur ekranında kadroyu, sahayı ve saati seç, yeşil tikle kaydet.",
+  "apEmptyBtn": "Takım kur",
+  "apNone": "Bu aramayla eşleşen randevu yok.",
+  "clearSearch": "Aramayı temizle",
+  "detTime": "Saat",
+  "detDur": "Süre",
+  "detForm": "Diziliş",
+  "reuseBtn": "Kadroyu Takım Kur'a aktar",
+  "delAppt": "Randevuyu sil",
+  "deletedAppt": "{name} randevusu silindi",
+  "@deletedAppt": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reused": "Kadro Takım Kur ekranına aktarıldı",
+  "detNoneT": "Randevu seçilmedi",
+  "detNoneD": "Randevularım listesinden bir randevu aç.",
+  "detNoneBtn": "Randevularım'a git",
+  "soFriends": "Arkadaş Ekle",
+  "soChats": "Sohbet",
+  "userSearch": "İsim ara",
+  "reqSend": "İstek yolla",
+  "reqSentBtn": "İstek gönderildi",
+  "reqSent": "{name} kişisine istek gönderildi",
+  "@reqSent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "friendsYes": "Arkadaşsınız",
+  "msgUser": "{name} ile mesajlaş",
+  "@msgUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noUsers": "\"{q}\" adında örnek kullanıcı yok.",
+  "@noUsers": {
+    "placeholders": {
+      "q": {
+        "type": "String"
+      }
+    }
+  },
+  "chatsEmptyT": "Henüz sohbet yok",
+  "chatsEmptyD": "Arkadaş Ekle'den birine mesaj göndererek başla.",
+  "chatsEmptyBtn": "Arkadaş bul",
+  "yesterday": "Dün",
+  "you": "Sen:",
+  "chatNote": "Örnek sohbet. Mesajları yalnızca ikiniz görürsünüz.",
+  "msgPh": "Mesaj yaz",
+  "send": "Gönder",
+  "msgBtn": "Mesaj",
+  "eMsg": "Önce bir mesaj yaz.",
+  "chatFirst": "İlk mesajı yaz. Maç saatini ya da sahayı paylaşabilirsin.",
+  "chatNoneT": "Sohbet seçilmedi",
+  "chatNoneD": "Sohbet listesinden birini aç.",
+  "chatNoneBtn": "Sohbetlere dön",
+  "noH": "Bildirimler",
+  "markAll": "Tümünü okundu say",
+  "sampleNotifs": "Örnek bildirimler",
+  "newTag": "Yeni",
+  "nRequest": "{name} sana arkadaşlık isteği gönderdi",
+  "@nRequest": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nAccepted": "{name} arkadaşlık isteğini kabul etti",
+  "@nAccepted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nReminder": "Maç hatırlatması, saat {time}",
+  "@nReminder": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "nMessage": "{name} yeni mesaj gönderdi",
+  "@nMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noEmptyT": "Bildirim yok",
+  "noEmptyD": "Arkadaşlık istekleri, maç hatırlatmaları ve mesajlar burada görünür.",
+  "apptGone": "Bu randevu silinmiş",
+  "allRead": "Tüm bildirimler okundu",
+  "agoM": "{n} dk önce",
+  "@agoM": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "agoH": "{n} sa önce",
+  "@agoH": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "agoD": "{n} gün önce",
+  "@agoD": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "justNow": "Şimdi",
+  "scrInvite": "Maç daveti",
+  "invTitle": "{name} kişisini maça davet et",
+  "@invTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "invNeedMatch": "Davet göndermek için önce Takım Kur ekranında diziliş, il, ilçe, saha ve saati seç.",
+  "invFull": "Kadronda teklif edilecek boş mevki yok. Takım Kur ekranında bir mevkiyi boşalt.",
+  "goTeam": "Takım Kur'a git",
+  "invOfferPick": "Teklif edilecek mevki",
+  "invSend": "Daveti gönder",
+  "invSent": "{name} kişisine {pos} teklifiyle davet gönderildi",
+  "@invSent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "invWithdrawn": "{name} kişisine gönderilen davet geri çekildi",
+  "@invWithdrawn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "invFriend": "Maça davet et",
+  "invSentBtn": "Davet gönderildi",
+  "invTo": "kişisine davet gönderdin",
+  "invSenderPending": "{name} kişisinin yanıtı bekleniyor",
+  "@invSenderPending": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "invSenderAccepted": "{name} kabul etti, {pos} mevkisine yazıldı",
+  "@invSenderAccepted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "invSenderRejected": "{name} daveti reddetti",
+  "@invSenderRejected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "invOffered": "{pos} teklif edildi",
+  "@invOffered": {
+    "placeholders": {
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "invRefused": "Daveti reddetti",
+  "invView": "Daveti gör",
+  "waiting": "{name} bekliyor",
+  "@waiting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "slotWaiting": "{pos}, {name} kişisinin yanıtı bekleniyor",
+  "@slotWaiting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "nWaiting": "{n} davet bekliyor",
+  "@nWaiting": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "waitText": "{name} kişisine bu mevki için davet gönderildi. Yanıt bekleniyor.",
+  "@waitText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "withdraw": "Daveti geri çek",
+  "inInvites": "Gelen davetler",
+  "inInvLine": "{pos} teklif ediyor",
+  "@inInvLine": {
+    "placeholders": {
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "invH": "Maç daveti",
+  "invFrom": "seni maçına davet ediyor",
+  "invOfferLabel": "Sana teklif edilen mevki",
+  "invOfferDone": "Adın bu mevkiye yazıldı",
+  "offerYou": "Senin yerin",
+  "emptySlot": "Boş",
+  "offerRow": "Boş, sana teklif edildi",
+  "invAccept": "Kabul et",
+  "invReject": "Reddet",
+  "invChat": "{name} ile sohbet et",
+  "@invChat": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "invAcceptedT": "Davet kabul edildi. Adın {pos} mevkisine yazıldı.",
+  "@invAcceptedT": {
+    "placeholders": {
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "invRejectedT": "Davet reddedildi. {name} kişisine ret bildirimi gönderildi.",
+  "@invRejectedT": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "invStatusAcc": "Kabul ettin. {name} ile artık arkadaşsınız.",
+  "@invStatusAcc": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "invStatusRej": "Reddettin. {name} kişisine ret bildirimi gitti.",
+  "@invStatusRej": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "invRejQ": "Daveti reddetmek istiyor musun?",
+  "invRejD": "Daveti gönderen kişiye ret bildirimi gidecek ve mevki onun kadrosunda yeniden boşalacak.",
+  "invRejYes": "Evet, reddet",
+  "invNoneT": "Davet seçilmedi",
+  "invNoneD": "Bildirimlerden ya da Arkadaş Ekle listesinden bir davet aç.",
+  "nInvite": "{name} seni maçına davet etti",
+  "@nInvite": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nInviteSub": "{pos} teklif ediyor, {place}",
+  "@nInviteSub": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      },
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "nInvAcc": "{name} davetini kabul etti",
+  "@nInvAcc": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nInvAccSub": "{pos} mevkisine yazıldı",
+  "@nInvAccSub": {
+    "placeholders": {
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "nInvRej": "{name} davetini reddetti",
+  "@nInvRej": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nInvRejSub": "{pos} yeniden boş",
+  "@nInvRejSub": {
+    "placeholders": {
+      "pos": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteGone": "Bu davet artık yok",
+  "prH": "Profil",
+  "prPhone": "Telefon",
+  "prEmail": "E-posta adresi",
+  "prAppts": "Randevu",
+  "prFriends": "Arkadaş",
+  "prLook": "Görünüm",
+  "prAccount": "Hesap",
+  "signOut": "Çıkış yap",
+  "noPhone": "Telefon eklenmedi",
+  "fpSent": "Şifre yenileme bağlantısı e-postana gönderildi.",
+  "eGeneric": "Bir sorun oluştu. Tekrar dene.",
+  "langTr": "Türkçe",
+  "langEn": "English",
+  "@langTr": {
+    "description": "Dil seçicide Türkçe (kendi dilinde, çevrilmez)"
+  },
+  "@langEn": {
+    "description": "Dil seçicide İngilizce (kendi dilinde, çevrilmez)"
+  },
+  "delAcct": "Hesabı sil",
+  "delH": "Hesabını sil",
+  "delP": "Profilin, iletişim bilgilerin, randevuların, davetlerin, arkadaşlıkların ve mesajların kalıcı olarak silinir. Bu işlem geri alınamaz. Onaylamak için şifreni yaz.",
+  "delBtn": "Hesabı kalıcı olarak sil",
+  "delBusy": "Siliniyor…",
+  "accountDeleted": "Hesabın silindi."
+}

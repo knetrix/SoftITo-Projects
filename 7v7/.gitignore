@@ -1,0 +1,47 @@
+# macOS
+.DS_Store
+
+# Firebase
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.firebase/
+service-account*.json
+*-firebase-adminsdk-*.json
+
+# Node (seed, rules tests)
+node_modules/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+*.iml
+.idea/
+/coverage/
+**/ios/Flutter/.last_build_id
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/ephemeral/
+**/android/.gradle/
+**/android/local.properties
+**/android/captures/
+/test/rules/node_modules/
+
+# Yapay zekâ geliştirme araçları (yerel ayarlar ve skill dosyaları)
+.claude/
+.agents/
+
+# Tasarım teslim belgeleri (yerelde kalır)
+/handoff/
+/7v7.html
+/project.md
+
+# Firebase yapılandırması: `flutterfire configure` ile her geliştirici kendi üretir
+/lib/firebase_options.dart
+/ios/Runner/GoogleService-Info.plist
+/android/app/google-services.json
+/.firebaserc

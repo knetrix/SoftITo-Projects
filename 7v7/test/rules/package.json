@@ -1,0 +1,12 @@
+{
+  "name": "sevenv7-rules-tests",
+  "private": true,
+  "description": "firestore.rules emülatör testleri (7V7_HANDOFF.md §6.4, §10 madde 11)",
+  "scripts": {
+    "test": "node --test rules.test.mjs"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "firebase": "^11.10.0"
+  }
+}
